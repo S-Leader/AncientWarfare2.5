@@ -1,0 +1,21 @@
+{
+  "target": "Minecraft 1.20.1 Forge",
+  "status": "migration workspace; not compile-validated",
+  "source_java_files": 1380,
+  "source_java_lines": 137462,
+  "resource_files": 7362,
+  "mechanically_changed_files": 1013,
+  "mechanical_replacements": 14137,
+  "remaining_legacy_import_rows": 3156,
+  "manual_compatibility_layers": [
+    "FTB Teams 1.20.1",
+    "Electroblob Wizardry Redux boundary",
+    "CodeChickenLib migration audit"
+  ],
+  "validation": {
+    "json_resources": "parsed",
+    "mods_toml": "parsed",
+    "python_tools": "compiled",
+    "java_compile": "not run: Gradle environment absent from upload"
+  }
+}

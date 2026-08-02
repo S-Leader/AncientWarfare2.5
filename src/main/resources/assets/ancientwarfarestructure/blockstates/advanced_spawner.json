@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "transparent=false": {
+      "model": "ancientwarfare:block/structure/advanced_spawner"
+    },
+    "transparent=true": {
+      "model": "ancientwarfarestructure:block/structure/advanced_spawner_transparent"
+    }
+  }
+}

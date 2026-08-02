@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=true": {
+      "model": "ancientwarfare:block/structure/brazier_ember_on"
+    },
+    "lit=false": {
+      "model": "ancientwarfare:block/structure/brazier_ember_off"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+    "parent": "minecraft:block/cube",
+    "textures": {
+        "particle": "ancientwarfare:blocks/automation/mailbox_front",
+        "down": "ancientwarfare:blocks/automation/mailbox_bottom",
+        "up": "ancientwarfare:blocks/automation/mailbox_top",
+        "north": "ancientwarfare:blocks/automation/mailbox_front",
+        "east": "ancientwarfare:blocks/automation/mailbox_right",
+        "south": "ancientwarfare:blocks/automation/mailbox_rear",
+        "west": "ancientwarfare:blocks/automation/mailbox_left"
+    }
+}

@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=north,part=top,visible=true": {
+      "model": "ancientwarfare:block/structure/wooden_post_top",
+      "y": 180
+    },
+    "facing=north,part=top,visible=false": {
+      "model": "ancientwarfare:block/structure/wooden_post_top",
+      "y": 180
+    },
+    "facing=north,part=bottom,visible=true": {
+      "model": "ancientwarfare:block/structure/wooden_post_bottom",
+      "y": 180
+    },
+    "facing=north,part=bottom,visible=false": {
+      "model": "ancientwarfare:block/structure/wooden_post_bottom",
+      "y": 180
+    },
+    "facing=south,part=top,visible=true": {
+      "model": "ancientwarfare:block/structure/wooden_post_top"
+    },
+    "facing=south,part=top,visible=false": {
+      "model": "ancientwarfare:block/structure/wooden_post_top"
+    },
+    "facing=south,part=bottom,visible=true": {
+      "model": "ancientwarfare:block/structure/wooden_post_bottom"
+    },
+    "facing=south,part=bottom,visible=false": {
+      "model": "ancientwarfare:block/structure/wooden_post_bottom"
+    },
+    "facing=west,part=top,visible=true": {
+      "model": "ancientwarfare:block/structure/wooden_post_top",
+      "y": 90
+    },
+    "facing=west,part=top,visible=false": {
+      "model": "ancientwarfare:block/structure/wooden_post_top",
+      "y": 90
+    },
+    "facing=west,part=bottom,visible=true": {
+      "model": "ancientwarfare:block/structure/wooden_post_bottom",
+      "y": 90
+    },
+    "facing=west,part=bottom,visible=false": {
+      "model": "ancientwarfare:block/structure/wooden_post_bottom",
+      "y": 90
+    },
+    "facing=east,part=top,visible=true": {
+      "model": "ancientwarfare:block/structure/wooden_post_top",
+      "y": 270
+    },
+    "facing=east,part=top,visible=false": {
+      "model": "ancientwarfare:block/structure/wooden_post_top",
+      "y": 270
+    },
+    "facing=east,part=bottom,visible=true": {
+      "model": "ancientwarfare:block/structure/wooden_post_bottom",
+      "y": 270
+    },
+    "facing=east,part=bottom,visible=false": {
+      "model": "ancientwarfare:block/structure/wooden_post_bottom",
+      "y": 270
+    }
+  }
+}

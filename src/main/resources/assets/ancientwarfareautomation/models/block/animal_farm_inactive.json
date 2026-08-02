@@ -1,0 +1,6 @@
+{
+    "parent": "ancientwarfareautomation:block/animal_farm",
+    "textures": {
+        "south": "ancientwarfare:blocks/automation/animal_farm_rear_inactive"
+    }
+}

@@ -1,0 +1,309 @@
+package net.shadowmage.ancientwarfare.structure.template;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.shadowmage.ancientwarfare.core.config.AWCoreStatics;
+import net.shadowmage.ancientwarfare.core.gamedata.AWGameData;
+import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
+import net.shadowmage.ancientwarfare.structure.gamedata.StructureEntry;
+import net.shadowmage.ancientwarfare.structure.gamedata.StructureMap;
+import net.shadowmage.ancientwarfare.structure.registry.BiomeGroupRegistry;
+import net.shadowmage.ancientwarfare.structure.registry.TerritorySettingRegistry;
+import net.shadowmage.ancientwarfare.structure.template.build.validation.StructureValidator;
+import net.shadowmage.ancientwarfare.structure.util.CollectionUtils;
+import net.shadowmage.ancientwarfare.structure.worldgen.Territory;
+import net.shadowmage.ancientwarfare.structure.worldgen.TerritoryManager;
+import net.shadowmage.ancientwarfare.structure.worldgen.WorldGenDetailedLogHelper;
+import net.shadowmage.ancientwarfare.structure.worldgen.stats.ValidationRejectionReason;
+import net.shadowmage.ancientwarfare.structure.worldgen.stats.WorldGenStatistics;
+
+import java.util.*;
+import java.util.function.Predicate;
+
+import static net.shadowmage.ancientwarfare.structure.template.build.validation.properties.StructureValidationProperties.TERRITORY_NAME;
+
+public class WorldGenStructureManager {
+    public static final String GENERIC_TERRITORY_NAME = "generic";
+    private HashMap<String, Set<StructureTemplate>> templatesByBiome = new HashMap<>();
+    private HashMap<String, Set<StructureTemplate>> templatesByTerritoryName = new HashMap<>();
+
+    /*
+     * cached list objects, used for temp searching, as to not allocate new lists for every chunk-generated....
+     */
+    private List<StructureEntry> searchCache = new ArrayList<>();
+    private List<StructureTemplate> trimmedPotentialStructures = new ArrayList<>();
+    private HashMap<String, Integer> distancesFound = new HashMap<>();
+
+    public static final WorldGenStructureManager INSTANCE = new WorldGenStructureManager();
+
+    private WorldGenStructureManager() {
+    }
+
+    public void clearCachedTemplates() {
+        templatesByBiome.clear();
+        templatesByTerritoryName.clear();
+    }
+
+    public void loadBiomeList() {
+        ForgeRegistries.BIOMES.getKeys().forEach(key -> templatesByBiome.putIfAbsent(key.toString(), new HashSet<>()));
+    }
+
+    void registerWorldGenStructure(StructureTemplate template) {
+        StructureValidator validation = template.getValidationSettings();
+        Set<String> biomes = validation.getBiomeList();
+        Set<String> biomeGroupBiomes = new HashSet<>();
+        validation.getBiomeGroupList().forEach(biomeGroup -> biomeGroupBiomes.addAll(BiomeGroupRegistry.getGroupBiomes(biomeGroup)));
+
+        String territoryName = template.getValidationSettings().getPropertyValue(TERRITORY_NAME);
+        if (territoryName.isEmpty()) {
+            territoryName = GENERIC_TERRITORY_NAME;
+        }
+        Set<StructureTemplate> templates = templatesByTerritoryName.getOrDefault(territoryName, new HashSet<>());
+        templates.add(template);
+        templatesByTerritoryName.put(territoryName, templates);
+
+        if (validation.isBiomeWhiteList()) {
+            whitelistBiomes(template, biomes, biomeGroupBiomes, territoryName);
+        } else {
+            blacklistBiomes(template, biomes, biomeGroupBiomes, territoryName);
+        }
+    }
+
+    private void whitelistBiomes(StructureTemplate template, Set<String> biomes, Set<String> biomeGroupBiomes, String territoryName) {
+        addTemplateToBiomes(template, biomeGroupBiomes, b -> true, territoryName);
+        addTemplateToBiomes(template, biomes, b -> biomeGroupBiomes.isEmpty() || biomeGroupBiomes.contains(b), territoryName);
+    }
+
+    private void addTemplateToBiomes(StructureTemplate template, Set<String> biomeNames, Predicate<String> checkBiome, String territoryName) {
+        for (String biomeName : biomeNames) {
+            ResourceLocation biomeId = ResourceLocation.tryParse(biomeName);
+            if (biomeId != null && checkBiome.test(biomeName)) {
+                addBiomeTemplate(template, territoryName, biomeName);
+            } else if (biomeId != null && ModList.get().isLoaded(biomeId.getNamespace())) {
+                AncientWarfareStructure.LOG.warn("Could not use biome id {} while registering template {} for world generation.", biomeName, template.name);
+            }
+        }
+    }
+
+    private void addBiomeTemplate(StructureTemplate template, String territoryName, String biomeName) {
+        templatesByBiome.computeIfAbsent(biomeName, ignored -> new HashSet<>()).add(template);
+        TerritoryManager.addTerritoryInBiome(territoryName, biomeName);
+    }
+
+    private void blacklistBiomes(StructureTemplate template, Set<String> biomes, Set<String> biomeGroupBiomes, String territoryName) {
+        Set<String> biomesBaseList = biomeGroupBiomes.isEmpty() ? templatesByBiome.keySet() : biomeGroupBiomes;
+        for (String biome : biomesBaseList) {
+            if (!biomes.isEmpty() && biomes.contains(biome)) {
+                continue;
+            }
+            if (templatesByBiome.containsKey(biome)) {
+                addBiomeTemplate(template, territoryName, biome);
+            }
+        }
+    }
+
+    public Optional<StructureTemplate> selectTemplateForGeneration(Level world, Random rng, int x, int y, int z, Direction face, Territory territory) {
+        searchCache.clear();
+        trimmedPotentialStructures.clear();
+        distancesFound.clear();
+        StructureMap map = AWGameData.INSTANCE.getPerWorldData(world, StructureMap.class);
+
+        String biomeName = world.getBiome(new BlockPos(x, world.getSeaLevel(), z))
+                .unwrapKey().map(key -> key.location().toString()).orElse("minecraft:plains");
+        Set<StructureTemplate> potentialStructures = new HashSet<>();
+        getTerritoryTemplates(territory.getTerritoryName()).ifPresent(potentialStructures::addAll);
+        getTerritoryTemplates(GENERIC_TERRITORY_NAME).ifPresent(potentialStructures::addAll);
+        Set<StructureTemplate> biomeTemplates = getOrCreateBiomeTemplates(biomeName);
+        // biomeTemplates is sometimes null here with OTG. Maybe this happens any time a biome has no valid structures?
+        if (biomeTemplates == null || biomeTemplates.isEmpty()) {
+            System.out.println("[AW2t] ERROR: biome '" + biomeName + "' matched no valid templates");
+            return Optional.empty();
+        }
+        potentialStructures.removeIf(t -> !biomeTemplates.contains(t));
+        if (potentialStructures.isEmpty()) {
+            return Optional.empty();
+        }
+
+        int remainingValueCache = territory.getRemainingClusterValue();
+
+        WorldGenDetailedLogHelper.log("Selecting template at x {} y {} z {} in biome \"{}\" and territory \"{}\" with remaining cluster value of {}",
+                () -> x, () -> y, () -> z, () -> biomeName, territory::getTerritoryName, territory::getRemainingClusterValue);
+
+        int duplicateSearchDistance = 0;
+        for (StructureTemplate template : potentialStructures) {
+            duplicateSearchDistance = Math.max(duplicateSearchDistance, template.getValidationSettings().getMinDuplicateDistance());
+        }
+
+        Collection<StructureEntry> duplicateSearchEntries = map.getEntriesNear(world, x, z, duplicateSearchDistance / 16, false, searchCache);
+        for (StructureEntry entry : duplicateSearchEntries) {
+            int mx = entry.getBB().getCenterX() - x;
+            int mz = entry.getBB().getCenterZ() - z;
+            int foundDistance = (int) Mth.sqrt((float) mx * mx + mz * mz);
+            if (distancesFound.containsKey(entry.getName())) {
+                int dist = distancesFound.get(entry.getName());
+                if (foundDistance < dist) {
+                    distancesFound.put(entry.getName(), foundDistance);
+                }
+            } else {
+                distancesFound.put(entry.getName(), foundDistance);
+            }
+        }
+
+        int dim = getLegacyDimensionId(world);
+        for (StructureTemplate template : potentialStructures)//loop through initial structures, only adding to 2nd list those which meet biome, unique, value, and minDuplicate distance settings
+        {
+            if (validateTemplate(world, x, y, z, face, map, remainingValueCache, dim, template)) {
+                trimmedPotentialStructures.add(template);
+            }
+        }
+        if (trimmedPotentialStructures.isEmpty()) {
+            return Optional.empty();
+        }
+        StructureTemplate toReturn = CollectionUtils.getWeightedRandomElement(rng, trimmedPotentialStructures, e -> getStructureWeight(x, y, z, territory, e),
+                (totalWeight, selected) -> {
+                    WorldGenDetailedLogHelper.log("Out of total of {} structures with weight total of {} structure \"{}\" with weight {} was selected",
+                            trimmedPotentialStructures::size, () -> totalWeight, () -> selected == null ? "" : selected.name,
+                            () -> selected == null ? "" : getStructureWeight(x, y, z, territory, selected));
+                    WorldGenDetailedLogHelper.log("Following structures and weights were considered: \n {}",
+                            () -> {
+                                StringJoiner joiner = new StringJoiner(", ");
+                                trimmedPotentialStructures.forEach(structure -> joiner.add(structure.name + ":" + getStructureWeight(x, y, z, territory, structure)));
+                                return joiner.toString();
+                            });
+                    trimmedPotentialStructures.forEach(structure -> WorldGenStatistics.recordStructureConsideredInRandom(structure.name, getStructureWeight(x, y, z, territory, structure), totalWeight, biomeName, territory.getTerritoryName()));
+                }
+        ).orElse(null);
+        distancesFound.clear();
+        trimmedPotentialStructures.clear();
+        return Optional.ofNullable(toReturn);
+    }
+
+    private Set<StructureTemplate> getOrCreateBiomeTemplates(String biomeName) {
+        Set<StructureTemplate> cached = templatesByBiome.get(biomeName);
+        if (cached != null) {
+            return cached;
+        }
+
+        Set<StructureTemplate> resolved = new HashSet<>();
+        for (var territoryEntry : templatesByTerritoryName.entrySet()) {
+            for (StructureTemplate template : territoryEntry.getValue()) {
+                StructureValidator validation = template.getValidationSettings();
+                Set<String> groupBiomes = new HashSet<>();
+                validation.getBiomeGroupList().forEach(group -> groupBiomes.addAll(BiomeGroupRegistry.getGroupBiomes(group)));
+                Set<String> explicitBiomes = validation.getBiomeList();
+                boolean allowed;
+                if (validation.isBiomeWhiteList()) {
+                    allowed = groupBiomes.contains(biomeName) || (groupBiomes.isEmpty() && explicitBiomes.contains(biomeName));
+                } else {
+                    allowed = (groupBiomes.isEmpty() || groupBiomes.contains(biomeName)) && !explicitBiomes.contains(biomeName);
+                }
+                if (allowed) {
+                    resolved.add(template);
+                    TerritoryManager.addTerritoryInBiome(territoryEntry.getKey(), biomeName);
+                }
+            }
+        }
+        templatesByBiome.put(biomeName, resolved);
+        return resolved;
+    }
+
+    private int getStructureWeight(int x, int y, int z, Territory territory, StructureTemplate e) {
+        boolean bigStructure = e.getValidationSettings().getClusterValue() > 50;
+        int weight = e.getValidationSettings().getSelectionWeight();
+        if (bigStructure) {
+            return Math.max(0, (int) (weight - ((territory.getTerritoryCenter().distSqr(new BlockPos(x, y, z)) /
+                    TerritorySettingRegistry.getMaxTerritoryCenterDistanceSq(territory.getTerritoryName())) * weight)));
+        }
+        return weight;
+    }
+
+    private boolean validateTemplate(Level world, int x, int y, int z, Direction face, StructureMap map, int remainingValueCache, int dim, StructureTemplate template) {
+        StructureValidator settings = template.getValidationSettings();
+        boolean dimensionMatch = !settings.isDimensionWhiteList();
+        for (int i = 0; i < settings.getAcceptedDimensions().length; i++) {
+            int dimTest = settings.getAcceptedDimensions()[i];
+            if (dimTest == dim) {
+                dimensionMatch = !dimensionMatch;
+                break;
+            }
+        }
+        if (!dimensionMatch) {
+            WorldGenStatistics.addStructureValidationRejection(template.name, ValidationRejectionReason.WRONG_DIMENSION);
+            WorldGenDetailedLogHelper.log("Structure \"{}\" is defined for different dimension", () -> template.name);
+            return false;
+        }
+        if (settings.isUnique() && map.isGeneratedUnique(template.name)) {
+            WorldGenStatistics.addStructureValidationRejection(template.name, ValidationRejectionReason.UNIQUE_ALREADY_GENERATED);
+            WorldGenDetailedLogHelper.log("Unique structure \"{}\" already generated", () -> template.name);
+            return false;
+        }
+        // Added by Tweaked
+        int distanceLimit = getMaxDistanceLimitation(settings);
+        // Calculate current distance from spawn:
+        BlockPos spawnRelative = world.getSharedSpawnPos();
+        BlockPos structurePos = new BlockPos(x, y, z);
+        if (spawnRelative.distSqr(structurePos) > (double) distanceLimit * distanceLimit) {
+            WorldGenDetailedLogHelper.log("Structure \"{}\" is far enough from spawn.", () -> template.name);
+        } else {
+            WorldGenStatistics.addStructureValidationRejection(template.name, ValidationRejectionReason.TOO_CLOSE_TO_SPAWN);
+            WorldGenDetailedLogHelper.log("Structure \"{}\" is too close to spawn!", () -> template.name);
+            return false;
+        }
+
+        if (settings.getClusterValue() > remainingValueCache) {
+            WorldGenStatistics.addStructureValidationRejection(template.name, ValidationRejectionReason.TOO_HIGH_CLUSTER_VALUE);
+            WorldGenDetailedLogHelper.log("Structure \"{}\" has too high cluster value {}", () -> template.name, () -> template.getValidationSettings().getClusterValue());
+            return false;
+        }
+        if (distancesFound.containsKey(template.name)) {
+            int dist = distancesFound.get(template.name);
+            if (dist < settings.getMinDuplicateDistance()) {
+                WorldGenStatistics.addStructureValidationRejection(template.name, ValidationRejectionReason.DUPLICATE_IN_RANGE);
+                WorldGenDetailedLogHelper.log("Structure \"{}\" has duplicate {} blocks away", () -> template.name, () -> dist);
+                return false;
+            }
+        }
+        return settings.shouldIncludeForSelection(world, x, y, z, face, template);
+    }
+
+    private int getLegacyDimensionId(Level world) {
+        if (world.dimension() == Level.NETHER) {
+            return -1;
+        }
+        if (world.dimension() == Level.END) {
+            return 1;
+        }
+        return 0;
+    }
+
+    public Optional<Set<StructureTemplate>> getTerritoryTemplates(String territoryName) {
+        return Optional.ofNullable(templatesByTerritoryName.get(territoryName));
+    }
+
+    // Finds the largest number for how far the structure needs to be from spawn.
+    // Structures that rely on multiple mods may have multiple distance values in the config.
+    // We only care about the furthest one.
+    private int getMaxDistanceLimitation(StructureValidator settings) {
+        String[] modlist = settings.modList;
+        int largestDistanceLimitation = 0;
+        // Apply distance-from-spawn limitations
+        // Modlist limitions:
+        if (modlist != null) {
+            for (int i = 0; i < modlist.length; i++) {
+                if (AWCoreStatics.modDistanceFromSpawnMap.containsKey(modlist[i])) {
+                    // Mod has a distance-from-spawn limit from the config file
+                    int distance = (Integer) AWCoreStatics.modDistanceFromSpawnMap.get(modlist[i]);
+                    if (distance > largestDistanceLimitation) {
+                        largestDistanceLimitation = distance;
+                    }
+                }
+            }
+        }
+        return largestDistanceLimitation;
+    }
+}

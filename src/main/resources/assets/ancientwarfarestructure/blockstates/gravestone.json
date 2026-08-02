@@ -1,0 +1,124 @@
+{
+  "variants": {
+    "facing=north,variant=1": {
+      "model": "ancientwarfare:block/structure/gravestone_1"
+    },
+    "facing=north,variant=2": {
+      "model": "ancientwarfarestructure:block/structure/gravestone_2"
+    },
+    "facing=north,variant=3": {
+      "model": "ancientwarfare:block/structure/gravestone_3"
+    },
+    "facing=north,variant=4": {
+      "model": "ancientwarfarestructure:block/structure/gravestone_4"
+    },
+    "facing=north,variant=5": {
+      "model": "ancientwarfare:block/structure/gravestone_5"
+    },
+    "facing=north,variant=6": {
+      "model": "ancientwarfare:block/structure/gravestone_6"
+    },
+    "facing=north,variant=7": {
+      "model": "ancientwarfare:block/structure/gravestone_7"
+    },
+    "facing=north,variant=8": {
+      "model": "ancientwarfare:block/structure/gravestone_8"
+    },
+    "facing=south,variant=1": {
+      "model": "ancientwarfare:block/structure/gravestone_1",
+      "y": 180
+    },
+    "facing=south,variant=2": {
+      "model": "ancientwarfarestructure:block/structure/gravestone_2",
+      "y": 180
+    },
+    "facing=south,variant=3": {
+      "model": "ancientwarfare:block/structure/gravestone_3",
+      "y": 180
+    },
+    "facing=south,variant=4": {
+      "model": "ancientwarfarestructure:block/structure/gravestone_4",
+      "y": 180
+    },
+    "facing=south,variant=5": {
+      "model": "ancientwarfare:block/structure/gravestone_5",
+      "y": 180
+    },
+    "facing=south,variant=6": {
+      "model": "ancientwarfare:block/structure/gravestone_6",
+      "y": 180
+    },
+    "facing=south,variant=7": {
+      "model": "ancientwarfare:block/structure/gravestone_7",
+      "y": 180
+    },
+    "facing=south,variant=8": {
+      "model": "ancientwarfare:block/structure/gravestone_8",
+      "y": 180
+    },
+    "facing=west,variant=1": {
+      "model": "ancientwarfare:block/structure/gravestone_1",
+      "y": 270
+    },
+    "facing=west,variant=2": {
+      "model": "ancientwarfarestructure:block/structure/gravestone_2",
+      "y": 270
+    },
+    "facing=west,variant=3": {
+      "model": "ancientwarfare:block/structure/gravestone_3",
+      "y": 270
+    },
+    "facing=west,variant=4": {
+      "model": "ancientwarfarestructure:block/structure/gravestone_4",
+      "y": 270
+    },
+    "facing=west,variant=5": {
+      "model": "ancientwarfare:block/structure/gravestone_5",
+      "y": 270
+    },
+    "facing=west,variant=6": {
+      "model": "ancientwarfare:block/structure/gravestone_6",
+      "y": 270
+    },
+    "facing=west,variant=7": {
+      "model": "ancientwarfare:block/structure/gravestone_7",
+      "y": 270
+    },
+    "facing=west,variant=8": {
+      "model": "ancientwarfare:block/structure/gravestone_8",
+      "y": 270
+    },
+    "facing=east,variant=1": {
+      "model": "ancientwarfare:block/structure/gravestone_1",
+      "y": 90
+    },
+    "facing=east,variant=2": {
+      "model": "ancientwarfarestructure:block/structure/gravestone_2",
+      "y": 90
+    },
+    "facing=east,variant=3": {
+      "model": "ancientwarfare:block/structure/gravestone_3",
+      "y": 90
+    },
+    "facing=east,variant=4": {
+      "model": "ancientwarfarestructure:block/structure/gravestone_4",
+      "y": 90
+    },
+    "facing=east,variant=5": {
+      "model": "ancientwarfare:block/structure/gravestone_5",
+      "y": 90
+    },
+    "facing=east,variant=6": {
+      "model": "ancientwarfare:block/structure/gravestone_6",
+      "y": 90
+    },
+    "facing=east,variant=7": {
+      "model": "ancientwarfare:block/structure/gravestone_7",
+      "y": 90
+    },
+    "facing=east,variant=8": {
+      "model": "ancientwarfare:block/structure/gravestone_8",
+      "y": 90
+    }
+  }
+}

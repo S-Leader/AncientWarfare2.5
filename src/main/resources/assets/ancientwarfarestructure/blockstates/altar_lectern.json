@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "ancientwarfare:block/structure/altar_lectern"
+    },
+    "facing=south": {
+      "model": "ancientwarfare:block/structure/altar_lectern",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "ancientwarfare:block/structure/altar_lectern",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "ancientwarfare:block/structure/altar_lectern",
+      "y": 90
+    }
+  }
+}

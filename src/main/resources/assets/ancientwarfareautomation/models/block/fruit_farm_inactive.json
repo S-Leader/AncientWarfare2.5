@@ -1,0 +1,6 @@
+{
+    "parent": "ancientwarfareautomation:block/fruit_farm",
+    "textures": {
+        "south": "ancientwarfare:blocks/automation/fruit_farm_rear_inactive"
+    }
+}

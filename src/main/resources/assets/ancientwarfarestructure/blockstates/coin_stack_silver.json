@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "size=8": {
+      "model": "ancientwarfarestructure:block/structure/coin_stack_silver_8"
+    },
+    "size=16": {
+      "model": "ancientwarfarestructure:block/structure/coin_stack_silver_16"
+    },
+    "size=24": {
+      "model": "ancientwarfarestructure:block/structure/coin_stack_silver_24"
+    },
+    "size=32": {
+      "model": "ancientwarfarestructure:block/structure/coin_stack_silver_32"
+    },
+    "size=40": {
+      "model": "ancientwarfarestructure:block/structure/coin_stack_silver_40"
+    },
+    "size=48": {
+      "model": "ancientwarfarestructure:block/structure/coin_stack_silver_48"
+    },
+    "size=56": {
+      "model": "ancientwarfarestructure:block/structure/coin_stack_silver_56"
+    },
+    "size=64": {
+      "model": "ancientwarfarestructure:block/structure/coin_stack_silver_64"
+    }
+  }
+}

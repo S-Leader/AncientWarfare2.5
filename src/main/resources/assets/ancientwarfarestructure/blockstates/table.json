@@ -1,0 +1,286 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "variant": "oak"
+      },
+      "apply": {
+        "model": "ancientwarfare:block/structure/table_top"
+      }
+    },
+    {
+      "when": {
+        "variant": "oak",
+        "leg_northeast": "true"
+      },
+      "apply": {
+        "model": "ancientwarfare:block/structure/table_leg"
+      }
+    },
+    {
+      "when": {
+        "variant": "oak",
+        "leg_southeast": "true"
+      },
+      "apply": {
+        "model": "ancientwarfare:block/structure/table_leg",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "variant": "oak",
+        "leg_southwest": "true"
+      },
+      "apply": {
+        "model": "ancientwarfare:block/structure/table_leg",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "variant": "oak",
+        "leg_northwest": "true"
+      },
+      "apply": {
+        "model": "ancientwarfare:block/structure/table_leg",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "variant": "spruce"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_top_spruce"
+      }
+    },
+    {
+      "when": {
+        "variant": "spruce",
+        "leg_northeast": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_spruce"
+      }
+    },
+    {
+      "when": {
+        "variant": "spruce",
+        "leg_southeast": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_spruce",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "variant": "spruce",
+        "leg_southwest": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_spruce",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "variant": "spruce",
+        "leg_northwest": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_spruce",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "variant": "birch"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_top_birch"
+      }
+    },
+    {
+      "when": {
+        "variant": "birch",
+        "leg_northeast": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_birch"
+      }
+    },
+    {
+      "when": {
+        "variant": "birch",
+        "leg_southeast": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_birch",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "variant": "birch",
+        "leg_southwest": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_birch",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "variant": "birch",
+        "leg_northwest": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_birch",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "variant": "jungle"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_top_jungle"
+      }
+    },
+    {
+      "when": {
+        "variant": "jungle",
+        "leg_northeast": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_jungle"
+      }
+    },
+    {
+      "when": {
+        "variant": "jungle",
+        "leg_southeast": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_jungle",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "variant": "jungle",
+        "leg_southwest": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_jungle",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "variant": "jungle",
+        "leg_northwest": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_jungle",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "variant": "acacia"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_top_acacia"
+      }
+    },
+    {
+      "when": {
+        "variant": "acacia",
+        "leg_northeast": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_acacia"
+      }
+    },
+    {
+      "when": {
+        "variant": "acacia",
+        "leg_southeast": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_acacia",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "variant": "acacia",
+        "leg_southwest": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_acacia",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "variant": "acacia",
+        "leg_northwest": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_acacia",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "variant": "dark_oak"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_top_dark_oak"
+      }
+    },
+    {
+      "when": {
+        "variant": "dark_oak",
+        "leg_northeast": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_dark_oak"
+      }
+    },
+    {
+      "when": {
+        "variant": "dark_oak",
+        "leg_southeast": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_dark_oak",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "variant": "dark_oak",
+        "leg_southwest": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_dark_oak",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "variant": "dark_oak",
+        "leg_northwest": "true"
+      },
+      "apply": {
+        "model": "ancientwarfarestructure:block/structure/table_leg_dark_oak",
+        "y": 270
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "ancientwarfare:block/structure/tribal_stool"
+    },
+    "facing=south": {
+      "model": "ancientwarfare:block/structure/tribal_stool",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "ancientwarfare:block/structure/tribal_stool",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "ancientwarfare:block/structure/tribal_stool",
+      "y": 90
+    }
+  }
+}

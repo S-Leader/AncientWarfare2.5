@@ -1,0 +1,46 @@
+{
+  "pools": [
+    {
+      "name": "coins",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "name": "ancientwarfare:entities/leader",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "name": "items",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:bone",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 0,
+                "max": 2,
+                "type": "minecraft:uniform"
+              }
+            },
+            {
+              "function": "minecraft:looting_enchant",
+              "count": 0,
+              "limit": 4
+            }
+          ]
+        },
+        {
+          "type": "minecraft:loot_table",
+          "name": "minecraft:entities/zombie",
+          "weight": 1
+        }
+      ]
+    }
+  ]
+}

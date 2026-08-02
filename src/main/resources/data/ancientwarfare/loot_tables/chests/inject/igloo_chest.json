@@ -1,0 +1,74 @@
+{
+  "pools": [
+    {
+      "name": "ancientwarfare_inject_pool",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfare:manual",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfare:wooden_hammer",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfare:engineering_station",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfarenpc:iron_spear",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfarenpc:iron_halberd",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfarenpc:iron_lance",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfarenpc:food_bundle",
+          "weight": 15,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 4,
+                "type": "minecraft:uniform"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfare:steel_ingot",
+          "weight": 15,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 4,
+                "type": "minecraft:uniform"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:empty",
+          "weight": 50
+        }
+      ]
+    }
+  ]
+}

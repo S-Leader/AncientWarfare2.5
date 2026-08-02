@@ -1,0 +1,12 @@
+{
+  "type": "ancientwarfarevehicle:multi_output_smelting",
+  "ingredient": {
+    "item": "ancientwarfarevehicle:ammo_iron_shot_25"
+  },
+  "result": {
+    "item": "minecraft:iron_nugget",
+    "count": 19
+  },
+  "experience": 0.1,
+  "cookingtime": 200
+}

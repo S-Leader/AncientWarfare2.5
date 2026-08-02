@@ -1,0 +1,163 @@
+package net.shadowmage.ancientwarfare.core.gui.elements;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.shadowmage.ancientwarfare.core.compat.client.ClientSoundHelper;
+import net.shadowmage.ancientwarfare.core.gui.GuiContainerBase.ActivationEvent;
+import net.shadowmage.ancientwarfare.core.gui.Listener;
+import net.shadowmage.ancientwarfare.core.interfaces.IScrollableCallback;
+import net.shadowmage.ancientwarfare.core.util.RenderTools;
+
+@OnlyIn(Dist.CLIENT)
+public class Scrollbar extends GuiElement {
+    private static final int MIN_HANDLE_HEIGHT = 10;
+    static final int borderSize = 1;//the border around the scroll bar and handle
+
+    int totalAreaSize;
+    int viewSize;
+    double viewPercent;
+
+    int handleTopMax;//the min that handleTop can move to
+    int handleTop;//the top of the handle, relative to renderY+borderSize
+    int handleWidth;
+    int handleHeight;
+
+    boolean pressed;//is the mouse pressed down while not over the handle?
+    boolean dragging;//is the mouse pressed down while over the handle?
+    int lastMouseY;
+
+    int topIndex;
+
+    /*
+     * callback interface for when the view port represented by this scrollbar should be updated
+     * called anytime the handle position is changed or the view-size changes
+     */
+    private IScrollableCallback parent;
+
+    public Scrollbar(int topLeftX, int topLeftY, int width, int height, IScrollableCallback parentCaller) {
+        super(topLeftX, topLeftY, width, height);
+
+        this.viewSize = height - borderSize * 2;
+
+        this.handleTop = 0;
+        this.handleHeight = viewSize;
+        this.handleWidth = width - borderSize * 2;
+
+        this.setAreaSize(height);
+
+        this.parent = parentCaller;
+        this.addNewListener(new Listener(Listener.MOUSE_MOVED) {
+            @Override
+            public boolean onEvent(GuiElement widget, ActivationEvent evt) {
+                if (dragging) {
+                    int dy = evt.my - lastMouseY;
+                    handleTop += dy;
+                    lastMouseY = evt.my;
+                    updateHandlePosition();
+                }
+                return true;
+            }
+        });
+
+        this.addNewListener(new Listener(Listener.MOUSE_DOWN) {
+            @Override
+            public boolean onEvent(GuiElement widget, ActivationEvent evt) {
+                dragging = false;
+                pressed = false;
+                lastMouseY = evt.my;
+                if (isMouseOverHandle(evt.mx, evt.my)) {
+                    dragging = true;
+                } else if (isMouseOverElement(evt.mx, evt.my)) {
+                    pressed = true;
+                }
+                return true;
+            }
+        });
+
+        this.addNewListener(new Listener(Listener.MOUSE_UP) {
+            @Override
+            public boolean onEvent(GuiElement widget, ActivationEvent evt) {
+                if (enabled && visible && pressed && isMouseOverElement(evt.mx, evt.my) && !isMouseOverHandle(evt.mx, evt.my)) {
+                    if (evt.my < renderY + borderSize + handleTop) {
+                        handleTop -= handleHeight;
+                    } else {
+                        handleTop += handleHeight;
+                    }
+                    ClientSoundHelper.playButtonClick();
+                    updateHandlePosition();
+                }
+                dragging = false;
+                pressed = false;
+                return true;
+            }
+        });
+
+        this.addNewListener(new Listener(Listener.MOUSE_WHEEL) {
+            @Override
+            public boolean onEvent(GuiElement widget, ActivationEvent evt) {
+                if (widget.isMouseOverElement(evt.mx, evt.my)) {
+                    handleMouseScroll(evt);
+                }
+                return true;
+            }
+        });
+    }
+
+    public void handleMouseScroll(ActivationEvent evt) {
+        handleTop -= (evt.mw / 10);
+        updateHandlePosition();
+    }
+
+    protected boolean isMouseOverHandle(int mouseX, int mouseY) {
+        return mouseX >= renderX + borderSize && mouseX < renderX + width - borderSize && mouseY >= renderY + borderSize + handleTop && mouseY < renderY + borderSize + handleTop + handleHeight;
+    }
+
+    /*
+     * should be called from the instantiating GUI to update the viewed set Height, in pixels.
+     * E.G. if you add 10 elements of 12 pixels high each with 0 padding, you would setAreaSize(120)
+     * the input size may be less than the height of the element, in which case it will view the full
+     * set
+     */
+    public void setAreaSize(int size) {
+        this.totalAreaSize = size;
+        this.viewPercent = (double) viewSize / totalAreaSize;
+        if (this.viewPercent > 1.f) {
+            this.viewPercent = 1.f;
+        }
+        this.updateHandlePosition();
+    }
+
+    @Override
+    public void render(int mouseX, int mouseY, float partialTick) {
+        if (visible) {
+            RenderSystem.setShaderTexture(0, widgetTexture1);
+            RenderTools.renderQuarteredTexture(256, 256, 80, 120, 40, 128, renderX, renderY, width, height);
+            RenderTools.renderQuarteredTexture(256, 256, 120, 120, 32, 128, renderX + borderSize, renderY + borderSize + handleTop, handleWidth, handleHeight);
+        }
+    }
+
+    protected void updateHandlePosition() {
+        this.handleHeight = Math.max(MIN_HANDLE_HEIGHT, (int) ((float) viewSize * viewPercent));
+        this.handleTopMax = viewSize - handleHeight;
+        if (this.handleTop > this.handleTopMax) {
+            this.handleTop = this.handleTopMax;
+        }
+        if (this.handleTop < 0) {
+            this.handleTop = 0;
+        }
+        if (this.parent != null) {
+            topIndex = (int) ((totalAreaSize - viewSize) * getPercentScrolled());
+            this.parent.onScrolled(topIndex);
+        }
+    }
+
+    private float getPercentScrolled() {
+        return (float) handleTop / handleTopMax;
+    }
+
+    public int getTopIndex() {
+        return topIndex;
+    }
+
+}

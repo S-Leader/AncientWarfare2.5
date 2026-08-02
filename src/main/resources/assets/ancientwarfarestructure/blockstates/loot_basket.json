@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "double=true,facing=north,visible=true": {
+      "model": "ancientwarfare:block/structure/double_loot_basket"
+    },
+    "double=true,facing=north,visible=false": {
+      "model": "ancientwarfare:block/structure/invisible_basket"
+    },
+    "double=true,facing=south,visible=true": {
+      "model": "ancientwarfare:block/structure/double_loot_basket",
+      "y": 180
+    },
+    "double=true,facing=south,visible=false": {
+      "model": "ancientwarfare:block/structure/invisible_basket",
+      "y": 180
+    },
+    "double=true,facing=west,visible=true": {
+      "model": "ancientwarfare:block/structure/double_loot_basket",
+      "y": 270
+    },
+    "double=true,facing=west,visible=false": {
+      "model": "ancientwarfare:block/structure/invisible_basket",
+      "y": 270
+    },
+    "double=true,facing=east,visible=true": {
+      "model": "ancientwarfare:block/structure/double_loot_basket",
+      "y": 90
+    },
+    "double=true,facing=east,visible=false": {
+      "model": "ancientwarfare:block/structure/invisible_basket",
+      "y": 90
+    },
+    "double=false,facing=north,visible=true": {
+      "model": "ancientwarfare:block/structure/loot_basket"
+    },
+    "double=false,facing=north,visible=false": {
+      "model": "ancientwarfare:block/structure/invisible_basket"
+    },
+    "double=false,facing=south,visible=true": {
+      "model": "ancientwarfare:block/structure/loot_basket",
+      "y": 180
+    },
+    "double=false,facing=south,visible=false": {
+      "model": "ancientwarfare:block/structure/invisible_basket",
+      "y": 180
+    },
+    "double=false,facing=west,visible=true": {
+      "model": "ancientwarfare:block/structure/loot_basket",
+      "y": 270
+    },
+    "double=false,facing=west,visible=false": {
+      "model": "ancientwarfare:block/structure/invisible_basket",
+      "y": 270
+    },
+    "double=false,facing=east,visible=true": {
+      "model": "ancientwarfare:block/structure/loot_basket",
+      "y": 90
+    },
+    "double=false,facing=east,visible=false": {
+      "model": "ancientwarfare:block/structure/invisible_basket",
+      "y": 90
+    }
+  }
+}

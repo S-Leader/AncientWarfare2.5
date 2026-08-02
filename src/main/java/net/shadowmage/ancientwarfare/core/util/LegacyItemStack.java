@@ -1,0 +1,66 @@
+package net.shadowmage.ancientwarfare.core.util;
+
+import com.mojang.serialization.Dynamic;
+import net.minecraft.SharedConstants;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.util.datafix.DataFixers;
+import net.minecraft.util.datafix.fixes.References;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
+
+import javax.annotation.Nullable;
+
+/**
+ * Preserves the old 1.12 metadata-based subtype value in ItemStack's legacy
+ * Damage NBT field. AW2 still reads these values through getDamageValue().
+ */
+public final class LegacyItemStack {
+    private static final int MINECRAFT_1_12_2_DATA_VERSION = 1343;
+
+    private LegacyItemStack() {
+    }
+
+    public static ItemStack of(ItemLike item, int count, int legacyMeta) {
+        ItemStack stack = new ItemStack(item, count);
+        if (legacyMeta >= 0) {
+            stack.setDamageValue(legacyMeta);
+        }
+        return stack;
+    }
+
+    /**
+     * Converts a registry name plus 1.12 metadata through Mojang's item data fixer.
+     */
+    public static ItemStack of(String legacyItemName, int count, int legacyMeta, @Nullable CompoundTag itemTag) {
+        if (legacyItemName != null && legacyItemName.startsWith("minecraft:")) {
+            CompoundTag oldStack = new CompoundTag();
+            oldStack.putString("id", legacyItemName);
+            oldStack.putByte("Count", (byte) count);
+            if (legacyMeta >= 0) {
+                oldStack.putShort("Damage", (short) legacyMeta);
+            }
+            if (itemTag != null) {
+                oldStack.put("tag", itemTag.copy());
+            }
+
+            Dynamic<Tag> fixed = DataFixers.getDataFixer().update(
+                    References.ITEM_STACK,
+                    new Dynamic<>(NbtOps.INSTANCE, oldStack),
+                    MINECRAFT_1_12_2_DATA_VERSION,
+                    SharedConstants.getCurrentVersion().getDataVersion().getVersion());
+            if (fixed.getValue() instanceof CompoundTag fixedStack) {
+                ItemStack converted = ItemStack.of(fixedStack);
+                if (!converted.isEmpty()) {
+                    converted.setCount(count);
+                    return converted;
+                }
+            }
+        }
+
+        ItemStack stack = of(RegistryTools.getItem(legacyItemName), count, legacyMeta);
+        stack.setTag(itemTag == null ? null : itemTag.copy());
+        return stack;
+    }
+}

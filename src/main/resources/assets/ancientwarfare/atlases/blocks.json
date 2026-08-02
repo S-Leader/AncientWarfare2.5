@@ -1,0 +1,28 @@
+{
+  "sources": [
+    { "type": "single", "resource": "ancientwarfare:model/automation/stirling_generator" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/hand_cranked_generator" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/waterwheel_generator" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/windmill_generator" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/windmill_blade" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/windmill_blade_cube" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/torque_shaft_heavy" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/torque_shaft_medium" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/torque_shaft_light" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/torque_junction_heavy" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/torque_junction_medium" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/torque_junction_light" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/torque_distributor_heavy" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/torque_distributor_medium" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/torque_distributor_light" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/flywheel_controller_heavy" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/flywheel_controller_medium" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/flywheel_controller_light" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/flywheel_small_heavy" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/flywheel_small_medium" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/flywheel_small_light" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/flywheel_large_heavy" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/flywheel_large_medium" },
+    { "type": "single", "resource": "ancientwarfare:model/automation/flywheel_large_light" }
+  ]
+}

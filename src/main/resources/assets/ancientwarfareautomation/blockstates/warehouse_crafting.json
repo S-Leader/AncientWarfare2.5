@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "": {
+            "model": "ancientwarfareautomation:block/warehouse_crafting"
+        }
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "variants": {
+        "facing=north": {
+            "model": "ancientwarfareautomation:block/mailbox"
+        },
+        "facing=south": {
+            "model": "ancientwarfareautomation:block/mailbox",
+            "y": 180
+        },
+        "facing=west": {
+            "model": "ancientwarfareautomation:block/mailbox",
+            "y": 270
+        },
+        "facing=east": {
+            "model": "ancientwarfareautomation:block/mailbox",
+            "y": 90
+        }
+    }
+}

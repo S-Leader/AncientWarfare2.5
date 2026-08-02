@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "ancientwarfarestructure:block/structure/structure_scanner_block"
+    },
+    "facing=south": {
+      "model": "ancientwarfarestructure:block/structure/structure_scanner_block",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "ancientwarfarestructure:block/structure/structure_scanner_block",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "ancientwarfarestructure:block/structure/structure_scanner_block",
+      "y": 90
+    },
+    "facing=up": {
+      "model": "ancientwarfarestructure:block/structure/structure_scanner_block_updown"
+    },
+    "facing=down": {
+      "model": "ancientwarfarestructure:block/structure/structure_scanner_block_updown"
+    }
+  }
+}

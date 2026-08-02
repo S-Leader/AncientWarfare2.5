@@ -1,0 +1,7 @@
+{
+  "parent": "ancientwarfare:block/structure/bench_support_two_side",
+  "textures": {
+    "0": "minecraft:block/birch_planks",
+    "particle": "minecraft:block/birch_planks"
+  }
+}

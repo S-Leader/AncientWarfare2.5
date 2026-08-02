@@ -1,0 +1,6 @@
+{
+    "parent": "ancientwarfareautomation:block/quarry",
+    "textures": {
+        "south": "ancientwarfare:blocks/automation/quarry_rear_inactive"
+    }
+}

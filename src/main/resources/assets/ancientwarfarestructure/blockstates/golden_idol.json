@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "bottom_part=true,facing=north": {
+      "model": "ancientwarfare:block/structure/golden_idol"
+    },
+    "bottom_part=true,facing=south": {
+      "model": "ancientwarfare:block/structure/golden_idol",
+      "y": 180
+    },
+    "bottom_part=true,facing=west": {
+      "model": "ancientwarfare:block/structure/golden_idol",
+      "y": 270
+    },
+    "bottom_part=true,facing=east": {
+      "model": "ancientwarfare:block/structure/golden_idol",
+      "y": 90
+    },
+    "bottom_part=false,facing=north": {
+      "model": "ancientwarfare:block/structure/golden_idol"
+    },
+    "bottom_part=false,facing=south": {
+      "model": "ancientwarfare:block/structure/golden_idol",
+      "y": 180
+    },
+    "bottom_part=false,facing=west": {
+      "model": "ancientwarfare:block/structure/golden_idol",
+      "y": 270
+    },
+    "bottom_part=false,facing=east": {
+      "model": "ancientwarfare:block/structure/golden_idol",
+      "y": 90
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "ancientwarfare:block/structure/bench_support_one_side",
+  "textures": {
+    "0": "minecraft:block/acacia_planks",
+    "particle": "minecraft:block/acacia_planks"
+  }
+}

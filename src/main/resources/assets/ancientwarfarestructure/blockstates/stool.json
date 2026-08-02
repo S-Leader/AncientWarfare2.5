@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "variant=oak": {
+      "model": "ancientwarfare:block/structure/stool"
+    },
+    "variant=spruce": {
+      "model": "ancientwarfarestructure:block/structure/stool_spruce"
+    },
+    "variant=birch": {
+      "model": "ancientwarfarestructure:block/structure/stool_birch"
+    },
+    "variant=jungle": {
+      "model": "ancientwarfarestructure:block/structure/stool_jungle"
+    },
+    "variant=acacia": {
+      "model": "ancientwarfarestructure:block/structure/stool_acacia"
+    },
+    "variant=dark_oak": {
+      "model": "ancientwarfarestructure:block/structure/stool_dark_oak"
+    }
+  }
+}

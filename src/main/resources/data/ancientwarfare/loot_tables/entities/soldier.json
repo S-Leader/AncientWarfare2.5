@@ -1,0 +1,30 @@
+{
+  "pools": [
+    {
+      "name": "soldier",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfarenpc:coin",
+          "entryName": "coin_copper",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 8,
+                "type": "minecraft:uniform"
+              }
+            },
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{metal:\"copper\"}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

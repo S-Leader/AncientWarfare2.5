@@ -1,0 +1,34 @@
+{
+    "variants": {
+        "active=true,facing=north": {
+            "model": "ancientwarfareautomation:block/tree_farm"
+        },
+        "active=true,facing=south": {
+            "model": "ancientwarfareautomation:block/tree_farm",
+            "y": 180
+        },
+        "active=true,facing=west": {
+            "model": "ancientwarfareautomation:block/tree_farm",
+            "y": 270
+        },
+        "active=true,facing=east": {
+            "model": "ancientwarfareautomation:block/tree_farm",
+            "y": 90
+        },
+        "active=false,facing=north": {
+            "model": "ancientwarfareautomation:block/tree_farm_inactive"
+        },
+        "active=false,facing=south": {
+            "model": "ancientwarfareautomation:block/tree_farm_inactive",
+            "y": 180
+        },
+        "active=false,facing=west": {
+            "model": "ancientwarfareautomation:block/tree_farm_inactive",
+            "y": 270
+        },
+        "active=false,facing=east": {
+            "model": "ancientwarfareautomation:block/tree_farm_inactive",
+            "y": 90
+        }
+    }
+}

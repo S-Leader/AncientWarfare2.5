@@ -1,0 +1,6 @@
+{
+    "parent":  "minecraft:item/generated",
+    "textures":  {
+                     "layer0":  "ancientwarfare:items/vehicle/catapult_stand_turret_4"
+                 }
+}

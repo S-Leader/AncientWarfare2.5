@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,visible=true": {
+      "model": "ancientwarfare:block/structure/tribal_chair",
+      "y": 180
+    },
+    "facing=north,visible=false": {
+      "model": "ancientwarfare:block/structure/tribal_chair",
+      "y": 180
+    },
+    "facing=south,visible=true": {
+      "model": "ancientwarfare:block/structure/tribal_chair"
+    },
+    "facing=south,visible=false": {
+      "model": "ancientwarfare:block/structure/tribal_chair"
+    },
+    "facing=west,visible=true": {
+      "model": "ancientwarfare:block/structure/tribal_chair",
+      "y": 90
+    },
+    "facing=west,visible=false": {
+      "model": "ancientwarfare:block/structure/tribal_chair",
+      "y": 90
+    },
+    "facing=east,visible=true": {
+      "model": "ancientwarfare:block/structure/tribal_chair",
+      "y": 270
+    },
+    "facing=east,visible=false": {
+      "model": "ancientwarfare:block/structure/tribal_chair",
+      "y": 270
+    }
+  }
+}

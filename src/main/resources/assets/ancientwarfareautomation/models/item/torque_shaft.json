@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": { "layer0": "ancientwarfare:model/automation/torque_shaft_light" }
+}

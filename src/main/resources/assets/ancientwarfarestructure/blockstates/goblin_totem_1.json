@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "ancientwarfarestructure:block/structure/goblin_totem_1"
+    },
+    "facing=south": {
+      "model": "ancientwarfarestructure:block/structure/goblin_totem_1",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "ancientwarfarestructure:block/structure/goblin_totem_1",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "ancientwarfarestructure:block/structure/goblin_totem_1",
+      "y": 90
+    }
+  }
+}

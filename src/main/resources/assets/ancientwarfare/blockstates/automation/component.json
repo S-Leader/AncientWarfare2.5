@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "variant=wooden_gear": { "model": "ancientwarfare:item/automation/component_wooden_gear" },
+    "variant=iron_gear": { "model": "ancientwarfare:item/automation/component_iron_gear" },
+    "variant=steel_gear": { "model": "ancientwarfare:item/automation/component_steel_gear" },
+    "variant=wooden_bearings": { "model": "ancientwarfare:item/automation/component_wooden_bearings" },
+    "variant=iron_bearings": { "model": "ancientwarfare:item/automation/component_iron_bearings" },
+    "variant=steel_bearings": { "model": "ancientwarfare:item/automation/component_steel_bearings" },
+    "variant=wooden_shaft": { "model": "ancientwarfare:item/automation/component_wooden_shaft" },
+    "variant=iron_shaft": { "model": "ancientwarfare:item/automation/component_iron_shaft" },
+    "variant=steel_shaft": { "model": "ancientwarfare:item/automation/component_steel_shaft" }
+  }
+}

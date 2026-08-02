@@ -1,0 +1,263 @@
+{
+    "pools": [
+        {
+            "name": "weapons",
+            "rolls": {
+                "min": 0,
+                "max": 1
+            },
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "ancientwarfarenpc:iron_shield",
+                    "weight": 2
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:bow",
+                    "weight": 5
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_sword",
+                    "weight": 2
+                },
+                {
+                    "type": "item",
+                    "name": "ancientwarfarenpc:iron_spear",
+                    "weight": 3
+                }
+            ]
+        },
+        {
+            "name": "ressources",
+            "rolls": {
+                "min": 1,
+                "max": 2
+            },
+            "bonus_rolls": {
+                "min": 1,
+                "max": 2
+            },
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "minecraft:sugar",
+                    "weight": 5,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:glowstone_dust",
+                    "weight": 3,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 2
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:spider_eye",
+                    "weight": 4,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:fermented_spider_eye",
+                    "weight": 2,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 2
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:speckled_melon",
+                    "weight": 4,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:rabbit_foot",
+                    "weight": 1,
+                    "quality": 2
+                }
+            ]
+        },
+        {
+            "name": "potions",
+            "rolls": {
+                "min": 1,
+                "max": 2
+            },
+            "bonus_rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "entryName": "water_bottle",
+                    "name": "minecraft:potion",
+                    "weight": 5,
+                    "functions": [
+                        {
+                            "function": "set_nbt",
+                            "tag": "{Potion:\"minecraft:water\"}"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "entryName": "thick_potion",
+                    "name": "minecraft:potion",
+                    "weight": 3,
+                    "functions": [
+                        {
+                            "function": "set_nbt",
+                            "tag": "{Potion:\"minecraft:thick\"}"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "entryName": "awkward_potion",
+                    "name": "minecraft:potion",
+                    "weight": 3,
+                    "functions": [
+                        {
+                            "function": "set_nbt",
+                            "tag": "{Potion:\"minecraft:awkward\"}"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "entryName": "mundane_potion",
+                    "name": "minecraft:potion",
+                    "weight": 2,
+                    "functions": [
+                        {
+                            "function": "set_nbt",
+                            "tag": "{Potion:\"minecraft:mundane\"}"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:experience_bottle",
+                    "weight": 3,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:glass_bottle",
+                    "weight": 3
+                },
+                {
+                    "type": "item",
+                    "entryName": "gnome_juice",
+                    "name": "minecraft:potion",
+                    "weight": 1,
+                    "quality": 2,
+                    "functions": [
+                        {
+                            "function": "set_nbt",
+                            "tag": "{CustomPotionEffects:[{Duration:4800,Id:26b,Amplifier:1b},{Duration:600,Id:27b,Amplifier:0b}],CustomPotionColor:65459,HideFlags:32,display:{Lore:[\"Suspicious\"],Name:\"Gnome Juice\"}}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "food",
+            "rolls": {
+                "min": 1,
+                "max": 2
+            },
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "minecraft:red_mushroom",
+                    "weight": 5,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:brown_mushroom",
+                    "weight": 5,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:bread",
+                    "weight": 5,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

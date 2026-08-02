@@ -1,0 +1,483 @@
+--- /mnt/data/aw_port/src/main/java/net/shadowmage/ancientwarfare/core/compat/ftb/FTBCompat.java	2026-07-22 04:53:38.000000000 +0000
++++ src/main/java/net/shadowmage/ancientwarfare/core/compat/ftb/FTBCompat.java	2026-07-22 05:27:13.871920825 +0000
+@@ -1,16 +1,18 @@
+ package net.shadowmage.ancientwarfare.core.compat.ftb;
+ 
++import dev.ftb.mods.ftbteams.api.FTBTeamsAPI;
+ import net.shadowmage.ancientwarfare.core.compat.ICompat;
+ import net.shadowmage.ancientwarfare.core.owner.TeamViewerRegistry;
+ 
+-public class FTBCompat implements ICompat {
+-	@Override
+-	public String getModId() {
+-		return "ftblib";
+-	}
++/** Forge 1.20.1 FTB Teams compatibility bootstrap. */
++public final class FTBCompat implements ICompat {
++    @Override
++    public String getModId() {
++        return FTBTeamsAPI.MOD_ID;
++    }
+ 
+-	@Override
+-	public void init() {
+-		TeamViewerRegistry.registerTeamViewer(new FTBTeamViewer());
+-	}
++    @Override
++    public void init() {
++        TeamViewerRegistry.registerTeamViewer(new FTBTeamViewer());
++    }
+ }
+--- /mnt/data/aw_port/src/main/java/net/shadowmage/ancientwarfare/core/compat/ftb/FTBTeamViewer.java	2026-07-22 04:53:38.000000000 +0000
++++ src/main/java/net/shadowmage/ancientwarfare/core/compat/ftb/FTBTeamViewer.java	2026-07-22 05:27:13.875920825 +0000
+@@ -1,71 +1,67 @@
+ package net.shadowmage.ancientwarfare.core.compat.ftb;
+ 
+-import com.feed_the_beast.ftblib.lib.data.ForgePlayer;
+-import com.feed_the_beast.ftblib.lib.data.ForgeTeam;
+-import com.feed_the_beast.ftblib.lib.data.Universe;
+-import net.minecraft.util.ResourceLocation;
+-import net.minecraft.world.World;
++import dev.ftb.mods.ftbteams.api.FTBTeamsAPI;
++import dev.ftb.mods.ftbteams.api.Team;
++import dev.ftb.mods.ftbteams.api.TeamManager;
++import net.minecraft.resources.ResourceLocation;
++import net.minecraft.world.level.Level;
+ import net.shadowmage.ancientwarfare.core.owner.ITeamViewer;
+ 
+ import javax.annotation.Nullable;
+ import java.util.Collections;
+ import java.util.Set;
+ import java.util.UUID;
+-import java.util.function.BiPredicate;
+ 
+-public class FTBTeamViewer implements ITeamViewer {
+-	private static final String FTBLIB_MOD_ID = "ftblib";
+-
+-	@Override
+-	public boolean areTeamMates(World world, UUID player1, UUID player2, String playerName1, String playerName2) {
+-		return areInTheSameTeam(player1, player2);
+-	}
+-
+-	private boolean areInTheSameTeam(UUID playerUUID1, UUID playerUUID2) {
+-		return checkFTBPlayers(playerUUID1, playerUUID2, (player1, player2) -> player1.team != null && player1.team.isMember(player2));
+-	}
+-
+-	private boolean checkFTBPlayers(UUID playerUUID1, @Nullable UUID playerUUID2, BiPredicate<ForgePlayer, ForgePlayer> playerCheck) {
+-		if (!Universe.loaded()) {
+-			return false;
+-		}
+-
+-		Universe uni = Universe.get();
+-		ForgePlayer player1 = uni.getPlayer(playerUUID1);
+-		ForgePlayer player2 = uni.getPlayer(playerUUID2);
+-
+-		return player1 != null && player2 != null && playerCheck.test(player1, player2);
+-	}
+-
+-	@Override
+-	public boolean areFriendly(World world, UUID playerUUID1, @Nullable UUID playerUUID2, String playerName1, String playerName2) {
+-		return checkFTBPlayers(playerUUID1, playerUUID2, (player1, player2) -> player1.team != null && player1.team.isAlly(player2));
+-	}
+-
+-	@Override
+-	public Set<ResourceLocation> getPlayerTeamNames(World world, UUID playerId, String playerName) {
+-		if (!Universe.loaded()) {
+-			return Collections.emptySet();
+-		}
+-
+-		Universe uni = Universe.get();
+-
+-		ForgePlayer player = uni.getPlayer(playerId);
+-		if (player == null) {
+-			return Collections.emptySet();
+-		}
+-
+-		ForgeTeam team = player.team;
+-		return team == null ? Collections.emptySet() : Collections.singleton(new ResourceLocation(FTBLIB_MOD_ID, team.getId()));
+-	}
+-
+-	@Override
+-	public boolean needsRegularMembershipRecheck() {
+-		return false;
+-	}
+-
+-	@Override
+-	public String getName() {
+-		return FTBLIB_MOD_ID;
+-	}
++/**
++ * FTB Teams 1.20.1 implementation of Ancient Warfare's neutral team API.
++ *
++ * <p>FTB Lib's old Universe/ForgePlayer/ForgeTeam API no longer exists. Team
++ * membership is now queried through {@link FTBTeamsAPI} and {@link TeamManager}.</p>
++ */
++public final class FTBTeamViewer implements ITeamViewer {
++    @Override
++    public boolean areTeamMates(Level level, UUID player1, UUID player2, String playerName1, String playerName2) {
++        if (player1.equals(player2)) {
++            return true;
++        }
++        TeamManager manager = getManager();
++        return manager != null && manager.arePlayersInSameTeam(player1, player2);
++    }
++
++    @Override
++    public boolean areFriendly(Level level, UUID player1, @Nullable UUID player2, String playerName1, String playerName2) {
++        // FTB Teams 1.20.1 has party/team membership but no equivalent of the
++        // removed ForgeTeam#isAlly API. Same-team membership is the exact safe
++        // replacement; scoreboard alliances remain covered by ScoreboardTeamViewer.
++        return player2 != null && areTeamMates(level, player1, player2, playerName1, playerName2);
++    }
++
++    @Override
++    public Set<ResourceLocation> getPlayerTeamNames(Level level, UUID playerId, String playerName) {
++        TeamManager manager = getManager();
++        if (manager == null) {
++            return Collections.emptySet();
++        }
++
++        return manager.getTeamForPlayerID(playerId)
++                .map(Team::getTeamId)
++                .map(id -> new ResourceLocation(FTBTeamsAPI.MOD_ID, id.toString()))
++                .map(Collections::singleton)
++                .orElseGet(Collections::emptySet);
++    }
++
++    private static @Nullable TeamManager getManager() {
++        FTBTeamsAPI.API api = FTBTeamsAPI.api();
++        return api.isManagerLoaded() ? api.getManager() : null;
++    }
++
++    @Override
++    public boolean needsRegularMembershipRecheck() {
++        return false;
++    }
++
++    @Override
++    public String getName() {
++        return FTBTeamsAPI.MOD_ID;
++    }
+ }
+--- /mnt/data/aw_port/src/main/java/net/shadowmage/ancientwarfare/core/owner/ScoreboardTeamViewer.java	2026-07-22 04:53:39.000000000 +0000
++++ src/main/java/net/shadowmage/ancientwarfare/core/owner/ScoreboardTeamViewer.java	2026-07-22 05:27:13.875920825 +0000
+@@ -1,39 +1,49 @@
+ package net.shadowmage.ancientwarfare.core.owner;
+ 
+-import net.minecraft.scoreboard.ScorePlayerTeam;
+-import net.minecraft.scoreboard.Team;
+-import net.minecraft.util.ResourceLocation;
+-import net.minecraft.world.World;
++import net.minecraft.resources.ResourceLocation;
++import net.minecraft.world.level.Level;
++import net.minecraft.world.scores.PlayerTeam;
+ 
+ import javax.annotation.Nullable;
+ import java.util.Collections;
++import java.util.Locale;
+ import java.util.Set;
+ import java.util.UUID;
+ 
+-public class ScoreboardTeamViewer implements ITeamViewer {
+-	@Override
+-	public boolean areTeamMates(World world, UUID player1, UUID player2, String playerName1, String playerName2) {
+-		return player1.equals(player2) || isSameTeam(world, playerName1, playerName2);
+-	}
+-
+-	@Override
+-	public boolean areFriendly(World world, UUID player1, @Nullable UUID player2, String playerName1, String playerName2) {
+-		return playerName1.equals(playerName2) || player1.equals(player2) || isSameTeam(world, playerName1, playerName2);
+-	}
+-
+-	@Override
+-	public Set<ResourceLocation> getPlayerTeamNames(World world, UUID playerId, String playerName) {
+-		ScorePlayerTeam team = world.getScoreboard().getPlayersTeam(playerName);
+-		return team == null ? Collections.emptySet() : Collections.singleton(new ResourceLocation(team.getName()));
+-	}
+-
+-	@Override
+-	public String getName() {
+-		return "minecraft";
+-	}
+-
+-	private boolean isSameTeam(World world, String playerName1, String playerName2) {
+-		Team team = world.getScoreboard().getPlayersTeam(playerName1);
+-		return team != null && team.isSameTeam(world.getScoreboard().getPlayersTeam(playerName2));
+-	}
++/** Vanilla scoreboard-team adapter for 1.20.1. */
++public final class ScoreboardTeamViewer implements ITeamViewer {
++    @Override
++    public boolean areTeamMates(Level level, UUID player1, UUID player2, String playerName1, String playerName2) {
++        return player1.equals(player2) || isSameTeam(level, playerName1, playerName2);
++    }
++
++    @Override
++    public boolean areFriendly(Level level, UUID player1, @Nullable UUID player2, String playerName1, String playerName2) {
++        return playerName1.equals(playerName2)
++                || player2 != null && player1.equals(player2)
++                || isSameTeam(level, playerName1, playerName2);
++    }
++
++    @Override
++    public Set<ResourceLocation> getPlayerTeamNames(Level level, UUID playerId, String playerName) {
++        PlayerTeam team = level.getScoreboard().getPlayersTeam(playerName);
++        return team == null
++                ? Collections.emptySet()
++                : Collections.singleton(new ResourceLocation("minecraft", toPath(team.getName())));
++    }
++
++    @Override
++    public String getName() {
++        return "minecraft";
++    }
++
++    private static boolean isSameTeam(Level level, String playerName1, String playerName2) {
++        PlayerTeam first = level.getScoreboard().getPlayersTeam(playerName1);
++        return first != null && first == level.getScoreboard().getPlayersTeam(playerName2);
++    }
++
++    private static String toPath(String name) {
++        String path = name.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9/._-]", "_");
++        return path.isEmpty() ? "unnamed_team" : path;
++    }
+ }
+--- /mnt/data/aw_port/src/main/java/net/shadowmage/ancientwarfare/npc/compat/ebwizardry/FactionAllyDesignation.java	2026-07-22 04:53:39.000000000 +0000
++++ src/main/java/net/shadowmage/ancientwarfare/npc/compat/ebwizardry/FactionAllyDesignation.java	2026-07-22 05:27:13.879920825 +0000
+@@ -1,23 +1,26 @@
+ package net.shadowmage.ancientwarfare.npc.compat.ebwizardry;
+ 
+-import electroblob.wizardry.util.IElementalDamage;
++import net.minecraft.world.entity.Entity;
+ import net.minecraftforge.event.entity.living.LivingAttackEvent;
+-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
++import net.minecraftforge.eventbus.api.SubscribeEvent;
+ import net.shadowmage.ancientwarfare.npc.entity.faction.NpcFaction;
+ 
++/** Prevents Redux spell damage between Ancient Warfare NPCs of one faction. */
+ public final class FactionAllyDesignation {
++    private FactionAllyDesignation() {
++    }
+ 
+-	// Prevents any magic damage to friendly NPCs
+-	@SubscribeEvent
+-	public static void onLivingAttackEvent(LivingAttackEvent event) {
+-		if (event.getSource() instanceof IElementalDamage && event.getSource().getTrueSource() instanceof NpcFaction) {
+-			if (event.getEntity() instanceof NpcFaction) {
+-				NpcFaction caster = (NpcFaction) event.getSource().getTrueSource();
+-				NpcFaction target = (NpcFaction) event.getEntity();
+-				if (target.getFaction().equals(caster.getFaction())) {
+-					event.setCanceled(true);
+-				}
+-			}
+-		}
+-	}
++    @SubscribeEvent
++    public static void onLivingAttack(LivingAttackEvent event) {
++        if (!(event.getEntity() instanceof NpcFaction target)
++                || !WizardryReduxBridge.isWizardryDamage(event.getSource())) {
++            return;
++        }
++
++        Entity sourceEntity = event.getSource().getEntity();
++        if (sourceEntity instanceof NpcFaction caster
++                && target.getFaction().equals(caster.getFaction())) {
++            event.setCanceled(true);
++        }
++    }
+ }
+--- /mnt/data/aw_port/src/main/java/net/shadowmage/ancientwarfare/npc/compat/ebwizardry/EBWizardryCompat.java	2026-07-22 04:53:39.000000000 +0000
++++ src/main/java/net/shadowmage/ancientwarfare/npc/compat/ebwizardry/EBWizardryCompat.java	2026-07-22 05:27:13.879920825 +0000
+@@ -3,18 +3,15 @@
+ import net.minecraftforge.common.MinecraftForge;
+ import net.shadowmage.ancientwarfare.core.compat.ICompat;
+ 
+-import java.util.function.Supplier;
++/** Electroblob's Wizardry Redux compatibility bootstrap for Forge 1.20.1. */
++public final class EBWizardryCompat implements ICompat {
++    @Override
++    public String getModId() {
++        return WizardryReduxBridge.MOD_ID;
++    }
+ 
+-public class EBWizardryCompat implements ICompat {
+-
+-	@Override
+-	public String getModId() {
+-		return "ebwizardry";
+-	}
+-
+-	@Override
+-	public void init() {
+-		Supplier<Runnable> init = () -> () -> MinecraftForge.EVENT_BUS.register(FactionAllyDesignation.class);
+-		init.get().run();
+-	}
++    @Override
++    public void init() {
++        MinecraftForge.EVENT_BUS.register(FactionAllyDesignation.class);
++    }
+ }
+--- /dev/null	2026-07-22 04:56:56.267941290 +0000
++++ src/main/java/net/shadowmage/ancientwarfare/npc/compat/ebwizardry/WizardryReduxBridge.java	2026-07-22 05:27:13.875920825 +0000
+@@ -0,0 +1,47 @@
++package net.shadowmage.ancientwarfare.npc.compat.ebwizardry;
++
++import net.minecraft.resources.ResourceLocation;
++import net.minecraft.world.damagesource.DamageSource;
++import net.minecraft.world.entity.Entity;
++import net.minecraftforge.fml.ModList;
++
++import java.util.Optional;
++
++/**
++ * Narrow compatibility boundary for Electroblob's Wizardry Redux on 1.20.1.
++ *
++ * <p>Redux retains the {@code ebwizardry} namespace, but its Java API was
++ * rewritten under {@code com.binaris.wizardry}. Keeping all Redux-specific
++ * access behind this class prevents Alpha API changes from spreading through
++ * Ancient Warfare's NPC implementation.</p>
++ */
++public final class WizardryReduxBridge {
++    public static final String MOD_ID = "ebwizardry";
++    public static final String JAVA_PACKAGE_PREFIX = "com.binaris.wizardry";
++
++    private WizardryReduxBridge() {
++    }
++
++    public static boolean isLoaded() {
++        return ModList.get().isLoaded(MOD_ID);
++    }
++
++    /** Returns true for a Redux damage type or a Redux-owned direct entity. */
++    public static boolean isWizardryDamage(DamageSource source) {
++        Optional<ResourceLocation> damageType = source.typeHolder().unwrapKey().map(key -> key.location());
++        if (damageType.map(id -> MOD_ID.equals(id.getNamespace())).orElse(false)) {
++            return true;
++        }
++
++        Entity direct = source.getDirectEntity();
++        return direct != null && direct.getClass().getName().startsWith(JAVA_PACKAGE_PREFIX);
++    }
++
++    /**
++     * Stable serialized spell key used by the port. Actual casting is bound in
++     * the Redux-specific spell adapter after selecting the exact Redux Alpha jar.
++     */
++    public static ResourceLocation spellId(String serializedId) {
++        return ResourceLocation.tryParse(serializedId);
++    }
++}
+--- /dev/null	2026-07-22 04:56:56.267941290 +0000
++++ src/main/resources/META-INF/mods.toml	2026-07-22 05:37:24.483913950 +0000
+@@ -0,0 +1,103 @@
++modLoader="javafml"
++loaderVersion="[47.2.30,)"
++license="All Rights Reserved"
++
++[[mods]]
++modId="ancientwarfare"
++version="${file.jarVersion}"
++displayName="Ancient Warfare Core"
++authors="shadowmage45, P3pp3rF1y"
++description='''
++Ancient Warfare core module, ported to Minecraft 1.20.1 Forge.
++'''
++
++[[mods]]
++modId="ancientwarfareautomation"
++version="${file.jarVersion}"
++displayName="Ancient Warfare Automation"
++authors="shadowmage45, P3pp3rF1y"
++description="Ancient Warfare automation module."
++
++[[mods]]
++modId="ancientwarfarenpc"
++version="${file.jarVersion}"
++displayName="Ancient Warfare NPCs"
++authors="shadowmage45, P3pp3rF1y"
++description="Ancient Warfare NPC module."
++
++[[mods]]
++modId="ancientwarfarestructure"
++version="${file.jarVersion}"
++displayName="Ancient Warfare Structures"
++authors="shadowmage45, P3pp3rF1y"
++description="Ancient Warfare structures module."
++
++[[mods]]
++modId="ancientwarfarevehicle"
++version="${file.jarVersion}"
++displayName="Ancient Warfare Vehicles"
++authors="shadowmage45, P3pp3rF1y"
++description="Ancient Warfare vehicles module."
++
++[[dependencies.ancientwarfare]]
++modId="forge"
++mandatory=true
++versionRange="[47.2.30,)"
++ordering="NONE"
++side="BOTH"
++
++[[dependencies.ancientwarfare]]
++modId="minecraft"
++mandatory=true
++versionRange="[1.20.1,1.20.2)"
++ordering="NONE"
++side="BOTH"
++
++[[dependencies.ancientwarfare]]
++modId="codechickenlib"
++mandatory=true
++versionRange="[4,)"
++ordering="AFTER"
++side="BOTH"
++
++[[dependencies.ancientwarfare]]
++modId="ftbteams"
++mandatory=false
++versionRange="[2001,)"
++ordering="AFTER"
++side="BOTH"
++
++[[dependencies.ancientwarfareautomation]]
++modId="ancientwarfare"
++mandatory=true
++versionRange="[0,)"
++ordering="AFTER"
++side="BOTH"
++
++[[dependencies.ancientwarfarenpc]]
++modId="ancientwarfare"
++mandatory=true
++versionRange="[0,)"
++ordering="AFTER"
++side="BOTH"
++
++[[dependencies.ancientwarfarenpc]]
++modId="ebwizardry"
++mandatory=false
++versionRange="[0,)"
++ordering="AFTER"
++side="BOTH"
++
++[[dependencies.ancientwarfarestructure]]
++modId="ancientwarfare"
++mandatory=true
++versionRange="[0,)"
++ordering="AFTER"
++side="BOTH"
++
++[[dependencies.ancientwarfarevehicle]]
++modId="ancientwarfare"
++mandatory=true
++versionRange="[0,)"
++ordering="AFTER"
++side="BOTH"
+--- /dev/null	2026-07-22 04:56:56.267941290 +0000
++++ src/main/resources/pack.mcmeta	2026-07-22 05:29:04.047919585 +0000
+@@ -0,0 +1,6 @@
++{
++  "pack": {
++    "pack_format": 15,
++    "description": "Ancient Warfare 1.20.1 resources"
++  }
++}

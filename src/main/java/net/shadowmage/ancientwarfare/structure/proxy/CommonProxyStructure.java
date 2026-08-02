@@ -1,0 +1,49 @@
+package net.shadowmage.ancientwarfare.structure.proxy;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.player.Player;
+import net.shadowmage.ancientwarfare.core.proxy.CommonProxyBase;
+
+import java.util.Optional;
+
+public class CommonProxyStructure extends CommonProxyBase {
+    public void clearTemplatePreviewCache() {
+        //noop here, overriden in the client proxy
+    }
+
+    public void resetSoundAt(BlockPos pos) {
+        //noop here, overriden in the client proxy
+    }
+
+    public void setSoundAt(BlockPos pos, SoundEvent currentTune, float volume) {
+        //noop here, overriden in the client proxy
+    }
+
+    public void stopSoundAt(BlockPos pos) {
+        //noop here, overriden in the client proxy
+    }
+
+    @SuppressWarnings("squid:S1172") // used in client proxy
+    public boolean hasSoundAt(BlockPos pos) {
+        return false;
+    }
+
+    @SuppressWarnings("squid:S1172") // used in client proxy
+    public boolean isSoundPlayingAt(BlockPos pos) {
+        return false;
+    }
+
+    public void playSoundAt(BlockPos pos) {
+        //noop here, overriden in the client proxy
+    }
+
+    @SuppressWarnings("squid:S1172") // used in client proxy
+    public double getClientPlayerDistanceTo(BlockPos pos) {
+        return 0;
+    }
+
+    public Optional<Player> getPlayer() {
+        return Optional.empty();
+    }
+}

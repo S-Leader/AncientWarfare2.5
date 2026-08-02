@@ -1,0 +1,41 @@
+package net.shadowmage.ancientwarfare.automation.render;
+
+import codechicken.lib.render.CCModel;
+import codechicken.lib.vec.Rotation;
+import codechicken.lib.vec.Vector3;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.shadowmage.ancientwarfare.automation.tile.torque.TileWaterwheelGenerator;
+import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
+import net.shadowmage.ancientwarfare.core.render.model.LegacyModelState;
+
+import javax.annotation.Nullable;
+import java.util.Collection;
+
+public class WaterwheelGeneratorRenderer extends BaseTorqueRenderer<TileWaterwheelGenerator> {
+
+    public static final ModelResourceLocation MODEL_LOCATION = new ModelResourceLocation(new ResourceLocation(AncientWarfareCore.MOD_ID + ":automation/waterwheel_generator"), "normal");
+    public static final WaterwheelGeneratorRenderer INSTANCE = new WaterwheelGeneratorRenderer();
+
+    private final Collection<CCModel> waterwheel;
+    private final Collection<CCModel> outputGear;
+
+    private WaterwheelGeneratorRenderer() {
+        super("automation/waterwheel_generator.obj");
+
+        waterwheel = removeGroups(s -> s.startsWith("waterwheelBase.waterwheelSpindle."));
+        outputGear = removeGroups(s -> s.startsWith("base.outputGear."));
+    }
+
+    @Override
+    protected void transformMovingParts(Collection<CCModel> transformedGroups, Direction frontFacing, float[] rotations, @Nullable LegacyModelState state) {
+        float wheelR = rotations[frontFacing.getOpposite().get3DDataValue()];
+        float outR = rotations[frontFacing.get3DDataValue()];
+        transformedGroups.addAll(rotateModels(outputGear, frontFacing, new Rotation(outR, 0, 0, 1).at(new Vector3(8d / 16d, 8d / 16d, 8d / 16d))));
+        // The wheel is a physical part of the generator and must be rendered even
+        // before a valid water setup exists. VALID_SETUP controls whether the tile
+        // advances wheelR; it must not remove the model entirely.
+        transformedGroups.addAll(rotateModels(waterwheel, frontFacing, new Rotation(wheelR, 0, 0, 1).at(new Vector3(8d / 16d, 8d / 16d, 16d / 16d))));
+    }
+}

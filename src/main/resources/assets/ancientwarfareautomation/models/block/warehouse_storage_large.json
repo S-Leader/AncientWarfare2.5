@@ -1,0 +1,9 @@
+{
+    "parent": "minecraft:block/cube_bottom_top",
+    "textures": {
+        "particle": "ancientwarfare:blocks/automation/warehouse_storage_large_side",
+        "bottom": "ancientwarfare:blocks/automation/warehouse_storage_large_bottom",
+        "top": "ancientwarfare:blocks/automation/warehouse_storage_large_top",
+        "side": "ancientwarfare:blocks/automation/warehouse_storage_large_side"
+    }
+}

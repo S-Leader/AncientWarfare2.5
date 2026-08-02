@@ -1,0 +1,34 @@
+{
+    "variants": {
+        "active=true,facing=north": {
+            "model": "ancientwarfareautomation:block/quarry"
+        },
+        "active=true,facing=south": {
+            "model": "ancientwarfareautomation:block/quarry",
+            "y": 180
+        },
+        "active=true,facing=west": {
+            "model": "ancientwarfareautomation:block/quarry",
+            "y": 270
+        },
+        "active=true,facing=east": {
+            "model": "ancientwarfareautomation:block/quarry",
+            "y": 90
+        },
+        "active=false,facing=north": {
+            "model": "ancientwarfareautomation:block/quarry_inactive"
+        },
+        "active=false,facing=south": {
+            "model": "ancientwarfareautomation:block/quarry_inactive",
+            "y": 180
+        },
+        "active=false,facing=west": {
+            "model": "ancientwarfareautomation:block/quarry_inactive",
+            "y": 270
+        },
+        "active=false,facing=east": {
+            "model": "ancientwarfareautomation:block/quarry_inactive",
+            "y": 90
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "parent": "minecraft:block/cube",
+    "textures": {
+        "particle": "ancientwarfare:blocks/automation/fruit_farm_front",
+        "down": "ancientwarfare:blocks/automation/fruit_farm_bottom",
+        "up": "ancientwarfare:blocks/automation/fruit_farm_top",
+        "north": "ancientwarfare:blocks/automation/fruit_farm_front",
+        "east": "ancientwarfare:blocks/automation/fruit_farm_right",
+        "south": "ancientwarfare:blocks/automation/fruit_farm_rear",
+        "west": "ancientwarfare:blocks/automation/fruit_farm_left"
+    }
+}

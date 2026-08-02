@@ -1,0 +1,86 @@
+category,file,occurrences
+Forge 1.12 lifecycle,src/main/java/net/shadowmage/ancientwarfare/automation/AncientWarfareAutomation.java,3
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/automation/AncientWarfareAutomation.java,3
+Forge 1.12 proxy,src/main/java/net/shadowmage/ancientwarfare/automation/AncientWarfareAutomation.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/block/BlockFlywheelController.java,5
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/block/BlockFlywheelStorage.java,5
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/block/BlockHandCrankedGenerator.java,4
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/block/BlockStirlingGenerator.java,4
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/block/BlockTorqueBase.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/block/BlockTorqueDistributor.java,5
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/block/BlockTorqueJunction.java,5
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/block/BlockTorqueTransportShaft.java,5
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/block/BlockWaterwheelGenerator.java,5
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/block/BlockWindmillBlade.java,5
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/block/BlockWindmillGenerator.java,4
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/automation/init/AWAutomationBlocks.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/automation/init/AWAutomationItems.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/render/AnimatedBlockRenderer.java,5
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/render/BaseAnimationRenderer.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/render/BaseTorqueRenderer.java,2
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/render/FlywheelControllerRenderer.java,3
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/render/FlywheelStorageRenderer.java,14
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/render/HandCrankedGeneratorRenderer.java,3
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/render/ITESRRenderer.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/render/StirlingGeneratorRenderer.java,4
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/render/TorqueDistributorRenderer.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/render/TorqueJunctionRenderer.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/render/TorqueShaftRenderer.java,5
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/render/TorqueTieredRenderer.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/render/TorqueTransportSidedRenderer.java,5
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/render/WaterwheelGeneratorRenderer.java,3
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/render/WindmillBladeRenderer.java,12
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/automation/render/WindmillGeneratorRenderer.java,3
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/core/AncientWarfareCore.java,1
+Forge 1.12 lifecycle,src/main/java/net/shadowmage/ancientwarfare/core/AncientWarfareCore.java,4
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/core/AncientWarfareCore.java,3
+Forge 1.12 proxy,src/main/java/net/shadowmage/ancientwarfare/core/AncientWarfareCore.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/core/crafting/AWCraftingManager.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/core/init/AWCoreBlocks.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/core/init/AWCoreItems.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/core/init/AWCoreLoot.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/core/registry/RegistryLoader.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/core/render/BaseBakery.java,11
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/core/render/BlockStateKeyGenerator.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/core/render/RotatableBlockRenderer.java,3
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/core/util/RayTraceUtils.java,1
+Forge 1.12 lifecycle,src/main/java/net/shadowmage/ancientwarfare/npc/AncientWarfareNPC.java,4
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/npc/AncientWarfareNPC.java,3
+Forge 1.12 proxy,src/main/java/net/shadowmage/ancientwarfare/npc/AncientWarfareNPC.java,1
+Wizardry 1.12 API,src/main/java/net/shadowmage/ancientwarfare/npc/compat/ebwizardry/ai/EntityAIAttackSpellImproved.java,9
+Wizardry 1.12 API,src/main/java/net/shadowmage/ancientwarfare/npc/container/ContainerNpcFactionSpellcasterWizardry.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/npc/crafting/AWNpcCrafting.java,1
+Wizardry 1.12 API,src/main/java/net/shadowmage/ancientwarfare/npc/entity/faction/NpcFactionSpellcasterWizardry.java,7
+Wizardry 1.12 API,src/main/java/net/shadowmage/ancientwarfare/npc/gui/GuiNpcFactionSpellcasterWizardry.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/npc/init/AWNPCBlocks.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/npc/init/AWNPCEntities.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/npc/init/AWNPCItems.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/npc/init/AWNPCSounds.java,1
+Forge 1.12 lifecycle,src/main/java/net/shadowmage/ancientwarfare/structure/AncientWarfareStructure.java,5
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/structure/AncientWarfareStructure.java,2
+Forge 1.12 proxy,src/main/java/net/shadowmage/ancientwarfare/structure/AncientWarfareStructure.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/structure/block/BlockAdvancedLootChest.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/structure/block/BlockDecorativeFlag.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/structure/block/BlockGateProxy.java,2
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/structure/block/BlockProtectionFlag.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/structure/block/BlockSoundBlock.java,7
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/structure/block/BlockStoneCoffin.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/structure/block/BlockWoodenCoffin.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/structure/init/AWStructureBlocks.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/structure/init/AWStructureItems.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/structure/init/AWStructureSounds.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/structure/proxy/ClientProxyStructure.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/structure/render/ParticleOnlyModel.java,3
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/structure/render/ProtectionFlagRenderer.java,4
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/structure/render/RenderItemAdvancedLootChest.java,3
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/structure/render/SoundBlockRenderer.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/structure/render/StoneCoffinRenderer.java,3
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/structure/render/WoodenCoffinRenderer.java,3
+Forge 1.12 lifecycle,src/main/java/net/shadowmage/ancientwarfare/vehicle/AncientWarfareVehicles.java,2
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/vehicle/AncientWarfareVehicles.java,3
+Forge 1.12 proxy,src/main/java/net/shadowmage/ancientwarfare/vehicle/AncientWarfareVehicles.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/vehicle/config/AWVehicleStatics.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/vehicle/init/AWVehicleItems.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/vehicle/init/AWVehicleSounds.java,1
+CodeChickenLib,src/main/java/net/shadowmage/ancientwarfare/vehicle/input/VehicleInputHandler.java,1
+Forge 1.12 annotation,src/main/java/net/shadowmage/ancientwarfare/vehicle/registry/SmeltingRecipeRegistry.java,1

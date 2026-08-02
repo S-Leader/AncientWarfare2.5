@@ -1,0 +1,96 @@
+{
+  "pools": [
+    {
+      "name": "main",
+      "rolls": {
+        "min": 7,
+        "max": 10,
+        "type": "minecraft:uniform"
+      },
+      "entries": [
+        {
+          "type": "minecraft:tag",
+          "name": "minecraft:wool",
+          "weight": 5,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 2,
+                "type": "minecraft:uniform"
+              }
+            }
+          ],
+          "expand": true
+        },
+        {
+          "type": "minecraft:tag",
+          "name": "minecraft:wool_carpets",
+          "weight": 5,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 2,
+                "type": "minecraft:uniform"
+              }
+            }
+          ],
+          "expand": true
+        }
+      ]
+    },
+    {
+      "name": "coins",
+      "rolls": {
+        "min": 0,
+        "max": 2,
+        "type": "minecraft:uniform"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfarenpc:coin",
+          "entryName": "coin_copper",
+          "weight": 5,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 2,
+                "type": "minecraft:uniform"
+              }
+            },
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{metal:\"copper\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfarenpc:coin",
+          "entryName": "coin_silver",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 2,
+                "type": "minecraft:uniform"
+              }
+            },
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{metal:\"silver\"}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

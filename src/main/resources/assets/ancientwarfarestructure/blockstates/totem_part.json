@@ -1,0 +1,484 @@
+{
+  "variants": {
+    "facing=north,variant=base,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_base"
+    },
+    "facing=north,variant=base,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_base"
+    },
+    "facing=north,variant=mid,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_mid"
+    },
+    "facing=north,variant=mid,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_mid"
+    },
+    "facing=north,variant=mid_alt,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_mid_alt"
+    },
+    "facing=north,variant=mid_alt,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_mid_alt"
+    },
+    "facing=north,variant=top,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_top"
+    },
+    "facing=north,variant=top,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_top"
+    },
+    "facing=north,variant=wings,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_wings"
+    },
+    "facing=north,variant=wings,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_wings"
+    },
+    "facing=north,variant=irminsul_base,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_base"
+    },
+    "facing=north,variant=irminsul_base,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_base"
+    },
+    "facing=north,variant=irminsul_mid,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_mid"
+    },
+    "facing=north,variant=irminsul_mid,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_mid"
+    },
+    "facing=north,variant=irminsul_top,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_top"
+    },
+    "facing=north,variant=irminsul_top,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_top"
+    },
+    "facing=north,variant=irminsul_side,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_side"
+    },
+    "facing=north,variant=irminsul_side,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_side"
+    },
+    "facing=north,variant=elephant_left,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_left"
+    },
+    "facing=north,variant=elephant_left,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_left"
+    },
+    "facing=north,variant=elephant_body,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_body"
+    },
+    "facing=north,variant=elephant_body,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_body"
+    },
+    "facing=north,variant=elephant_right,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_right"
+    },
+    "facing=north,variant=elephant_right,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_right"
+    },
+    "facing=north,variant=xoltec_idol_body_left,visible=true": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_body_left"
+    },
+    "facing=north,variant=xoltec_idol_body_left,visible=false": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_body_left"
+    },
+    "facing=north,variant=xoltec_idol_body_right,visible=true": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_body_right"
+    },
+    "facing=north,variant=xoltec_idol_body_right,visible=false": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_body_right"
+    },
+    "facing=north,variant=xoltec_idol_head_left,visible=true": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_head_left"
+    },
+    "facing=north,variant=xoltec_idol_head_left,visible=false": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_head_left"
+    },
+    "facing=north,variant=xoltec_idol_head_right,visible=true": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_head_right"
+    },
+    "facing=north,variant=xoltec_idol_head_right,visible=false": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_head_right"
+    },
+    "facing=south,variant=base,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_base",
+      "y": 180
+    },
+    "facing=south,variant=base,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_base",
+      "y": 180
+    },
+    "facing=south,variant=mid,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_mid",
+      "y": 180
+    },
+    "facing=south,variant=mid,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_mid",
+      "y": 180
+    },
+    "facing=south,variant=mid_alt,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_mid_alt",
+      "y": 180
+    },
+    "facing=south,variant=mid_alt,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_mid_alt",
+      "y": 180
+    },
+    "facing=south,variant=top,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_top",
+      "y": 180
+    },
+    "facing=south,variant=top,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_top",
+      "y": 180
+    },
+    "facing=south,variant=wings,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_wings",
+      "y": 180
+    },
+    "facing=south,variant=wings,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_wings",
+      "y": 180
+    },
+    "facing=south,variant=irminsul_base,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_base",
+      "y": 180
+    },
+    "facing=south,variant=irminsul_base,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_base",
+      "y": 180
+    },
+    "facing=south,variant=irminsul_mid,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_mid",
+      "y": 180
+    },
+    "facing=south,variant=irminsul_mid,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_mid",
+      "y": 180
+    },
+    "facing=south,variant=irminsul_top,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_top",
+      "y": 180
+    },
+    "facing=south,variant=irminsul_top,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_top",
+      "y": 180
+    },
+    "facing=south,variant=irminsul_side,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_side",
+      "y": 180
+    },
+    "facing=south,variant=irminsul_side,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_side",
+      "y": 180
+    },
+    "facing=south,variant=elephant_left,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_left",
+      "y": 180
+    },
+    "facing=south,variant=elephant_left,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_left",
+      "y": 180
+    },
+    "facing=south,variant=elephant_body,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_body",
+      "y": 180
+    },
+    "facing=south,variant=elephant_body,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_body",
+      "y": 180
+    },
+    "facing=south,variant=elephant_right,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_right",
+      "y": 180
+    },
+    "facing=south,variant=elephant_right,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_right",
+      "y": 180
+    },
+    "facing=south,variant=xoltec_idol_body_left,visible=true": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_body_left",
+      "y": 180
+    },
+    "facing=south,variant=xoltec_idol_body_left,visible=false": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_body_left",
+      "y": 180
+    },
+    "facing=south,variant=xoltec_idol_body_right,visible=true": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_body_right",
+      "y": 180
+    },
+    "facing=south,variant=xoltec_idol_body_right,visible=false": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_body_right",
+      "y": 180
+    },
+    "facing=south,variant=xoltec_idol_head_left,visible=true": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_head_left",
+      "y": 180
+    },
+    "facing=south,variant=xoltec_idol_head_left,visible=false": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_head_left",
+      "y": 180
+    },
+    "facing=south,variant=xoltec_idol_head_right,visible=true": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_head_right",
+      "y": 180
+    },
+    "facing=south,variant=xoltec_idol_head_right,visible=false": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_head_right",
+      "y": 180
+    },
+    "facing=west,variant=base,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_base",
+      "y": 270
+    },
+    "facing=west,variant=base,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_base",
+      "y": 270
+    },
+    "facing=west,variant=mid,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_mid",
+      "y": 270
+    },
+    "facing=west,variant=mid,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_mid",
+      "y": 270
+    },
+    "facing=west,variant=mid_alt,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_mid_alt",
+      "y": 270
+    },
+    "facing=west,variant=mid_alt,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_mid_alt",
+      "y": 270
+    },
+    "facing=west,variant=top,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_top",
+      "y": 270
+    },
+    "facing=west,variant=top,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_top",
+      "y": 270
+    },
+    "facing=west,variant=wings,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_wings",
+      "y": 270
+    },
+    "facing=west,variant=wings,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_wings",
+      "y": 270
+    },
+    "facing=west,variant=irminsul_base,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_base",
+      "y": 270
+    },
+    "facing=west,variant=irminsul_base,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_base",
+      "y": 270
+    },
+    "facing=west,variant=irminsul_mid,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_mid",
+      "y": 270
+    },
+    "facing=west,variant=irminsul_mid,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_mid",
+      "y": 270
+    },
+    "facing=west,variant=irminsul_top,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_top",
+      "y": 270
+    },
+    "facing=west,variant=irminsul_top,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_top",
+      "y": 270
+    },
+    "facing=west,variant=irminsul_side,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_side",
+      "y": 270
+    },
+    "facing=west,variant=irminsul_side,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_side",
+      "y": 270
+    },
+    "facing=west,variant=elephant_left,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_left",
+      "y": 270
+    },
+    "facing=west,variant=elephant_left,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_left",
+      "y": 270
+    },
+    "facing=west,variant=elephant_body,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_body",
+      "y": 270
+    },
+    "facing=west,variant=elephant_body,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_body",
+      "y": 270
+    },
+    "facing=west,variant=elephant_right,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_right",
+      "y": 270
+    },
+    "facing=west,variant=elephant_right,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_right",
+      "y": 270
+    },
+    "facing=west,variant=xoltec_idol_body_left,visible=true": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_body_left",
+      "y": 270
+    },
+    "facing=west,variant=xoltec_idol_body_left,visible=false": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_body_left",
+      "y": 270
+    },
+    "facing=west,variant=xoltec_idol_body_right,visible=true": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_body_right",
+      "y": 270
+    },
+    "facing=west,variant=xoltec_idol_body_right,visible=false": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_body_right",
+      "y": 270
+    },
+    "facing=west,variant=xoltec_idol_head_left,visible=true": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_head_left",
+      "y": 270
+    },
+    "facing=west,variant=xoltec_idol_head_left,visible=false": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_head_left",
+      "y": 270
+    },
+    "facing=west,variant=xoltec_idol_head_right,visible=true": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_head_right",
+      "y": 270
+    },
+    "facing=west,variant=xoltec_idol_head_right,visible=false": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_head_right",
+      "y": 270
+    },
+    "facing=east,variant=base,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_base",
+      "y": 90
+    },
+    "facing=east,variant=base,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_base",
+      "y": 90
+    },
+    "facing=east,variant=mid,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_mid",
+      "y": 90
+    },
+    "facing=east,variant=mid,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_mid",
+      "y": 90
+    },
+    "facing=east,variant=mid_alt,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_mid_alt",
+      "y": 90
+    },
+    "facing=east,variant=mid_alt,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_mid_alt",
+      "y": 90
+    },
+    "facing=east,variant=top,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_top",
+      "y": 90
+    },
+    "facing=east,variant=top,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_top",
+      "y": 90
+    },
+    "facing=east,variant=wings,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_wings",
+      "y": 90
+    },
+    "facing=east,variant=wings,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_wings",
+      "y": 90
+    },
+    "facing=east,variant=irminsul_base,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_base",
+      "y": 90
+    },
+    "facing=east,variant=irminsul_base,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_base",
+      "y": 90
+    },
+    "facing=east,variant=irminsul_mid,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_mid",
+      "y": 90
+    },
+    "facing=east,variant=irminsul_mid,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_mid",
+      "y": 90
+    },
+    "facing=east,variant=irminsul_top,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_top",
+      "y": 90
+    },
+    "facing=east,variant=irminsul_top,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_top",
+      "y": 90
+    },
+    "facing=east,variant=irminsul_side,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_side",
+      "y": 90
+    },
+    "facing=east,variant=irminsul_side,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_side",
+      "y": 90
+    },
+    "facing=east,variant=elephant_left,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_left",
+      "y": 90
+    },
+    "facing=east,variant=elephant_left,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_left",
+      "y": 90
+    },
+    "facing=east,variant=elephant_body,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_body",
+      "y": 90
+    },
+    "facing=east,variant=elephant_body,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_body",
+      "y": 90
+    },
+    "facing=east,variant=elephant_right,visible=true": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_right",
+      "y": 90
+    },
+    "facing=east,variant=elephant_right,visible=false": {
+      "model": "ancientwarfare:block/structure/totem_part_elephant_right",
+      "y": 90
+    },
+    "facing=east,variant=xoltec_idol_body_left,visible=true": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_body_left",
+      "y": 90
+    },
+    "facing=east,variant=xoltec_idol_body_left,visible=false": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_body_left",
+      "y": 90
+    },
+    "facing=east,variant=xoltec_idol_body_right,visible=true": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_body_right",
+      "y": 90
+    },
+    "facing=east,variant=xoltec_idol_body_right,visible=false": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_body_right",
+      "y": 90
+    },
+    "facing=east,variant=xoltec_idol_head_left,visible=true": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_head_left",
+      "y": 90
+    },
+    "facing=east,variant=xoltec_idol_head_left,visible=false": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_head_left",
+      "y": 90
+    },
+    "facing=east,variant=xoltec_idol_head_right,visible=true": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_head_right",
+      "y": 90
+    },
+    "facing=east,variant=xoltec_idol_head_right,visible=false": {
+      "model": "ancientwarfare:block/structure/xoltec_idol_head_right",
+      "y": 90
+    }
+  }
+}

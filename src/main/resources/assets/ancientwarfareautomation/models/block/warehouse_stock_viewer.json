@@ -1,0 +1,7 @@
+{
+    "parent": "ancientwarfare:block/automation/sign",
+    "textures": {
+        "particle": "ancientwarfare:blocks/automation/warehouse_stock_viewer",
+        "texture": "ancientwarfare:blocks/automation/warehouse_stock_viewer"
+    }
+}

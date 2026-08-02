@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "ancientwarfarestructure:block/structure/orc_totem_2"
+    },
+    "facing=south": {
+      "model": "ancientwarfarestructure:block/structure/orc_totem_2",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "ancientwarfarestructure:block/structure/orc_totem_2",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "ancientwarfarestructure:block/structure/orc_totem_2",
+      "y": 90
+    }
+  }
+}

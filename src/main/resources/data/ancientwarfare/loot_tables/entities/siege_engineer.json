@@ -1,0 +1,207 @@
+{
+  "pools": [
+    {
+      "name": "siege_engineer_coins",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfarenpc:coin",
+          "entryName": "coin_gold",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 3,
+                "type": "minecraft:uniform"
+              }
+            },
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{metal:\"gold\"}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "siege_engineer_ammo",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "name": "ancientwarfare:chests/ammo_ballista",
+          "entryName": "ballista",
+          "weight": 999,
+          "conditions": [
+            {
+              "condition": "minecraft:entity_properties",
+              "entity": "this",
+              "properties": {
+                "ancientwarfarenpc:rides_vehicle": "ballista"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:loot_table",
+          "name": "ancientwarfare:chests/ammo_catapult_trebuchet",
+          "entryName": "ammo_catapult",
+          "weight": 999,
+          "conditions": [
+            {
+              "condition": "minecraft:entity_properties",
+              "entity": "this",
+              "properties": {
+                "ancientwarfarenpc:rides_vehicle": "catapult"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:loot_table",
+          "name": "ancientwarfare:chests/ammo_catapult_trebuchet",
+          "entryName": "ammo_trebuchet",
+          "weight": 999,
+          "conditions": [
+            {
+              "condition": "minecraft:entity_properties",
+              "entity": "this",
+              "properties": {
+                "ancientwarfarenpc:rides_vehicle": "trebuchet"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:loot_table",
+          "name": "ancientwarfare:chests/ammo_cannon",
+          "entryName": "cannon",
+          "weight": 999,
+          "conditions": [
+            {
+              "condition": "minecraft:entity_properties",
+              "entity": "this",
+              "properties": {
+                "ancientwarfarenpc:rides_vehicle": "cannon"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:loot_table",
+          "name": "ancientwarfare:chests/ammo_hwacha",
+          "entryName": "hwacha",
+          "weight": 999,
+          "conditions": [
+            {
+              "condition": "minecraft:entity_properties",
+              "entity": "this",
+              "properties": {
+                "ancientwarfarenpc:rides_vehicle": "hwacha"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfarevehicle:explosive_charge",
+          "entryName": "no_vehicle_explosive_charge",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 6,
+                "type": "minecraft:uniform"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfarevehicle:iron_casing",
+          "entryName": "no_vehicle_iron_casing",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 4,
+                "type": "minecraft:uniform"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfarevehicle:cluster_charge",
+          "entryName": "no_vehicle_cluster_charge",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 4,
+                "type": "minecraft:uniform"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfarevehicle:rocket_charge",
+          "entryName": "no_vehicle_rocket_charge",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 4,
+                "type": "minecraft:uniform"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfarevehicle:flame_charge",
+          "entryName": "no_vehicle_flame_charge",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 4,
+                "type": "minecraft:uniform"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ancientwarfarevehicle:napalm_charge",
+          "entryName": "no_vehicle_napalm_charge",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 2,
+                "type": "minecraft:uniform"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

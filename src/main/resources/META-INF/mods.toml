@@ -1,0 +1,103 @@
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="GPL-3.0-or-later"
+
+[[mods]]
+modId="ancientwarfare"
+version="${mod_version}"
+displayName="Ancient Warfare Core"
+authors="shadowmage45, P3pp3rF1y"
+description='''
+Ancient Warfare core module, ported to Minecraft 1.20.1 Forge.
+'''
+
+[[mods]]
+modId="ancientwarfareautomation"
+version="${mod_version}"
+displayName="Ancient Warfare Automation"
+authors="shadowmage45, P3pp3rF1y"
+description="Ancient Warfare automation module."
+
+[[mods]]
+modId="ancientwarfarenpc"
+version="${mod_version}"
+displayName="Ancient Warfare NPCs"
+authors="shadowmage45, P3pp3rF1y"
+description="Ancient Warfare NPC module."
+
+[[mods]]
+modId="ancientwarfarestructure"
+version="${mod_version}"
+displayName="Ancient Warfare Structures"
+authors="shadowmage45, P3pp3rF1y"
+description="Ancient Warfare structures module."
+
+[[mods]]
+modId="ancientwarfarevehicle"
+version="${mod_version}"
+displayName="Ancient Warfare Vehicles"
+authors="shadowmage45, P3pp3rF1y"
+description="Ancient Warfare vehicles module."
+
+[[dependencies.ancientwarfare]]
+modId="forge"
+mandatory=true
+versionRange="${forge_version_range}"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.ancientwarfare]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,1.20.2)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.ancientwarfare]]
+modId="codechickenlib"
+mandatory=true
+versionRange="[4,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.ancientwarfare]]
+modId="ftbteams"
+mandatory=false
+versionRange="[2001,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.ancientwarfareautomation]]
+modId="ancientwarfare"
+mandatory=true
+versionRange="[0,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.ancientwarfarenpc]]
+modId="ancientwarfare"
+mandatory=true
+versionRange="[0,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.ancientwarfarenpc]]
+modId="ebwizardry"
+mandatory=false
+versionRange="[0,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.ancientwarfarestructure]]
+modId="ancientwarfare"
+mandatory=true
+versionRange="[0,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.ancientwarfarevehicle]]
+modId="ancientwarfare"
+mandatory=true
+versionRange="[0,)"
+ordering="AFTER"
+side="BOTH"

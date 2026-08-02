@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=north,part=north,visible=true": {
+      "model": "ancientwarfare:block/structure/stretching_rack_north",
+      "y": 180
+    },
+    "facing=north,part=north,visible=false": {
+      "model": "ancientwarfare:block/structure/stretching_rack_north",
+      "y": 180
+    },
+    "facing=north,part=south,visible=true": {
+      "model": "ancientwarfare:block/structure/stretching_rack_south",
+      "y": 180
+    },
+    "facing=north,part=south,visible=false": {
+      "model": "ancientwarfare:block/structure/stretching_rack_south",
+      "y": 180
+    },
+    "facing=south,part=north,visible=true": {
+      "model": "ancientwarfare:block/structure/stretching_rack_north"
+    },
+    "facing=south,part=north,visible=false": {
+      "model": "ancientwarfare:block/structure/stretching_rack_north"
+    },
+    "facing=south,part=south,visible=true": {
+      "model": "ancientwarfare:block/structure/stretching_rack_south"
+    },
+    "facing=south,part=south,visible=false": {
+      "model": "ancientwarfare:block/structure/stretching_rack_south"
+    },
+    "facing=west,part=north,visible=true": {
+      "model": "ancientwarfare:block/structure/stretching_rack_north",
+      "y": 90
+    },
+    "facing=west,part=north,visible=false": {
+      "model": "ancientwarfare:block/structure/stretching_rack_north",
+      "y": 90
+    },
+    "facing=west,part=south,visible=true": {
+      "model": "ancientwarfare:block/structure/stretching_rack_south",
+      "y": 90
+    },
+    "facing=west,part=south,visible=false": {
+      "model": "ancientwarfare:block/structure/stretching_rack_south",
+      "y": 90
+    },
+    "facing=east,part=north,visible=true": {
+      "model": "ancientwarfare:block/structure/stretching_rack_north",
+      "y": 270
+    },
+    "facing=east,part=north,visible=false": {
+      "model": "ancientwarfare:block/structure/stretching_rack_north",
+      "y": 270
+    },
+    "facing=east,part=south,visible=true": {
+      "model": "ancientwarfare:block/structure/stretching_rack_south",
+      "y": 270
+    },
+    "facing=east,part=south,visible=false": {
+      "model": "ancientwarfare:block/structure/stretching_rack_south",
+      "y": 270
+    }
+  }
+}

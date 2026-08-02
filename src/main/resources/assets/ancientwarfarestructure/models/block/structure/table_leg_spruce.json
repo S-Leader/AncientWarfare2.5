@@ -1,0 +1,7 @@
+{
+  "parent": "ancientwarfare:block/structure/table_leg",
+  "textures": {
+    "0": "minecraft:block/spruce_planks",
+    "particle": "minecraft:block/spruce_planks"
+  }
+}
