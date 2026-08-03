@@ -1,5 +1,5 @@
 {
-  "type": "ancientwarfare:legacy_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "IWI",
     "ITI",
@@ -13,12 +13,10 @@
       "item": "minecraft:crafting_table"
     },
     "W": {
-      "type": "forge:ore_dict",
-      "ore": "plankWood"
+      "tag": "minecraft:planks"
     },
     "I": {
-      "type": "forge:ore_dict",
-      "ore": "ingotIron"
+      "tag": "forge:ingots/iron"
     }
   },
   "result": {

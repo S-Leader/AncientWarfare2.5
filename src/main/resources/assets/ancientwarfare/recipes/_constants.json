@@ -2,8 +2,7 @@
     {
         "name": "LOGWOOD",
         "ingredient": {
-            "type": "forge:ore_dict",
-            "ore": "logWood"
+            "tag": "minecraft:logs"
         }
     },
     {
@@ -30,36 +29,31 @@
     {
         "name": "STICKWOOD",
         "ingredient": {
-            "type": "forge:ore_dict",
-            "ore": "stickWood"
+            "tag": "forge:rods/wooden"
         }
     },
     {
         "name": "INGOTGOLD",
         "ingredient": {
-            "type": "forge:ore_dict",
-            "ore": "ingotGold"
+            "tag": "forge:ingots/gold"
         }
     },
     {
         "name": "COBBLESTONE",
         "ingredient": {
-            "type": "forge:ore_dict",
-            "ore": "cobblestone"
+            "tag": "minecraft:stone_crafting_materials"
         }
     },
     {
         "name": "STONE",
         "ingredient": {
-            "type": "forge:ore_dict",
-            "ore": "stone"
+            "tag": "forge:stone"
         }
     },
     {
         "name": "GEMDIAMOND",
         "ingredient": {
-            "type": "forge:ore_dict",
-            "ore": "gemDiamond"
+            "tag": "forge:gems/diamond"
         }
     },
     {

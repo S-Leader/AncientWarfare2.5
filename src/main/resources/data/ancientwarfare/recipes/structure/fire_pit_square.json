@@ -1,5 +1,5 @@
 {
-  "type": "ancientwarfare:legacy_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "CSC",
     "SSS",
@@ -7,12 +7,10 @@
   ],
   "key": {
     "S": {
-      "type": "forge:ore_dict",
-      "ore": "stickWood"
+      "tag": "forge:rods/wooden"
     },
     "C": {
-      "type": "forge:ore_dict",
-      "ore": "cobblestone"
+      "tag": "forge:cobblestone"
     }
   },
   "result": {

@@ -1,5 +1,5 @@
 {
-  "type": "ancientwarfare:legacy_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     " P ",
     " P ",
@@ -7,8 +7,7 @@
   ],
   "key": {
     "P": {
-      "type": "forge:ore_dict",
-      "ore": "ingotSteel"
+      "tag": "forge:ingots/steel"
     }
   },
   "result": {

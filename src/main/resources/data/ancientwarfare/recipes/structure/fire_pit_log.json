@@ -1,13 +1,12 @@
 {
-  "type": "ancientwarfare:legacy_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     " S ",
     "SSS"
   ],
   "key": {
     "S": {
-      "type": "forge:ore_dict",
-      "ore": "stickWood"
+      "tag": "forge:rods/wooden"
     }
   },
   "result": {

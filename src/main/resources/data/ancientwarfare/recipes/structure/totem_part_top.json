@@ -1,5 +1,5 @@
 {
-  "type": "ancientwarfare:legacy_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "WBY",
     "RLE",
@@ -7,32 +7,25 @@
   ],
   "key": {
     "B": {
-      "type": "forge:ore_dict",
-      "ore": "dyeBlack"
+      "tag": "forge:dyes/black"
     },
     "W": {
-      "type": "forge:ore_dict",
-      "ore": "dyeWhite"
+      "tag": "forge:dyes/white"
     },
     "R": {
-      "type": "forge:ore_dict",
-      "ore": "dyeRed"
+      "tag": "forge:dyes/red"
     },
     "Y": {
-      "type": "forge:ore_dict",
-      "ore": "dyeYellow"
+      "tag": "forge:dyes/yellow"
     },
     "E": {
-      "type": "forge:ore_dict",
-      "ore": "dyeBlue"
+      "tag": "forge:dyes/blue"
     },
     "L": {
-      "type": "forge:ore_dict",
-      "ore": "logWood"
+      "tag": "minecraft:logs"
     },
     "F": {
-      "type": "forge:ore_dict",
-      "ore": "feather"
+      "tag": "forge:feathers"
     }
   },
   "result": {
