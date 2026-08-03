@@ -1,5 +1,5 @@
 {
-  "type": "ancientwarfare:legacy_shapeless",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
       "item": "ancientwarfare:wooden_hammer"
