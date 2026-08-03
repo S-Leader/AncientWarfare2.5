@@ -1,0 +1,23 @@
+{
+  "type": "ancientwarfare:legacy_shaped",
+  "pattern": [
+    "CSC",
+    "SSS",
+    "C C"
+  ],
+  "key": {
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "stickWood"
+    },
+    "C": {
+      "type": "forge:ore_dict",
+      "ore": "cobblestone"
+    }
+  },
+  "result": {
+    "type": "minecraft:item_nbt",
+    "item": "ancientwarfarestructure:fire_pit",
+    "nbt": "{variant:\"square\",lit:0b}"
+  }
+}

@@ -83,9 +83,11 @@ public class WoodenCoffinRenderer extends RenderLootInfo<TileWoodenCoffin> imple
         }
         GlStateManager.rotate(upright ? 265 : 180, 1, 0, 0);
         GlStateManager.scale(0.09f, 0.09f, 0.09f);
-        bindTexture(TEXTURES.get(te.getVariant()));
+        ResourceLocation texture = TEXTURES.get(te.getVariant());
+        VertexConsumer vertices = getActiveBufferSource().getBuffer(RenderType.entityCutoutNoCull(texture));
         float lidAngle = te.getPrevLidAngle() + (te.getLidAngle() - te.getPrevLidAngle()) * partialTicks;
-        COFFIN_MODEL.renderAll((float) (-lidAngle / 180F * Math.PI));
+        LegacyModelBase.renderWithContext(getActivePoseStack(), vertices, getActivePackedLight(),
+                getActivePackedOverlay(), () -> COFFIN_MODEL.renderAll((float) (-lidAngle / 180F * Math.PI)));
         GlStateManager.popMatrix();
         GlStateManager.popMatrix();
     }

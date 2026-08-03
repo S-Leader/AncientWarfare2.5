@@ -1,0 +1,31 @@
+{
+  "type": "ancientwarfare:legacy_shaped",
+  "pattern": [
+    "IWI",
+    "GTG",
+    "ICI"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "T": {
+      "item": "minecraft:crafting_table"
+    },
+    "W": {
+      "type": "forge:ore_dict",
+      "ore": "plankWood"
+    },
+    "G": {
+      "type": "forge:ore_dict",
+      "ore": "ingotGold"
+    },
+    "I": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    }
+  },
+  "result": {
+    "item": "ancientwarfare:research_station"
+  }
+}

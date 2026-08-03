@@ -3,6 +3,8 @@ package net.shadowmage.ancientwarfare.structure.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -43,6 +45,10 @@ public class BlockLootBasket extends BlockBaseStructure {
     public BlockLootBasket() {
         super(LegacyMaterial.GRASS, "loot_basket");
         setHardness(2);
+        registerDefaultState(defaultBlockState()
+                .setValue(FACING, Direction.NORTH)
+                .setValue(DOUBLE, false)
+                .setValue(VISIBLE, true));
     }
 
     @Override
@@ -52,11 +58,39 @@ public class BlockLootBasket extends BlockBaseStructure {
 
     @Override
     public BlockState getActualState(BlockState state, BlockGetter worldIn, BlockPos pos) {
-        return getDoubleDirection(worldIn, pos)
-                .map(facing -> facing == Direction.NORTH || facing == Direction.WEST ?
-                        state.setValue(DOUBLE, false).setValue(VISIBLE, false) :
-                        state.setValue(FACING, facing.getClockWise()).setValue(DOUBLE, true))
-                .orElse(state.setValue(DOUBLE, false));
+        return computeRenderState(state, worldIn, pos);
+    }
+
+    private BlockState computeRenderState(BlockState state, BlockGetter world, BlockPos pos) {
+        return getDoubleDirection(world, pos)
+                .map(facing -> facing == Direction.NORTH || facing == Direction.WEST
+                        ? state.setValue(DOUBLE, false).setValue(VISIBLE, false)
+                        : state.setValue(FACING, facing.getClockWise()).setValue(DOUBLE, true).setValue(VISIBLE, true))
+                .orElse(state.setValue(DOUBLE, false).setValue(VISIBLE, true));
+    }
+
+    private void refreshRenderState(Level level, BlockPos pos) {
+        if (level.isClientSide) {
+            return;
+        }
+        BlockState current = level.getBlockState(pos);
+        if (!current.is(this)) {
+            return;
+        }
+        BlockState updated = computeRenderState(current, level, pos);
+        if (updated != current) {
+            // The 1.12 renderer consumed getActualState directly. Modern chunk
+            // rendering only sees the stored BlockState, so persist these visual
+            // properties without recursively notifying every neighbour again.
+            level.setBlock(pos, updated, Block.UPDATE_CLIENTS);
+        }
+    }
+
+    private void refreshBasketAndNeighbours(Level level, BlockPos pos) {
+        refreshRenderState(level, pos);
+        for (Direction direction : Direction.Plane.HORIZONTAL) {
+            refreshRenderState(level, pos.relative(direction));
+        }
     }
 
     @Override
@@ -111,7 +145,47 @@ public class BlockLootBasket extends BlockBaseStructure {
 
     @Override
     public BlockState getStateForPlacement(Level world, BlockPos pos, Direction facing, float hitX, float hitY, float hitZ, int meta, LivingEntity placer) {
-        return defaultBlockState().setValue(FACING, placer.getDirection().getOpposite());
+        return defaultBlockState().setValue(FACING, placer.getDirection().getOpposite())
+                .setValue(DOUBLE, false).setValue(VISIBLE, true);
+    }
+
+    @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+        if (!level.isClientSide && !oldState.is(this)) {
+            // Structure placement does not call setPlacedBy.  Rebuild the paired
+            // basket render state one tick later, after both halves exist.
+            level.scheduleTick(pos, this, 1);
+        }
+    }
+
+    @Override
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        refreshBasketAndNeighbours(level, pos);
+    }
+
+    @Override
+    public void onBlockPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, net.minecraft.world.item.ItemStack stack) {
+        super.onBlockPlacedBy(level, pos, state, placer, stack);
+        refreshBasketAndNeighbours(level, pos);
+    }
+
+    @Override
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block,
+                                BlockPos fromPos, boolean movedByPiston) {
+        super.neighborChanged(state, level, pos, block, fromPos, movedByPiston);
+        refreshRenderState(level, pos);
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        boolean removed = !state.is(newState.getBlock());
+        super.onRemove(state, level, pos, newState, movedByPiston);
+        if (removed) {
+            for (Direction direction : Direction.Plane.HORIZONTAL) {
+                refreshRenderState(level, pos.relative(direction));
+            }
+        }
     }
 
     @Override

@@ -7,7 +7,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -17,9 +16,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
@@ -85,13 +84,21 @@ public class BlockAdvancedSpawner extends BlockBaseStructure {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        if (context instanceof EntityCollisionContext entityContext) {
-            Entity entity = entityContext.getEntity();
-            if (entity != null && entity.isAddedToWorld()) {
-                return super.getCollisionShape(state, world, pos, context);
-            }
-        }
-        return Shapes.empty();
+        // Fluid spreading consults collision shapes as well as replaceability.  The
+        // old context-sensitive empty shape made flowing water treat the spawner
+        // as an open cell and eventually replace it.  Keep the visual transparency,
+        // but always expose a solid physical shape.
+        return Shapes.block();
+    }
+
+    @Override
+    public boolean canBeReplaced(BlockState state, net.minecraft.world.item.context.BlockPlaceContext context) {
+        return false;
+    }
+
+    @Override
+    public boolean canBeReplaced(BlockState state, Fluid fluid) {
+        return false;
     }
 
     @Override

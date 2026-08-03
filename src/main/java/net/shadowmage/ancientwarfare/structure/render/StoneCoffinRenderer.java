@@ -88,9 +88,11 @@ public class StoneCoffinRenderer extends RenderLootInfo<TileStoneCoffin> impleme
 
         GlStateManager.rotate(180, 1, 0, 0);
         GlStateManager.scale(0.074f, 0.074f, 0.074f);
-        bindTexture(TEXTURES.get(te.getVariant()));
+        ResourceLocation texture = TEXTURES.get(te.getVariant());
+        VertexConsumer vertices = getActiveBufferSource().getBuffer(RenderType.entityCutoutNoCull(texture));
         float lidAngle = te.getPrevLidAngle() + (te.getLidAngle() - te.getPrevLidAngle()) * partialTicks;
-        STONE_COFFIN_MODEL.renderAll((float) (-lidAngle / 180F * Math.PI));
+        LegacyModelBase.renderWithContext(getActivePoseStack(), vertices, getActivePackedLight(),
+                getActivePackedOverlay(), () -> STONE_COFFIN_MODEL.renderAll((float) (-lidAngle / 180F * Math.PI)));
         GlStateManager.popMatrix();
         GlStateManager.popMatrix();
     }

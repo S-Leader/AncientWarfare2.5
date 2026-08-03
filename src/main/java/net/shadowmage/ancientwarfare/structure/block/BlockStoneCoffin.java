@@ -78,7 +78,7 @@ public class BlockStoneCoffin extends BlockCoffin<TileStoneCoffin> {
     public void registerClient() {
         Map<Variant, ModelResourceLocation> variantModels = new EnumMap<>(Variant.class);
         for (Variant variant : Variant.values()) {
-            ModelResourceLocation modelLocation = new ModelResourceLocation(new ResourceLocation(AncientWarfareCore.MOD_ID, "structure/wooden_coffin"), variant.getName());
+            ModelResourceLocation modelLocation = new ModelResourceLocation(new ResourceLocation(AncientWarfareCore.MOD_ID, "structure/stone_coffin"), variant.getName());
             variantModels.put(variant, modelLocation);
             LegacyModelRegistryHelper.register(modelLocation, new ParticleOnlyModel(variant.getBlockTexture()));
         }

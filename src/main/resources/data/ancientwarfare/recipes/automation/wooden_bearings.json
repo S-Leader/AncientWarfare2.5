@@ -1,0 +1,18 @@
+{
+  "type": "ancientwarfare:legacy_shaped",
+  "pattern": [
+    "S S",
+    "   ",
+    "S S"
+  ],
+  "key": {
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "stickWood"
+    }
+  },
+  "result": {
+    "item": "ancientwarfare:component",
+    "data": 3
+  }
+}

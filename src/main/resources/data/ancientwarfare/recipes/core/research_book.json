@@ -1,0 +1,23 @@
+{
+  "type": "ancientwarfare:legacy_shaped",
+  "pattern": [
+    "ILL",
+    "PPP",
+    "ILL"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "I": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "item": "ancientwarfare:research_book"
+  }
+}

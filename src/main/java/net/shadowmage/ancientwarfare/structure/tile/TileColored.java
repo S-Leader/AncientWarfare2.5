@@ -3,6 +3,7 @@ package net.shadowmage.ancientwarfare.structure.tile;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -23,17 +24,30 @@ public class TileColored extends TileUpdatable {
     public void setDyeColor(int dyeColor) {
         this.dyeColor = dyeColor;
         customColor = false;
+        onColorChanged();
     }
 
     public void setColor(int color) {
         this.color = color;
         customColor = true;
+        onColorChanged();
+    }
+
+    private void onColorChanged() {
+        setChanged();
+        requestModelDataUpdate();
+        if (level != null) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
     public int getColor() {
         if (customColor) {
-            return color;
+            return color == -1 ? 0xFFFFFF : color;
+        }
+        if (dyeColor < 0 || dyeColor > 15) {
+            return 0xFFFFFF;
         }
 
         float[] diffuse = DyeColor.byId(15 - dyeColor).getTextureDiffuseColors();
@@ -59,12 +73,11 @@ public class TileColored extends TileUpdatable {
 
     protected void readNBT(CompoundTag compound) {
         customColor = compound.getBoolean("customColor");
-        dyeColor = compound.getInt(DYE_COLOR_TAG);
-        if (compound.contains(COLOR_TAG)) {
-            color = compound.getInt(COLOR_TAG);
-        }
-        customData = compound.getString(CUSTOM_DATA_TAG);
-        unlocalizedNamePart = compound.getString(UNLOCALIZED_NAME_PART_TAG);
+        dyeColor = compound.contains(DYE_COLOR_TAG) ? compound.getInt(DYE_COLOR_TAG) : -1;
+        color = compound.contains(COLOR_TAG) ? compound.getInt(COLOR_TAG) : -1;
+        customData = compound.contains(CUSTOM_DATA_TAG) ? compound.getString(CUSTOM_DATA_TAG) : null;
+        unlocalizedNamePart = compound.contains(UNLOCALIZED_NAME_PART_TAG)
+                ? compound.getString(UNLOCALIZED_NAME_PART_TAG) : null;
     }
 
     @Override
@@ -99,6 +112,10 @@ public class TileColored extends TileUpdatable {
     protected void handleUpdateNBT(CompoundTag tag) {
         super.handleUpdateNBT(tag);
         readNBT(tag);
+        requestModelDataUpdate();
+        if (level != null) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+        }
     }
 
     public void setCustomData(String customData) {
@@ -114,9 +131,12 @@ public class TileColored extends TileUpdatable {
         if (tag.contains(DYE_COLOR_TAG)) {
             setDyeColor(tag.getInt(DYE_COLOR_TAG));
         } else if (tag.contains(COLOR_TAG)) {
-            setColor(tag.getInt(COLOR_TAG));
-            customData = tag.getString(CUSTOM_DATA_TAG);
-            unlocalizedNamePart = tag.getString(UNLOCALIZED_NAME_PART_TAG);
+            color = tag.getInt(COLOR_TAG);
+            customColor = true;
+            customData = tag.contains(CUSTOM_DATA_TAG) ? tag.getString(CUSTOM_DATA_TAG) : null;
+            unlocalizedNamePart = tag.contains(UNLOCALIZED_NAME_PART_TAG)
+                    ? tag.getString(UNLOCALIZED_NAME_PART_TAG) : null;
+            onColorChanged();
         }
     }
 }

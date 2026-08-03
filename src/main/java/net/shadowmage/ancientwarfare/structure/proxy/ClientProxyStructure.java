@@ -4,6 +4,8 @@ import codechicken.lib.util.ResourceUtils;
 import com.google.common.collect.Sets;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
@@ -20,6 +22,7 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.shadowmage.ancientwarfare.core.compat.client.ClientRegistry;
 import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
 import net.shadowmage.ancientwarfare.core.network.NetworkHandler;
@@ -48,6 +51,19 @@ public class ClientProxyStructure extends CommonProxyStructure {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerModels);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerRenderers);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerBlockEntityRenderers);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+    }
+
+
+    private void clientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_CANDLE, RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_LONG_CLOTH, RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_SHORT_CLOTH, RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_LECTERN, RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_SUN, RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.LOOT_BASKET, RenderType.cutout());
+        });
     }
 
     private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {

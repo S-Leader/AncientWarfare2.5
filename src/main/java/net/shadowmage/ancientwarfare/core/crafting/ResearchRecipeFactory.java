@@ -66,7 +66,7 @@ public class ResearchRecipeFactory {
         return new ShapedResearchRecipe(research, result, width, pattern.length, ingredients);
     }
 
-    private Ingredient parseIngredient(JsonElement element) {
+    static Ingredient parseIngredient(JsonElement element) {
         if (!element.isJsonObject()) {
             return Ingredient.fromJson(element);
         }
@@ -92,7 +92,7 @@ public class ResearchRecipeFactory {
         };
     }
 
-    private ItemStack parseItemStack(JsonObject json) {
+    static ItemStack parseItemStack(JsonObject json) {
         String itemName = GsonHelper.getAsString(json, "item");
         int count = GsonHelper.getAsInt(json, "count", 1);
         int legacyMeta = GsonHelper.getAsInt(json, "data", -1);
@@ -104,7 +104,7 @@ public class ResearchRecipeFactory {
         return stack;
     }
 
-    private CompoundTag parseNbt(JsonElement nbt) {
+    private static CompoundTag parseNbt(JsonElement nbt) {
         if (nbt == null || nbt.isJsonNull()) {
             return null;
         }

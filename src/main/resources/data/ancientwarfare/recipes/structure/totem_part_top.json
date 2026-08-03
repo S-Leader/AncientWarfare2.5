@@ -1,0 +1,43 @@
+{
+  "type": "ancientwarfare:legacy_shaped",
+  "pattern": [
+    "WBY",
+    "RLE",
+    "FLF"
+  ],
+  "key": {
+    "B": {
+      "type": "forge:ore_dict",
+      "ore": "dyeBlack"
+    },
+    "W": {
+      "type": "forge:ore_dict",
+      "ore": "dyeWhite"
+    },
+    "R": {
+      "type": "forge:ore_dict",
+      "ore": "dyeRed"
+    },
+    "Y": {
+      "type": "forge:ore_dict",
+      "ore": "dyeYellow"
+    },
+    "E": {
+      "type": "forge:ore_dict",
+      "ore": "dyeBlue"
+    },
+    "L": {
+      "type": "forge:ore_dict",
+      "ore": "logWood"
+    },
+    "F": {
+      "type": "forge:ore_dict",
+      "ore": "feather"
+    }
+  },
+  "result": {
+    "type": "minecraft:item_nbt",
+    "item": "ancientwarfarestructure:totem_part",
+    "nbt": "{variant:3b}"
+  }
+}

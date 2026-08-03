@@ -1,0 +1,18 @@
+{
+  "type": "ancientwarfare:legacy_shaped",
+  "pattern": [
+    " P ",
+    " P ",
+    " P "
+  ],
+  "key": {
+    "P": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    }
+  },
+  "result": {
+    "item": "ancientwarfare:component",
+    "data": 7
+  }
+}

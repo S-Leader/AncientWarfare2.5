@@ -1,0 +1,18 @@
+{
+  "type": "ancientwarfare:legacy_shaped",
+  "pattern": [
+    " P ",
+    " P ",
+    " P "
+  ],
+  "key": {
+    "P": {
+      "type": "forge:ore_dict",
+      "ore": "plankWood"
+    }
+  },
+  "result": {
+    "item": "ancientwarfare:component",
+    "data": 6
+  }
+}

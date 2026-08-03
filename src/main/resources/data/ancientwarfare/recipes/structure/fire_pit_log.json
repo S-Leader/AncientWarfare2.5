@@ -1,0 +1,18 @@
+{
+  "type": "ancientwarfare:legacy_shaped",
+  "pattern": [
+    " S ",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "stickWood"
+    }
+  },
+  "result": {
+    "type": "minecraft:item_nbt",
+    "item": "ancientwarfarestructure:fire_pit",
+    "nbt": "{variant:\"log\",lit:0b}"
+  }
+}

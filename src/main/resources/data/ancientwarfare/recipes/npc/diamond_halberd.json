@@ -1,0 +1,21 @@
+{
+  "type": "ancientwarfare:legacy_shaped",
+  "pattern": [
+    " ##",
+    "#S#",
+    " S "
+  ],
+  "key": {
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "stickWood"
+    },
+    "#": {
+      "type": "forge:ore_dict",
+      "ore": "gemDiamond"
+    }
+  },
+  "result": {
+    "item": "ancientwarfarenpc:diamond_halberd"
+  }
+}
