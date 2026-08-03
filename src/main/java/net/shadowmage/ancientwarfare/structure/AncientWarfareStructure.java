@@ -9,7 +9,6 @@ import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -183,21 +182,9 @@ public final class AncientWarfareStructure {
     }
 
     @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
-        if (AWStructureStatics.enableWorldGen) {
-            WorldGenTickHandler.INSTANCE.start();
-        }
-    }
-
-    @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event) {
         if (AWStructureStatics.enableWorldGen) {
-            /*
-             * Never finish pending world generation while ServerChunkCache is
-             * closing. Discard it so no structure code can touch chunk tickets
-             * during DistanceManager shutdown.
-             */
-            WorldGenTickHandler.INSTANCE.shutdown();
+            WorldGenTickHandler.INSTANCE.finalTick();
         }
         statics.save();
     }

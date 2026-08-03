@@ -41,8 +41,8 @@ import net.shadowmage.ancientwarfare.npc.faction.FactionTracker;
 import net.shadowmage.ancientwarfare.npc.init.AWNPCSounds;
 import net.shadowmage.ancientwarfare.npc.item.ItemCommandBaton;
 import net.shadowmage.ancientwarfare.npc.registry.*;
+import net.shadowmage.ancientwarfare.structure.event.OneShotEntityDespawnListener;
 import net.shadowmage.ancientwarfare.structure.util.CapabilityRespawnData;
-import net.shadowmage.ancientwarfare.structure.util.SpawnerHelper;
 import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nullable;
@@ -99,7 +99,8 @@ public abstract class NpcFaction extends NpcBase {
         boolean removedBefore = isRemoved();
         super.checkDespawn();
         if (!removedBefore && isRemoved()) {
-            CapabilityRespawnData.get(this).ifPresent(respawnData -> SpawnerHelper.createSpawner(respawnData, level()));
+            CapabilityRespawnData.get(this).ifPresent(respawnData ->
+                    OneShotEntityDespawnListener.INSTANCE.queueRespawn(respawnData, level()));
         }
     }
 
