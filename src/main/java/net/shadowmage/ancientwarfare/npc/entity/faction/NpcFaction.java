@@ -42,7 +42,7 @@ import net.shadowmage.ancientwarfare.npc.init.AWNPCSounds;
 import net.shadowmage.ancientwarfare.npc.item.ItemCommandBaton;
 import net.shadowmage.ancientwarfare.npc.registry.*;
 import net.shadowmage.ancientwarfare.structure.event.OneShotEntityDespawnListener;
-import net.shadowmage.ancientwarfare.structure.util.CapabilityRespawnData;
+import net.shadowmage.ancientwarfare.structure.util.RespawnData;
 import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nullable;
@@ -97,10 +97,19 @@ public abstract class NpcFaction extends NpcBase {
     @Override
     public void checkDespawn() {
         boolean removedBefore = isRemoved();
+        Level currentLevel = level();
+
+        // Snapshot before Mob#checkDespawn can call discard(). EntityLeaveLevelEvent
+        // invalidates Forge capabilities synchronously, so reading the capability
+        // after super.checkDespawn() loses the one-shot spawner data.
+        RespawnData respawnSnapshot = removedBefore
+                ? null
+                : OneShotEntityDespawnListener.INSTANCE.snapshotRespawnData(this);
+
         super.checkDespawn();
-        if (!removedBefore && isRemoved()) {
-            CapabilityRespawnData.get(this).ifPresent(respawnData ->
-                    OneShotEntityDespawnListener.INSTANCE.queueRespawn(respawnData, level()));
+
+        if (!removedBefore && isRemoved() && respawnSnapshot != null) {
+            OneShotEntityDespawnListener.INSTANCE.queueRespawn(respawnSnapshot, currentLevel);
         }
     }
 

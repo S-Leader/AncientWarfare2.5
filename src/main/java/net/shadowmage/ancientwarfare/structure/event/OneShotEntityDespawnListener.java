@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
@@ -67,6 +68,18 @@ public final class OneShotEntityDespawnListener {
     }
 
     /**
+     * Takes a detached snapshot while the entity capability is still valid.
+     * Mob#checkDespawn discards the entity synchronously, and the capability is
+     * invalidated from EntityLeaveLevelEvent before checkDespawn returns.
+     */
+    public RespawnData snapshotRespawnData(Entity entity) {
+        return CapabilityRespawnData.get(entity)
+                .filter(IRespawnData::canRespawn)
+                .map(this::copyRespawnData)
+                .orElse(null);
+    }
+
+    /**
      * Queues a detached copy of the respawn data without touching the world.
      * This method is safe to call from entity removal/despawn callbacks.
      */
@@ -75,11 +88,7 @@ public final class OneShotEntityDespawnListener {
             return;
         }
 
-        RespawnData snapshot = new RespawnData();
-        snapshot.setRespawnPos(data.getRespawnPos().immutable());
-        snapshot.setSpawnerSettings(data.getSpawnerSettings().copy());
-        snapshot.setSpawnTime(data.getSpawnTime());
-
+        RespawnData snapshot = copyRespawnData(data);
         PendingRespawn pending = new PendingRespawn(level.dimension(), snapshot);
         if (pendingKeys.add(pending.key())) {
             pendingRespawns.addLast(pending);
@@ -117,15 +126,20 @@ public final class OneShotEntityDespawnListener {
                 continue;
             }
 
-            pendingKeys.remove(pending.key());
-            readyRespawns.add(new ReadyRespawn(level, pending.data()));
+            readyRespawns.add(new ReadyRespawn(level, pending));
             spawnersRemaining--;
         }
 
         // Execute world writes only after the queue iteration has finished, so any
         // callbacks caused by block placement cannot mutate the queue being iterated.
+        // A failed placement is queued again instead of silently losing the NPC.
         for (ReadyRespawn ready : readyRespawns) {
-            SpawnerHelper.createSpawner(ready.data(), ready.level());
+            PendingRespawn pending = ready.pending();
+            if (SpawnerHelper.createSpawner(pending.data(), ready.level())) {
+                pendingKeys.remove(pending.key());
+            } else {
+                pendingRespawns.addLast(pending);
+            }
         }
     }
 
@@ -144,6 +158,14 @@ public final class OneShotEntityDespawnListener {
         pendingKeys.clear();
     }
 
+    private RespawnData copyRespawnData(IRespawnData data) {
+        RespawnData snapshot = new RespawnData();
+        snapshot.setRespawnPos(data.getRespawnPos().immutable());
+        snapshot.setSpawnerSettings(data.getSpawnerSettings().copy());
+        snapshot.setSpawnTime(data.getSpawnTime());
+        return snapshot;
+    }
+
     private record PendingRespawn(ResourceKey<Level> dimension, RespawnData data) {
         private PendingRespawnKey key() {
             return new PendingRespawnKey(dimension, data.getRespawnPos().asLong());
@@ -156,6 +178,6 @@ public final class OneShotEntityDespawnListener {
         }
     }
 
-    private record ReadyRespawn(ServerLevel level, RespawnData data) {
+    private record ReadyRespawn(ServerLevel level, PendingRespawn pending) {
     }
 }

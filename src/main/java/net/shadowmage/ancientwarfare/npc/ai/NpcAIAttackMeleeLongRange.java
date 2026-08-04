@@ -34,7 +34,10 @@ public class NpcAIAttackMeleeLongRange extends NpcAIAttack<NpcBase> {
     protected void doAttack(double distanceToEntity) {
         npc.removeAITask(TASK_MOVE);
         if (getAttackDelay() <= 0) {
-            npc.swing(InteractionHand.MAIN_HAND);
+            // The two-argument form updates the server entity and broadcasts the
+            // animation to tracking clients. SWINGING_ARMS remains disabled for
+            // combat, so this produces one visible swing instead of two cycles.
+            npc.swing(InteractionHand.MAIN_HAND, true);
             npc.doHurtTarget(getTarget());
             setAttackDelay(getCoolDown());
             npc.addExperience(AWNPCStatics.npcXpFromAttack);
