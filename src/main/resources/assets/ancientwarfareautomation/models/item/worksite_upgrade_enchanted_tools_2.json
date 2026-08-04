@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ancientwarfare:items/automation/upgrade_enchanted_tools_2"
+  }
+}
