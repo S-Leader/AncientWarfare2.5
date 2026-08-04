@@ -33,7 +33,11 @@ public class TileWoodenCoffin extends TileCoffin {
     }
 
     public void setVariant(BlockWoodenCoffin.Variant variant) {
-        this.variant = variant;
+        BlockWoodenCoffin.Variant safeVariant = variant == null ? BlockWoodenCoffin.Variant.OAK : variant;
+        if (this.variant != safeVariant) {
+            this.variant = safeVariant;
+            setChanged();
+        }
     }
 
     @Override
@@ -76,10 +80,13 @@ public class TileWoodenCoffin extends TileCoffin {
     }
 
     public void setUpright(boolean upright) {
-        this.upright = upright;
+        if (this.upright != upright) {
+            this.upright = upright;
+            setChanged();
+        }
     }
 
     public boolean getUpright() {
-        return upright;
+        return getValueFromMain(TileWoodenCoffin.class, TileWoodenCoffin::getUpright, upright, () -> false);
     }
 }

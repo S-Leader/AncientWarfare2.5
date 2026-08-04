@@ -58,11 +58,18 @@ public class StoneCoffinRenderer extends RenderLootInfo<TileStoneCoffin> impleme
 
     @Override
     public void render(TileStoneCoffin te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-        super.render(te, x, y, z, partialTicks, destroyStage, alpha);
-        BlockState state = te.getWorld().getBlockState(te.getPos());
-        if (state.getBlock() != AWStructureBlocks.STONE_COFFIN || Boolean.TRUE.equals(state.getValue(BlockMulti.INVISIBLE))) {
+        if (te == null || te.isRemoved() || te.getLevel() == null
+                || te.getLevel().getBlockEntity(te.getPos()) != te
+                || !te.getLevel().getBlockState(te.getPos()).is(AWStructureBlocks.STONE_COFFIN)) {
             return;
         }
+        BlockState state = te.getBlockState();
+        if (!state.is(AWStructureBlocks.STONE_COFFIN)
+                || !state.hasProperty(BlockMulti.INVISIBLE)
+                || Boolean.TRUE.equals(state.getValue(BlockMulti.INVISIBLE))) {
+            return;
+        }
+        super.render(te, x, y, z, partialTicks, destroyStage, alpha);
         float rotation = te.getDirection().getRotationAngle();
 
         GlStateManager.pushMatrix();
@@ -88,7 +95,7 @@ public class StoneCoffinRenderer extends RenderLootInfo<TileStoneCoffin> impleme
 
         GlStateManager.rotate(180, 1, 0, 0);
         GlStateManager.scale(0.074f, 0.074f, 0.074f);
-        ResourceLocation texture = TEXTURES.get(te.getVariant());
+        ResourceLocation texture = TEXTURES.getOrDefault(te.getVariant(), TEXTURES.get(BlockStoneCoffin.Variant.STONE));
         VertexConsumer vertices = getActiveBufferSource().getBuffer(RenderType.entityCutoutNoCull(texture));
         float lidAngle = te.getPrevLidAngle() + (te.getLidAngle() - te.getPrevLidAngle()) * partialTicks;
         LegacyModelBase.renderWithContext(getActivePoseStack(), vertices, getActivePackedLight(),
@@ -102,7 +109,8 @@ public class StoneCoffinRenderer extends RenderLootInfo<TileStoneCoffin> impleme
         BlockStoneCoffin.Variant variant = ItemBlockStoneCoffin.getVariant(stack);
 
         poseStack.pushPose();
-        VertexConsumer vertices = buffer.getBuffer(RenderType.entityCutoutNoCull(TEXTURES.get(variant)));
+        ResourceLocation texture = TEXTURES.getOrDefault(variant, TEXTURES.get(BlockStoneCoffin.Variant.STONE));
+        VertexConsumer vertices = buffer.getBuffer(RenderType.entityCutoutNoCull(texture));
         LegacyModelBase.renderWithContext(poseStack, vertices, packedLight, packedOverlay, STONE_COFFIN_MODEL::renderAll);
         poseStack.popPose();
     }

@@ -12,6 +12,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.block.BlockRotationHandler;
 import net.shadowmage.ancientwarfare.core.datafixes.ComponentItemFixer;
+import net.shadowmage.ancientwarfare.core.util.BlockTools;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
 import net.shadowmage.ancientwarfare.structure.api.IStructureBuilder;
@@ -61,6 +62,12 @@ public class TemplateRuleBlockTile<T extends BlockEntity> extends TemplateRuleVa
                 tile.load(ComponentItemFixer.fixRecursively(tag.copy()));
                 rotateTe(tile, turns);
                 tile.setChanged();
+                if (!world.isClientSide) {
+                    // The block update sent by super.handlePlacement predates the
+                    // restored tile NBT.  Send the final data so dynamically
+                    // rendered blocks (notably coffins) do not stay at defaults.
+                    BlockTools.notifyBlockUpdate(tile);
+                }
             } catch (Exception e) {
                 AncientWarfareStructure.LOG.error("Error loading block entity data from template for {}", tile.getClass(), e);
             }

@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
+import net.shadowmage.ancientwarfare.core.util.BlockTools;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 import net.shadowmage.ancientwarfare.structure.tile.TileMulti;
 
@@ -70,6 +71,13 @@ public abstract class BlockMulti<T extends TileMulti> extends BlockBaseStructure
             te.setPlacementDirection(world, pos, state, placer.getDirection(), placer.getYRot());
             placeInvisibleBlocks(world, state, te);
             te.setMainPosOnAdditionalBlocks();
+            te.setChanged();
+            if (!world.isClientSide) {
+                // setPlacedBy runs after the block state has already been sent to
+                // clients.  Send the completed BE data (direction, variant,
+                // upright state, main-block links, etc.) once placement is done.
+                BlockTools.notifyBlockUpdate(te);
+            }
         });
     }
 

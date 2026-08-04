@@ -67,6 +67,21 @@
         },
         {
           "type": "minecraft:item",
+          "name": "minecraft:netherite_scrap",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 2,
+                "max": 3,
+                "type": "minecraft:uniform"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
           "name": "ancientwarfarenpc:coin",
           "entryName": "coin_copper",
           "weight": 3,

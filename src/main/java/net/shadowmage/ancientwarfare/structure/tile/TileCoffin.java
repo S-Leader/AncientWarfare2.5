@@ -55,7 +55,13 @@ public abstract class TileCoffin extends TileMulti implements ITickable, ISpecia
     }
 
     public void setDirection(BlockCoffin.CoffinDirection direction) {
-        this.direction = direction;
+        BlockCoffin.CoffinDirection safeDirection = direction == null
+                ? BlockCoffin.CoffinDirection.NORTH
+                : direction;
+        if (this.direction != safeDirection) {
+            this.direction = safeDirection;
+            setChanged();
+        }
     }
 
     public BlockCoffin.CoffinDirection getDirection() {
@@ -68,6 +74,7 @@ public abstract class TileCoffin extends TileMulti implements ITickable, ISpecia
             if (!open && !opening) {
                 playSound();
                 opening = true;
+                setChanged();
                 BlockTools.notifyBlockUpdate(this);
             }
             return;
@@ -118,6 +125,11 @@ public abstract class TileCoffin extends TileMulti implements ITickable, ISpecia
                 dropLoot(EntityTools.findClosestPlayer(world, pos, 100));
                 prevLidAngle = lidAngle;
                 open = true;
+                opening = false;
+                setChanged();
+                if (!world.isClientSide) {
+                    BlockTools.notifyBlockUpdate(this);
+                }
             }
         }
     }

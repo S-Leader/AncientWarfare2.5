@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.shadowmage.ancientwarfare.core.tile.IBlockBreakHandler;
 import net.shadowmage.ancientwarfare.core.tile.TileUpdatable;
+import net.shadowmage.ancientwarfare.core.util.BlockTools;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 
 import java.util.Optional;
@@ -57,7 +58,14 @@ public abstract class TileMulti extends TileUpdatable implements IBlockBreakHand
     }
 
     public void setMainBlockPos(BlockPos mainBlockPos) {
+        if (mainBlockPos != null && mainBlockPos.equals(this.mainBlockPos)) {
+            return;
+        }
         this.mainBlockPos = mainBlockPos;
+        setChanged();
+        if (level != null && !level.isClientSide) {
+            BlockTools.notifyBlockUpdate(this);
+        }
     }
 
     public Optional<BlockPos> getMainBlockPos() {

@@ -21,7 +21,11 @@ public class TileStoneCoffin extends TileCoffin {
     private BlockStoneCoffin.Variant variant = BlockStoneCoffin.Variant.STONE;
 
     public void setVariant(BlockStoneCoffin.Variant variant) {
-        this.variant = variant;
+        BlockStoneCoffin.Variant safeVariant = variant == null ? BlockStoneCoffin.Variant.STONE : variant;
+        if (this.variant != safeVariant) {
+            this.variant = safeVariant;
+            setChanged();
+        }
     }
 
     @Override
