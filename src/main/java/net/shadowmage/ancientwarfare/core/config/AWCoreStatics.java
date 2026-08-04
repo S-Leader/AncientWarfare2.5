@@ -119,7 +119,7 @@ public class AWCoreStatics extends ModConfiguration {
             "grimoireofgaia:vampire > dungeonmobs:dmvampire",
             "grimoireofgaia:harpy_wizard > twilightforest:skeleton_druid",
             "dungeonmobs:dmvampire > grimoireofgaia:vampire",
-            "grimoireofgaia:sharko > oe:drowned",
+            "grimoireofgaia:sharko > minecraft:drowned",
             "grimoireofgaia:gelatinous_slime > miencraft:slime",
             "mod_lavacow:banshee > mocreatures:wraith",
             "dungeonmobs:dmshrieker > iceandfire:dread_ghoul",

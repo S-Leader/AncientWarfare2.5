@@ -19,7 +19,10 @@ import javax.annotation.Nullable;
 /**
  * Multi-output furnace recipe serializer used by the four recyclable iron-shot recipes.
  * Vanilla 1.20.1 smelting JSON only exposes a single-item result, so the legacy 3/6/13/19
- * nugget outputs require a tiny custom serializer.
+ * nugget outputs require a tiny custom serializer. The recipe itself deliberately extends
+ * SmeltingRecipe rather than only AbstractCookingRecipe: anything returned from
+ * RecipeManager#getAllRecipesFor(RecipeType.SMELTING) must be safely castable to the
+ * vanilla smelting class by compatibility mods.
  */
 @Mod.EventBusSubscriber(modid = AncientWarfareVehicles.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class SmeltingRecipeRegistry {
@@ -36,10 +39,10 @@ public final class SmeltingRecipeRegistry {
         });
     }
 
-    public static final class MultiOutputSmeltingRecipe extends AbstractCookingRecipe {
+    public static final class MultiOutputSmeltingRecipe extends SmeltingRecipe {
         public MultiOutputSmeltingRecipe(ResourceLocation id, String group, Ingredient ingredient,
                                          ItemStack result, float experience, int cookingTime) {
-            super(RecipeType.SMELTING, id, group, CookingBookCategory.MISC, ingredient, result, experience, cookingTime);
+            super(id, group, CookingBookCategory.MISC, ingredient, result, experience, cookingTime);
         }
 
         @Override

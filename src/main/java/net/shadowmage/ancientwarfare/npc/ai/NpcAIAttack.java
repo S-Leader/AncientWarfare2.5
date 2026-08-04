@@ -40,7 +40,11 @@ public abstract class NpcAIAttack<T extends NpcBase> extends NpcAI<T> {
         target = getAttackTarget().orElse(null);
         moveRetryDelay = 0;
         npc.addAITask(TASK_ATTACK);
-        npc.setSwingingArms(true);
+        // Combat uses LivingEntity's normal one-shot swing animation when an
+        // attack is actually performed. Keeping SWINGING_ARMS enabled for the
+        // whole goal adds ModelNpc's synthetic work cycle on top of that swing,
+        // making every melee hit appear to swing twice.
+        npc.setSwingingArms(false);
         attackDelay = 0;
     }
 

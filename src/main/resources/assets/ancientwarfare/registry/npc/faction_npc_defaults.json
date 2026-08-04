@@ -12,7 +12,7 @@
     "can_break_doors": true,
     "additional_attributes": {
       "burns_in_sun": false,
-      "horse_entity": "net.minecraft.entity.passive.EntityHorse"
+      "horse_entity": "net.minecraft.world.entity.animal.Horse"
     },
     "loot_table": "minecraft:empty",
     "height": {
