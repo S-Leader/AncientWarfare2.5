@@ -1840,7 +1840,7 @@ rule:
 plugin=inventory
 number=12
 data:
-JSON:{blockState:{blockName:"minecraft:chest",properties:{facing:"east"}},lootLevel:0,teData:{ForgeData:{generatedInventory:1b},Items:[{Slot:0b,id:"minecraft:web",Count:1b,Damage:0s},{Slot:1b,id:"minecraft:gold_ingot",Count:4b,Damage:0s},{Slot:2b,id:"minecraft:web",Count:1b,Damage:0s},{Slot:3b,id:"eplus:decorative_book",Count:1b,Damage:1s},{Slot:4b,id:"minecraft:web",Count:1b,Damage:0s},{Slot:6b,id:"minecraft:paper",Count:10b,Damage:0s},{Slot:7b,id:"minecraft:web",Count:1b,Damage:0s},{Slot:8b,id:"ebwizardry:magic_crystal",Count:8b,Damage:0s},{Slot:9b,id:"minecraft:paper",Count:10b,Damage:0s},{Slot:10b,id:"ebwizardry:poison_bomb",Count:1b,Damage:0s},{Slot:12b,id:"minecraft:paper",Count:10b,Damage:0s},{Slot:13b,id:"ancientwarfarenpc:coin",Count:8b,tag:{metal:"gold"},Damage:0s},{Slot:14b,id:"minecraft:paper",Count:10b,Damage:0s},{Slot:15b,id:"minecraft:web",Count:1b,Damage:0s},{Slot:16b,id:"minecraft:gold_ingot",Count:4b,Damage:0s},{Slot:18b,id:"minecraft:web",Count:1b,Damage:0s},{Slot:19b,id:"ancientwarfarenpc:coin",Count:16b,tag:{metal:"gold"},Damage:0s},{Slot:20b,id:"minecraft:web",Count:1b,Damage:0s},{Slot:21b,id:"ebwizardry:magic_crystal",Count:8b,Damage:0s},{Slot:22b,id:"ancientwarfareautomation:worksite_upgrade",Count:1b,Damage:4s},{Slot:23b,id:"minecraft:paper",Count:3b,Damage:0s},{Slot:24b,id:"ebwizardry:poison_bomb",Count:1b,Damage:0s},{Slot:25b,id:"minecraft:paper",Count:10b,Damage:0s},{Slot:26b,id:"minecraft:web",Count:1b,Damage:0s}],id:"minecraft:chest",Lock:""},inventoryData:{length:24,inventoryContents:[{id:"minecraft:web",Count:1b,slot:0,Damage:0s},{id:"minecraft:gold_ingot",Count:4b,slot:1,Damage:0s},{id:"minecraft:web",Count:1b,slot:2,Damage:0s},{id:"eplus:decorative_book",Count:1b,slot:3,Damage:1s},{id:"minecraft:web",Count:1b,slot:4,Damage:0s},{id:"minecraft:paper",Count:10b,slot:5,Damage:0s},{id:"minecraft:web",Count:1b,slot:6,Damage:0s},{id:"ebwizardry:magic_crystal",Count:8b,slot:7,Damage:0s},{id:"minecraft:paper",Count:10b,slot:8,Damage:0s},{id:"ebwizardry:poison_bomb",Count:1b,slot:9,Damage:0s},{id:"minecraft:paper",Count:10b,slot:10,Damage:0s},{id:"ancientwarfarenpc:coin",Count:8b,tag:{metal:"gold"},slot:11,Damage:0s},{id:"minecraft:paper",Count:10b,slot:12,Damage:0s},{id:"minecraft:web",Count:1b,slot:13,Damage:0s},{id:"minecraft:gold_ingot",Count:4b,slot:14,Damage:0s},{id:"minecraft:web",Count:1b,slot:15,Damage:0s},{id:"ancientwarfarenpc:coin",Count:16b,tag:{metal:"gold"},slot:16,Damage:0s},{id:"minecraft:web",Count:1b,slot:17,Damage:0s},{id:"ebwizardry:magic_crystal",Count:8b,slot:18,Damage:0s},{id:"ancientwarfareautomation:worksite_upgrade",Count:1b,slot:19,Damage:4s},{id:"minecraft:paper",Count:3b,slot:20,Damage:0s},{id:"ebwizardry:poison_bomb",Count:1b,slot:21,Damage:0s},{id:"minecraft:paper",Count:10b,slot:22,Damage:0s},{id:"minecraft:web",Count:1b,slot:23,Damage:0s}]},legacyFeatures:1b}
+JSON:{blockState:{blockName:"minecraft:chest",properties:{facing:"east"}},lootLevel:0,teData:{ForgeData:{generatedInventory:1b},Items:[{Slot:0b,id:"minecraft:web",Count:1b,Damage:0s},{Slot:1b,id:"minecraft:gold_ingot",Count:4b,Damage:0s},{Slot:2b,id:"minecraft:web",Count:1b,Damage:0s},{Slot:3b,id:"eplus:decorative_book",Count:1b,Damage:1s},{Slot:4b,id:"minecraft:web",Count:1b,Damage:0s},{Slot:6b,id:"minecraft:paper",Count:10b,Damage:0s},{Slot:7b,id:"minecraft:web",Count:1b,Damage:0s},{Slot:8b,id:"ebwizardry:magic_crystal",Count:8b,Damage:0s},{Slot:9b,id:"minecraft:paper",Count:10b,Damage:0s},{Slot:10b,id:"ebwizardry:poison_bomb",Count:1b,Damage:0s},{Slot:12b,id:"minecraft:paper",Count:10b,Damage:0s},{Slot:13b,id:"ancientwarfarenpc:coin",Count:8b,tag:{metal:"gold"},Damage:0s},{Slot:14b,id:"minecraft:paper",Count:10b,Damage:0s},{Slot:15b,id:"minecraft:web",Count:1b,Damage:0s},{Slot:16b,id:"minecraft:gold_ingot",Count:4b,Damage:0s},{Slot:18b,id:"minecraft:web",Count:1b,Damage:0s},{Slot:19b,id:"ancientwarfarenpc:coin",Count:16b,tag:{metal:"gold"},Damage:0s},{Slot:20b,id:"minecraft:web",Count:1b,Damage:0s},{Slot:21b,id:"ebwizardry:magic_crystal",Count:8b,Damage:0s},{Slot:22b,id:"ancientwarfareautomation:worksite_upgrade_enchanted_tools_1",Count:1b,Damage:0s},{Slot:23b,id:"minecraft:paper",Count:3b,Damage:0s},{Slot:24b,id:"ebwizardry:poison_bomb",Count:1b,Damage:0s},{Slot:25b,id:"minecraft:paper",Count:10b,Damage:0s},{Slot:26b,id:"minecraft:web",Count:1b,Damage:0s}],id:"minecraft:chest",Lock:""},inventoryData:{length:24,inventoryContents:[{id:"minecraft:web",Count:1b,slot:0,Damage:0s},{id:"minecraft:gold_ingot",Count:4b,slot:1,Damage:0s},{id:"minecraft:web",Count:1b,slot:2,Damage:0s},{id:"eplus:decorative_book",Count:1b,slot:3,Damage:1s},{id:"minecraft:web",Count:1b,slot:4,Damage:0s},{id:"minecraft:paper",Count:10b,slot:5,Damage:0s},{id:"minecraft:web",Count:1b,slot:6,Damage:0s},{id:"ebwizardry:magic_crystal",Count:8b,slot:7,Damage:0s},{id:"minecraft:paper",Count:10b,slot:8,Damage:0s},{id:"ebwizardry:poison_bomb",Count:1b,slot:9,Damage:0s},{id:"minecraft:paper",Count:10b,slot:10,Damage:0s},{id:"ancientwarfarenpc:coin",Count:8b,tag:{metal:"gold"},slot:11,Damage:0s},{id:"minecraft:paper",Count:10b,slot:12,Damage:0s},{id:"minecraft:web",Count:1b,slot:13,Damage:0s},{id:"minecraft:gold_ingot",Count:4b,slot:14,Damage:0s},{id:"minecraft:web",Count:1b,slot:15,Damage:0s},{id:"ancientwarfarenpc:coin",Count:16b,tag:{metal:"gold"},slot:16,Damage:0s},{id:"minecraft:web",Count:1b,slot:17,Damage:0s},{id:"ebwizardry:magic_crystal",Count:8b,slot:18,Damage:0s},{id:"ancientwarfareautomation:worksite_upgrade_enchanted_tools_1",Count:1b,slot:19,Damage:0s},{id:"minecraft:paper",Count:3b,slot:20,Damage:0s},{id:"ebwizardry:poison_bomb",Count:1b,slot:21,Damage:0s},{id:"minecraft:paper",Count:10b,slot:22,Damage:0s},{id:"minecraft:web",Count:1b,slot:23,Damage:0s}]},legacyFeatures:1b}
 :enddata
 :endrule
 
@@ -2304,7 +2304,7 @@ rule:
 plugin=vanillaSign
 number=70
 data:
-JSON:{signContents0:"",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"west"}},signContents2:"",signContents1:"Mana Essence§r§r§r",signContents3:"",rotation:0}
+JSON:{signContents0:"",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"west"}},signContents2:"",signContents1:"Mana Essencerrr",signContents3:"",rotation:0}
 :enddata
 :endrule
 
@@ -2312,7 +2312,7 @@ rule:
 plugin=vanillaSign
 number=71
 data:
-JSON:{signContents0:"",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"west"}},signContents2:"",signContents1:"Essence of Ice§r§r§r",signContents3:"",rotation:0}
+JSON:{signContents0:"",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"west"}},signContents2:"",signContents1:"Essence of Icerrr",signContents3:"",rotation:0}
 :enddata
 :endrule
 
@@ -2320,7 +2320,7 @@ rule:
 plugin=vanillaSign
 number=72
 data:
-JSON:{signContents0:"Curse of§r§r§r",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"west"}},signContents2:"",signContents1:"Enfeeblement§r§r§r",signContents3:"",rotation:0}
+JSON:{signContents0:"Curse ofrrr",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"west"}},signContents2:"",signContents1:"Enfeeblementrrr",signContents3:"",rotation:0}
 :enddata
 :endrule
 
@@ -2328,7 +2328,7 @@ rule:
 plugin=vanillaSign
 number=73
 data:
-JSON:{signContents0:"",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"west"}},signContents2:"",signContents1:"Bottled Death§r§r§r",signContents3:"",rotation:0}
+JSON:{signContents0:"",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"west"}},signContents2:"",signContents1:"Bottled Deathrrr",signContents3:"",rotation:0}
 :enddata
 :endrule
 
@@ -2656,7 +2656,7 @@ rule:
 plugin=vanillaSign
 number=114
 data:
-JSON:{signContents0:"",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"west"}},signContents2:"",signContents1:"Elixir of Fire§r§r§r",signContents3:"",rotation:0}
+JSON:{signContents0:"",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"west"}},signContents2:"",signContents1:"Elixir of Firerrr",signContents3:"",rotation:0}
 :enddata
 :endrule
 
@@ -2680,7 +2680,7 @@ rule:
 plugin=vanillaSign
 number=117
 data:
-JSON:{signContents0:"",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"west"}},signContents2:"",signContents1:"Spider Venom§r§r§r",signContents3:"",rotation:0}
+JSON:{signContents0:"",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"west"}},signContents2:"",signContents1:"Spider Venomrrr",signContents3:"",rotation:0}
 :enddata
 :endrule
 
@@ -3008,7 +3008,7 @@ rule:
 plugin=vanillaSign
 number=158
 data:
-JSON:{signContents0:"",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"west"}},signContents2:"THE CELL!§r§r§r",signContents1:"DO NOT OPEN§r§r§r",signContents3:"",rotation:0}
+JSON:{signContents0:"",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"west"}},signContents2:"THE CELL!rrr",signContents1:"DO NOT OPENrrr",signContents3:"",rotation:0}
 :enddata
 :endrule
 

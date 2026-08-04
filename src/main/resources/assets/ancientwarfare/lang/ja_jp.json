@@ -1156,5 +1156,17 @@
   "block.ancientwarfareautomation.torque_shaft_heavy": "ヘビートルクシャフト",
   "block.ancientwarfareautomation.torque_distributor_light": "ライトトルクディストリビューター",
   "block.ancientwarfareautomation.torque_distributor_medium": "ミディアムトルクディストリビューター",
-  "block.ancientwarfareautomation.torque_distributor_heavy": "ヘビートルクディストリビューター"
+  "block.ancientwarfareautomation.torque_distributor_heavy": "ヘビートルクディストリビューター",
+  "item.ancientwarfareautomation.worksite_upgrade_size_medium": "中範囲化アップグレード",
+  "item.ancientwarfareautomation.worksite_upgrade_size_large": "広範囲化アップグレード",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_medium": "中規模採石場アップグレード",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_large": "大規模採石場アップグレード",
+  "item.ancientwarfareautomation.worksite_upgrade_enchanted_tools_1": "軽度採掘強化アップグレード",
+  "item.ancientwarfareautomation.worksite_upgrade_enchanted_tools_2": "高度採掘強化アップグレード",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_1": "基本ツールクオリティアップグレード",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_2": "中程度ツールクオリティアップグレード",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_3": "高度ツールクオリティアップグレード",
+  "item.ancientwarfareautomation.worksite_upgrade_basic_chunk_loader": "基本チャンクローダーアップグレード",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_chunk_loader": "採石場チャンクローダーアップグレード",
+  "item.ancientwarfareautomation.worksite_upgrade": "Legacy Worksite Upgrade"
 }

@@ -687,5 +687,17 @@
   "block.ancientwarfareautomation.torque_shaft_heavy": "Heavy Torque Shaft",
   "block.ancientwarfareautomation.torque_distributor_light": "輕型扭力發電盤",
   "block.ancientwarfareautomation.torque_distributor_medium": "中型扭力發電盤",
-  "block.ancientwarfareautomation.torque_distributor_heavy": "重型扭力發電盤"
+  "block.ancientwarfareautomation.torque_distributor_heavy": "重型扭力發電盤",
+  "item.ancientwarfareautomation.worksite_upgrade_size_medium": "中型升級",
+  "item.ancientwarfareautomation.worksite_upgrade_size_large": "大型升級",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_medium": "中採礦場升級",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_large": "大採礦場升級",
+  "item.ancientwarfareautomation.worksite_upgrade_enchanted_tools_1": "輕型魔法工具升級",
+  "item.ancientwarfareautomation.worksite_upgrade_enchanted_tools_2": "高及魔法工具升級",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_1": "基本工具品質升級",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_2": "中級工具品質升級",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_3": "高級工具品質升級",
+  "item.ancientwarfareautomation.worksite_upgrade_basic_chunk_loader": "基本區塊生級",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_chunk_loader": "採礦場區塊生級",
+  "item.ancientwarfareautomation.worksite_upgrade": "Legacy Worksite Upgrade"
 }

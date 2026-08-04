@@ -172,28 +172,22 @@
             "content_type": "item",
             "items": [
                 {
-                    "name": "ancientwarfareautomation:worksite_upgrade",
-                    "data": 0
+                    "name": "ancientwarfareautomation:worksite_upgrade_size_medium"
                 },
                 {
-                    "name": "ancientwarfareautomation:worksite_upgrade",
-                    "data": 1
+                    "name": "ancientwarfareautomation:worksite_upgrade_size_large"
                 },
                 {
-                    "name": "ancientwarfareautomation:worksite_upgrade",
-                    "data": 2
+                    "name": "ancientwarfareautomation:worksite_upgrade_quarry_medium"
                 },
                 {
-                    "name": "ancientwarfareautomation:worksite_upgrade",
-                    "data": 3
+                    "name": "ancientwarfareautomation:worksite_upgrade_quarry_large"
                 },
                 {
-                    "name": "ancientwarfareautomation:worksite_upgrade",
-                    "data": 4
+                    "name": "ancientwarfareautomation:worksite_upgrade_enchanted_tools_1"
                 },
                 {
-                    "name": "ancientwarfareautomation:worksite_upgrade",
-                    "data": 5
+                    "name": "ancientwarfareautomation:worksite_upgrade_enchanted_tools_2"
                 }
             ]
         },
@@ -201,24 +195,19 @@
             "content_type": "item",
             "items": [
                 {
-                    "name": "ancientwarfareautomation:worksite_upgrade",
-                    "data": 6
+                    "name": "ancientwarfareautomation:worksite_upgrade_tool_quality_1"
                 },
                 {
-                    "name": "ancientwarfareautomation:worksite_upgrade",
-                    "data": 7
+                    "name": "ancientwarfareautomation:worksite_upgrade_tool_quality_2"
                 },
                 {
-                    "name": "ancientwarfareautomation:worksite_upgrade",
-                    "data": 8
+                    "name": "ancientwarfareautomation:worksite_upgrade_tool_quality_3"
                 },
                 {
-                    "name": "ancientwarfareautomation:worksite_upgrade",
-                    "data": 9
+                    "name": "ancientwarfareautomation:worksite_upgrade_basic_chunk_loader"
                 },
                 {
-                    "name": "ancientwarfareautomation:worksite_upgrade",
-                    "data": 10
+                    "name": "ancientwarfareautomation:worksite_upgrade_quarry_chunk_loader"
                 }
             ]
         },

@@ -15,7 +15,6 @@
         }
     },
     "result": {
-        "item": "ancientwarfareautomation:worksite_upgrade",
-        "data": 9
+        "item": "ancientwarfareautomation:worksite_upgrade_basic_chunk_loader"
     }
 }

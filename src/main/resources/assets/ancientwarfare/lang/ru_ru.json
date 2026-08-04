@@ -1869,5 +1869,17 @@
   "block.ancientwarfareautomation.torque_shaft_heavy": "Тяжелый вал",
   "block.ancientwarfareautomation.torque_distributor_light": "Маленький распределительный вал",
   "block.ancientwarfareautomation.torque_distributor_medium": "Обычный распределительный вал",
-  "block.ancientwarfareautomation.torque_distributor_heavy": "Тяжелый распределительный вал"
+  "block.ancientwarfareautomation.torque_distributor_heavy": "Тяжелый распределительный вал",
+  "item.ancientwarfareautomation.worksite_upgrade_size_medium": "Улучшение - средняя ферма",
+  "item.ancientwarfareautomation.worksite_upgrade_size_large": "Улучшение - большая ферма",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_medium": "Улучшение - средняя каменоломня",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_large": "Улучшение - большая каменоломня",
+  "item.ancientwarfareautomation.worksite_upgrade_enchanted_tools_1": "Улучшение - простое зачарование инструментов",
+  "item.ancientwarfareautomation.worksite_upgrade_enchanted_tools_2": "Улучшение - усиленное зачарование инструментов",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_1": "Улучшение - базовое качество инструментов",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_2": "Улучшение - среднее качество инструментов",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_3": "Улучшение - продвинутое качество инструмента",
+  "item.ancientwarfareautomation.worksite_upgrade_basic_chunk_loader": "Улучшение - загрузчик чанков для ферм",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_chunk_loader": "Улучшение - загрузчик чанков для каменоломни",
+  "item.ancientwarfareautomation.worksite_upgrade": "Legacy Worksite Upgrade"
 }

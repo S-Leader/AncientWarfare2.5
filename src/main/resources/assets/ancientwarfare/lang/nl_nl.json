@@ -634,5 +634,17 @@
   "block.ancientwarfareautomation.torque_shaft_heavy": "Zwaar Torque Shaft",
   "block.ancientwarfareautomation.torque_distributor_light": "Licht Torque Verdeler",
   "block.ancientwarfareautomation.torque_distributor_medium": "Middel Torque Verdeler",
-  "block.ancientwarfareautomation.torque_distributor_heavy": "Zwaar Torque Verdeler"
+  "block.ancientwarfareautomation.torque_distributor_heavy": "Zwaar Torque Verdeler",
+  "item.ancientwarfareautomation.worksite_upgrade_size_medium": "Middel Bounds Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_size_large": "Grote Bounds Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_medium": "Middel Steengroeve Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_large": "Grote Steengroeve Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_enchanted_tools_1": "Lichte Betoverde Gereedschaapen Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_enchanted_tools_2": "Zware Betoverde Gereedschaapen Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_1": "Basic Gereedschaap Kwaliteit Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_2": "Intermediate Gereedschaap Kwaliteit Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_3": "Geavanceerde Gereedschaap Kwaliteit Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_basic_chunk_loader": "Basisch Chunkloader Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_chunk_loader": "Steengroeve Chunkloader Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade": "Legacy Worksite Upgrade"
 }

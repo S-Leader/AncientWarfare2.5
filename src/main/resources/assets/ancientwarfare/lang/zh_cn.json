@@ -1149,5 +1149,17 @@
   "block.ancientwarfareautomation.torque_shaft_heavy": "重型扭矩轴",
   "block.ancientwarfareautomation.torque_distributor_light": "轻型扭矩分配器",
   "block.ancientwarfareautomation.torque_distributor_medium": "中型扭矩分配器",
-  "block.ancientwarfareautomation.torque_distributor_heavy": "重型扭矩分配器"
+  "block.ancientwarfareautomation.torque_distributor_heavy": "重型扭矩分配器",
+  "item.ancientwarfareautomation.worksite_upgrade_size_medium": "中型界限升级",
+  "item.ancientwarfareautomation.worksite_upgrade_size_large": "大型界限升级",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_medium": "中型采石场升级",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_large": "大型采石场升级",
+  "item.ancientwarfareautomation.worksite_upgrade_enchanted_tools_1": "低附魔工具升级",
+  "item.ancientwarfareautomation.worksite_upgrade_enchanted_tools_2": "高附魔工具升级",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_1": "基本工具品质升级",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_2": "中级工具品质升级",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_3": "高级工具品质升级",
+  "item.ancientwarfareautomation.worksite_upgrade_basic_chunk_loader": "基础区块加载器升级",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_chunk_loader": "采石场区块加载升级",
+  "item.ancientwarfareautomation.worksite_upgrade": "Legacy Worksite Upgrade"
 }

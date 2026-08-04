@@ -49,6 +49,23 @@ public final class LegacyItemStack {
             };
             legacyMeta = 0;
         }
+        if ("ancientwarfareautomation:worksite_upgrade".equals(legacyItemName)) {
+            legacyItemName = switch (legacyMeta) {
+                case 0 -> "ancientwarfareautomation:worksite_upgrade_size_medium";
+                case 1 -> "ancientwarfareautomation:worksite_upgrade_size_large";
+                case 2 -> "ancientwarfareautomation:worksite_upgrade_quarry_medium";
+                case 3 -> "ancientwarfareautomation:worksite_upgrade_quarry_large";
+                case 4 -> "ancientwarfareautomation:worksite_upgrade_enchanted_tools_1";
+                case 5 -> "ancientwarfareautomation:worksite_upgrade_enchanted_tools_2";
+                case 6 -> "ancientwarfareautomation:worksite_upgrade_tool_quality_1";
+                case 7 -> "ancientwarfareautomation:worksite_upgrade_tool_quality_2";
+                case 8 -> "ancientwarfareautomation:worksite_upgrade_tool_quality_3";
+                case 9 -> "ancientwarfareautomation:worksite_upgrade_basic_chunk_loader";
+                case 10 -> "ancientwarfareautomation:worksite_upgrade_quarry_chunk_loader";
+                default -> legacyItemName;
+            };
+            legacyMeta = 0;
+        }
         if (legacyItemName != null && legacyItemName.startsWith("minecraft:")) {
             CompoundTag oldStack = new CompoundTag();
             oldStack.putString("id", legacyItemName);

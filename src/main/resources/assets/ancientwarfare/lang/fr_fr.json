@@ -832,5 +832,17 @@
   "block.ancientwarfareautomation.torque_shaft_heavy": "Arbre de torsion lourd",
   "block.ancientwarfareautomation.torque_distributor_light": "Distributeur de torsion léger",
   "block.ancientwarfareautomation.torque_distributor_medium": "Distributeur de torsion moyen",
-  "block.ancientwarfareautomation.torque_distributor_heavy": "Distributeur de torsion lourd"
+  "block.ancientwarfareautomation.torque_distributor_heavy": "Distributeur de torsion lourd",
+  "item.ancientwarfareautomation.worksite_upgrade_size_medium": "Amélioration de limite moyenne",
+  "item.ancientwarfareautomation.worksite_upgrade_size_large": "Amélioration de limite large",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_medium": "Amélioration de carrière moyenne",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_large": "Amélioration de carrière large",
+  "item.ancientwarfareautomation.worksite_upgrade_enchanted_tools_1": "Amélioration d'outils faiblement enchantés",
+  "item.ancientwarfareautomation.worksite_upgrade_enchanted_tools_2": "Amélioration d'outils hautement enchantés",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_1": "Amélioration de qualité d'outil de base",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_2": "Amélioration de qualité d'outil intermédiaire",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_3": "Amélioration de qualité d'outil avancée",
+  "item.ancientwarfareautomation.worksite_upgrade_basic_chunk_loader": "Amélioration de chargement de morceau de base",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_chunk_loader": "Amélioration de chargement de morceau de carrière",
+  "item.ancientwarfareautomation.worksite_upgrade": "Legacy Worksite Upgrade"
 }

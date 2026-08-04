@@ -12,7 +12,7 @@ import static net.shadowmage.ancientwarfare.core.datafixes.LegacyDataFixerRegist
  * the removed Forge 1.12 CompoundDataFixer API.
  */
 public final class AWDataFixes {
-    public static final int DATA_FIXER_VERSION = 12;
+    public static final int DATA_FIXER_VERSION = 13;
 
     private AWDataFixes() {
     }

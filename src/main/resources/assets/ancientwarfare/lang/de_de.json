@@ -1139,5 +1139,17 @@
   "block.ancientwarfareautomation.torque_shaft_heavy": "Schwere Drehmomentwelle",
   "block.ancientwarfareautomation.torque_distributor_light": "Leichter Drehmomentverteiler",
   "block.ancientwarfareautomation.torque_distributor_medium": "Mittlerer Drehmomentverteiler",
-  "block.ancientwarfareautomation.torque_distributor_heavy": "Schwerer Drehmomentverteiler"
+  "block.ancientwarfareautomation.torque_distributor_heavy": "Schwerer Drehmomentverteiler",
+  "item.ancientwarfareautomation.worksite_upgrade_size_medium": "Mittlerer Bounds Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_size_large": "Groß Bounds Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_medium": "Mittlerer Steinbruch Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_large": "Großer Steinbruch Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_enchanted_tools_1": "Leicht verzaubert Tools Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_enchanted_tools_2": "Hochverzaubert Tools Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_1": "Einfaches Upgrade der Werkzeugqualität",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_2": "hochwertiges Werkzeugqualitätsupgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_3": "Erweitertes Werkzeugqualitätsupgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_basic_chunk_loader": "Grundlegendes Chunkloader-Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_chunk_loader": "Steinbruch Chunkloader Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade": "Legacy Worksite Upgrade"
 }

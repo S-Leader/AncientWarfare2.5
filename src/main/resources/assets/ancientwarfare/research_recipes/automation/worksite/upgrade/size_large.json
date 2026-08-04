@@ -15,7 +15,6 @@
         }
     },
     "result": {
-        "item": "ancientwarfareautomation:worksite_upgrade",
-        "data": 1
+        "item": "ancientwarfareautomation:worksite_upgrade_size_large"
     }
 }

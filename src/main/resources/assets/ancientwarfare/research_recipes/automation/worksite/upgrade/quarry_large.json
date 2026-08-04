@@ -18,7 +18,6 @@
         }
     },
     "result": {
-        "item": "ancientwarfareautomation:worksite_upgrade",
-        "data": 3
+        "item": "ancientwarfareautomation:worksite_upgrade_quarry_large"
     }
 }

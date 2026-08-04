@@ -1902,5 +1902,17 @@
   "block.ancientwarfareautomation.torque_shaft_heavy": "Heavy Torque Shaft",
   "block.ancientwarfareautomation.torque_distributor_light": "Light Torque Distributor",
   "block.ancientwarfareautomation.torque_distributor_medium": "Medium Torque Distributor",
-  "block.ancientwarfareautomation.torque_distributor_heavy": "Heavy Torque Distributor"
+  "block.ancientwarfareautomation.torque_distributor_heavy": "Heavy Torque Distributor",
+  "item.ancientwarfareautomation.worksite_upgrade_size_medium": "Medium Bounds Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_size_large": "Large Bounds Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_medium": "Medium Quarry Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_large": "Large Quarry Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_enchanted_tools_1": "Lightly Enchanted Tools Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_enchanted_tools_2": "Highly Enchanted Tools Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_1": "Basic Tool Quality Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_2": "Intermediate Tool Quality Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_tool_quality_3": "Advanced Tool Quality Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_basic_chunk_loader": "Basic Chunkloader Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade_quarry_chunk_loader": "Quarry Chunkloader Upgrade",
+  "item.ancientwarfareautomation.worksite_upgrade": "Legacy Worksite Upgrade"
 }
