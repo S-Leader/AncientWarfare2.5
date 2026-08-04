@@ -9,7 +9,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.SlotItemHandler;
 import net.shadowmage.ancientwarfare.core.compat.CapabilityItemHandler;
-import net.shadowmage.ancientwarfare.core.init.AWCoreItems;
+import net.shadowmage.ancientwarfare.core.item.ItemBackpack;
 import net.shadowmage.ancientwarfare.core.util.EntityTools;
 import net.shadowmage.ancientwarfare.core.util.InventoryTools;
 
@@ -25,7 +25,10 @@ public class ContainerBackpack extends ContainerBase {
     public ContainerBackpack(Player player, int x, int y, int z) {
         super(player);
 
-        this.hand = EntityTools.getHandHoldingItem(player, AWCoreItems.BACKPACK);
+        this.hand = EntityTools.getHandHoldingItem(player, ItemBackpack.class);
+        if (hand == null) {
+            throw new IllegalStateException("Backpack container opened without a backpack in either hand");
+        }
         backpackStack = player.getItemInHand(hand);
         backpackSlotIndex = hand == InteractionHand.MAIN_HAND ? player.getInventory().selected : -1;
 
@@ -38,11 +41,11 @@ public class ContainerBackpack extends ContainerBase {
             addSlotToContainer(new SlotItemHandler(handler, i, xPos, yPos) {
                 @Override
                 public boolean mayPlace(ItemStack itemStack) {
-                    return itemStack.getItem() != AWCoreItems.BACKPACK && super.mayPlace(itemStack);
+                    return !ItemBackpack.isBackpack(itemStack) && super.mayPlace(itemStack);
                 }
             });
         }
-        int height = (backpackStack.getDamageValue() + 1) * 18 + 8;
+        int height = ((ItemBackpack) backpackStack.getItem()).getRows() * 18 + 8;
         guiHeight = addPlayerSlots(height + 8) + 8;
     }
 

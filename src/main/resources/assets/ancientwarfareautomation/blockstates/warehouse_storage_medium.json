@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "size=medium": {
+            "model": "ancientwarfareautomation:block/warehouse_storage_medium"
+        }
+    }
+}

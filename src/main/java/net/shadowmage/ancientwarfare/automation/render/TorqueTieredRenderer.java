@@ -31,7 +31,7 @@ public abstract class TorqueTieredRenderer<T extends TileTorqueBase> extends Bas
 
     @Override
     protected IconTransformation getIconTransform(ItemStack stack) {
-        return iconTransforms.get(TorqueTier.values()[stack.getDamageValue()]);
+        return iconTransforms.get(TorqueTier.fromItemStack(stack));
     }
 
     @Override
@@ -41,7 +41,7 @@ public abstract class TorqueTieredRenderer<T extends TileTorqueBase> extends Bas
 
     @Override
     protected TextureAtlasSprite getQuadSprite(ItemStack stack) {
-        return sprites.get(TorqueTier.byMetadata(stack.getDamageValue()));
+        return sprites.get(TorqueTier.fromItemStack(stack));
     }
 
     public TextureAtlasSprite getSprite(TorqueTier torqueTier) {

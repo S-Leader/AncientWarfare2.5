@@ -14,15 +14,21 @@ import net.shadowmage.ancientwarfare.core.util.LegacyCreativeTabContents;
 
 public class ItemBlockTorqueTile extends ItemBlockBase {
     private final IRotatableBlock rotatable;
+    private final boolean legacyVariants;
 
     public ItemBlockTorqueTile(Block block) {
+        this(block, true);
+    }
+
+    public ItemBlockTorqueTile(Block block, boolean legacyVariants) {
         super(block);
+        this.legacyVariants = legacyVariants;
         if (!(block instanceof IRotatableBlock rotatableBlock)) {
             throw new IllegalArgumentException("Must be a rotatable block!!");
         }
         rotatable = rotatableBlock;
         //Must not build ItemStacks here — this runs during RegisterEvent, before registries are queryable.
-        setHasSubtypes(LegacyCreativeTabContents.suppliesVariants(this));
+        setHasSubtypes(legacyVariants && LegacyCreativeTabContents.suppliesVariants(this));
     }
 
     @Override
@@ -41,6 +47,8 @@ public class ItemBlockTorqueTile extends ItemBlockBase {
 
     @Override
     public String getDescriptionId(ItemStack stack) {
-        return super.getDescriptionId(stack) + "." + stack.getDamageValue();
+        return legacyVariants
+                ? super.getDescriptionId(stack) + "." + stack.getDamageValue()
+                : super.getDescriptionId(stack);
     }
 }

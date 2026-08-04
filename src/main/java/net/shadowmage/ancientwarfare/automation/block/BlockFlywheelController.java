@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.shadowmage.ancientwarfare.automation.init.AWAutomationBlocks;
 import net.shadowmage.ancientwarfare.automation.render.FlywheelControllerRenderer;
 import net.shadowmage.ancientwarfare.automation.render.property.AutomationProperties;
 import net.shadowmage.ancientwarfare.automation.tile.torque.TileFlywheelControllerHeavy;
@@ -29,10 +31,24 @@ import net.shadowmage.ancientwarfare.core.util.LegacyItemStack;
 import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 
 public class BlockFlywheelController extends BlockTorqueBase implements LegacyBakeryProvider {
-    public static final LegacyModelProperty<Float> FLYWHEEL_ROTATION = LegacyModelProperty.create("flywheel_rotation");
+    public static final LegacyModelProperty<Float> FLYWHEEL_ROTATION = LegacyModelProperty.create("flywheel_rotation", 0.0F);
+
+    private final TorqueTier fixedTier;
 
     public BlockFlywheelController(String regName) {
+        this(regName, null);
+    }
+
+    public BlockFlywheelController(String regName, TorqueTier fixedTier) {
         super(LegacyMaterial.ROCK, regName);
+        this.fixedTier = fixedTier;
+        if (fixedTier != null) {
+            registerDefaultState(defaultBlockState().setValue(AutomationProperties.TIER, fixedTier));
+        }
+    }
+
+    public TorqueTier getFixedTier() {
+        return fixedTier;
     }
 
     @Override
@@ -42,12 +58,13 @@ public class BlockFlywheelController extends BlockTorqueBase implements LegacyBa
 
     @Override
     public BlockState getStateFromMeta(int meta) {
-        return defaultBlockState().setValue(AutomationProperties.TIER, TorqueTier.byMetadata(meta));
+        return defaultBlockState().setValue(AutomationProperties.TIER,
+                fixedTier == null ? TorqueTier.byMetadata(meta) : fixedTier);
     }
 
     @Override
     public int getMetaFromState(BlockState state) {
-        return state.getValue(AutomationProperties.TIER).getMeta();
+        return fixedTier == null ? state.getValue(AutomationProperties.TIER).getMeta() : 0;
     }
 
     @Override
@@ -58,7 +75,9 @@ public class BlockFlywheelController extends BlockTorqueBase implements LegacyBa
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return getStateFromMeta(context.getItemInHand().getDamageValue());
+        return fixedTier == null
+                ? getStateFromMeta(context.getItemInHand().getDamageValue())
+                : defaultBlockState().setValue(AutomationProperties.TIER, fixedTier);
     }
 
     @Override
@@ -68,7 +87,7 @@ public class BlockFlywheelController extends BlockTorqueBase implements LegacyBa
 
     @Override
     public BlockEntity createTileEntity(Level world, BlockState state) {
-        switch (state.getValue(AutomationProperties.TIER)) {
+        switch (fixedTier == null ? state.getValue(AutomationProperties.TIER) : fixedTier) {
             case LIGHT:
                 return new TileFlywheelControllerLight();
             case MEDIUM:
@@ -80,9 +99,23 @@ public class BlockFlywheelController extends BlockTorqueBase implements LegacyBa
     }
 
     public void getSubBlocks(CreativeModeTab item, NonNullList<ItemStack> items) {
-        items.add(LegacyItemStack.of(this, 1, 0));
-        items.add(LegacyItemStack.of(this, 1, 1));
-        items.add(LegacyItemStack.of(this, 1, 2));
+        if (fixedTier == null) {
+            items.add(LegacyItemStack.of(this, 1, 0));
+            items.add(LegacyItemStack.of(this, 1, 1));
+            items.add(LegacyItemStack.of(this, 1, 2));
+        } else {
+            items.add(new ItemStack(this));
+        }
+    }
+
+    @Override
+    public void getDrops(NonNullList<ItemStack> drops, BlockGetter level, BlockPos pos, BlockState state, int fortune) {
+        Item item = fixedTier == null
+                ? AWAutomationBlocks.getFlywheelControllerItem(state.getValue(AutomationProperties.TIER))
+                : asItem();
+        if (item != null) {
+            drops.add(new ItemStack(item));
+        }
     }
 
     @Override
@@ -98,7 +131,11 @@ public class BlockFlywheelController extends BlockTorqueBase implements LegacyBa
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        ModelLoaderHelper.registerItem(this, "automation", "light", false); //the actual switch for itemstack types is processed by renderer
+        if (fixedTier == null) {
+            ModelLoaderHelper.registerItem(this, "automation", "light", false);
+        } else {
+            ModelLoaderHelper.registerItem(this, modelLocation(fixedTier));
+        }
 
         LegacyModelBakery.registerBlockKeyGenerator(this, new BlockStateKeyGenerator.Builder().addKeyProperties(AutomationProperties.TIER, CoreProperties.UNLISTED_FACING).addKeyProperties(AutomationProperties.DYNAMIC, FLYWHEEL_ROTATION, AutomationProperties.USE_INPUT).addKeyProperties(o -> String.format("%.6f", o), AutomationProperties.ROTATIONS).addKeyProperties(o -> String.format("%.6f", o), AutomationProperties.INPUT_ROTATION).build());
 
@@ -141,6 +178,14 @@ public class BlockFlywheelController extends BlockTorqueBase implements LegacyBa
             }
         });
 
+    }
+
+    private static ModelResourceLocation modelLocation(TorqueTier tier) {
+        return switch (tier) {
+            case LIGHT -> FlywheelControllerRenderer.LIGHT_MODEL_LOCATION;
+            case MEDIUM -> FlywheelControllerRenderer.MEDIUM_MODEL_LOCATION;
+            case HEAVY -> FlywheelControllerRenderer.HEAVY_MODEL_LOCATION;
+        };
     }
 
     @Override

@@ -86,6 +86,8 @@ public abstract class NpcBase extends PathfinderMob implements IEntityAdditional
     private static final EntityDataAccessor<Byte> BED_DIRECTION = SynchedEntityData.defineId(NpcBase.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Boolean> IS_SLEEPING = SynchedEntityData.defineId(NpcBase.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> SWINGING_ARMS = SynchedEntityData.defineId(NpcBase.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> ATTACK_ANIMATION_TICKS = SynchedEntityData.defineId(NpcBase.class, EntityDataSerializers.INT);
+    public static final int ATTACK_ANIMATION_DURATION = 8;
     private static final String SLOT_NUM_TAG = "slotNum";
     private static final String BED_DIRECTION_TAG = "bedDirection";
     private static final String IS_SLEEPING_TAG = "isSleeping";
@@ -174,6 +176,7 @@ public abstract class NpcBase extends PathfinderMob implements IEntityAdditional
         entityData.define(BED_DIRECTION, (byte) Direction.NORTH.ordinal());
         entityData.define(IS_SLEEPING, false);
         entityData.define(SWINGING_ARMS, false);
+        entityData.define(ATTACK_ANIMATION_TICKS, 0);
         entityData.define(SHIELD_DISABLED_TICK, 0);
     }
 
@@ -428,6 +431,12 @@ public abstract class NpcBase extends PathfinderMob implements IEntityAdditional
 
     @Override
     public void aiStep() {
+        if (!level().isClientSide) {
+            int attackAnimationTicks = entityData.get(ATTACK_ANIMATION_TICKS);
+            if (attackAnimationTicks > 0) {
+                entityData.set(ATTACK_ANIMATION_TICKS, attackAnimationTicks - 1);
+            }
+        }
         if (isUsingItem() && !isPassenger()) {
             setSpeed(getSpeed() * 0.2F);
             setSprinting(false);
@@ -1261,6 +1270,24 @@ public abstract class NpcBase extends PathfinderMob implements IEntityAdditional
 
     public void setSwingingArms(boolean swingingArms) {
         entityData.set(SWINGING_ARMS, swingingArms);
+    }
+
+    /**
+     * Starts a synchronized, one-shot melee animation.  The normal LivingEntity
+     * swing packet is still sent for compatibility, but the renderer uses this
+     * data value as the authoritative animation clock.  This avoids both the
+     * missing animation seen on custom NPC renderers and the old continuously
+     * looping SWINGING_ARMS animation.
+     */
+    public void triggerAttackAnimation() {
+        if (!level().isClientSide) {
+            entityData.set(ATTACK_ANIMATION_TICKS, ATTACK_ANIMATION_DURATION);
+        }
+        swing(InteractionHand.MAIN_HAND, true);
+    }
+
+    public int getAttackAnimationTicks() {
+        return entityData.get(ATTACK_ANIMATION_TICKS);
     }
 
     //1.12 wrote the public activeItemStackUseCount field directly; bridge the protected 1.20 field.

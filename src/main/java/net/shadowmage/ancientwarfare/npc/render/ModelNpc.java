@@ -19,11 +19,24 @@ public class ModelNpc<T extends LivingEntity> extends PlayerModel<T> {
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks,
                           float netHeadYaw, float headPitch) {
         float rendererAttackTime = attackTime;
-        if (rendererAttackTime <= 0.0F && entity instanceof NpcBase npc && npc.isSwingingArms()) {
-            // The attack goal state is synchronized continuously, while vanilla's
-            // one-shot swing packet can arrive before a newly tracked NPC is rendered.
-            // Feed a visible local cycle into the normal humanoid attack animation.
-            attackTime = (Mth.sin(ageInTicks * 0.35F - Mth.HALF_PI) + 1.0F) * 0.5F;
+        if (entity instanceof NpcBase npc) {
+            int remainingAttackTicks = npc.getAttackAnimationTicks();
+            if (remainingAttackTicks > 0) {
+                // Entity data is the authoritative clock for combat.  ageInTicks
+                // contains the render partial tick, so the discrete server counter
+                // still produces a smooth single HumanoidModel attack curve.
+                float partialTick = Mth.clamp(ageInTicks - entity.tickCount, 0.0F, 1.0F);
+                attackTime = Mth.clamp(
+                        (NpcBase.ATTACK_ANIMATION_DURATION - remainingAttackTicks + partialTick)
+                                / (float) NpcBase.ATTACK_ANIMATION_DURATION,
+                        0.0F,
+                        1.0F
+                );
+            } else if (rendererAttackTime <= 0.0F && npc.isSwingingArms()) {
+                // Work actions intentionally use a continuous arm cycle.  Combat
+                // never enables this flag, so it cannot add a second attack swing.
+                attackTime = (Mth.sin(ageInTicks * 0.35F - Mth.HALF_PI) + 1.0F) * 0.5F;
+            }
         }
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         attackTime = rendererAttackTime;

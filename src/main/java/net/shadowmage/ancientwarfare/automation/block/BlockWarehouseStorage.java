@@ -9,6 +9,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.automation.gui.GuiWarehouseStorage;
+import net.shadowmage.ancientwarfare.automation.init.AWAutomationBlocks;
 import net.shadowmage.ancientwarfare.automation.tile.warehouse2.TileWarehouseStorage;
 import net.shadowmage.ancientwarfare.automation.tile.warehouse2.TileWarehouseStorageLarge;
 import net.shadowmage.ancientwarfare.automation.tile.warehouse2.TileWarehouseStorageMedium;
@@ -36,9 +38,23 @@ import net.shadowmage.ancientwarfare.core.util.WorldTools;
 public class BlockWarehouseStorage extends BlockBaseAutomation {
     private static final EnumProperty<Size> SIZE = EnumProperty.create("size", Size.class);
 
+    private final Size fixedSize;
+
     public BlockWarehouseStorage(String regName) {
+        this(regName, null);
+    }
+
+    public BlockWarehouseStorage(String regName, Size fixedSize) {
         super(LegacyMaterial.WOOD, regName);
+        this.fixedSize = fixedSize;
         setHardness(2.f);
+        if (fixedSize != null) {
+            registerDefaultState(defaultBlockState().setValue(SIZE, fixedSize));
+        }
+    }
+
+    public Size getFixedSize() {
+        return fixedSize;
     }
 
     @Override
@@ -48,17 +64,20 @@ public class BlockWarehouseStorage extends BlockBaseAutomation {
 
     @Override
     public BlockState getStateFromMeta(int meta) {
-        return defaultBlockState().setValue(SIZE, Size.byMetadata(meta));
+        return defaultBlockState().setValue(SIZE,
+                fixedSize == null ? Size.byMetadata(meta) : fixedSize);
     }
 
     @Override
     public int getMetaFromState(BlockState state) {
-        return state.getValue(SIZE).getMeta();
+        return fixedSize == null ? state.getValue(SIZE).getMeta() : 0;
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return getStateFromMeta(context.getItemInHand().getDamageValue());
+        return fixedSize == null
+                ? getStateFromMeta(context.getItemInHand().getDamageValue())
+                : defaultBlockState().setValue(SIZE, fixedSize);
     }
 
     @Override
@@ -68,7 +87,7 @@ public class BlockWarehouseStorage extends BlockBaseAutomation {
 
     @Override
     public BlockEntity createTileEntity(Level world, BlockState state) {
-        switch (state.getValue(SIZE)) {
+        switch (fixedSize == null ? state.getValue(SIZE) : fixedSize) {
             case MEDIUM:
                 return new TileWarehouseStorageMedium();
             case LARGE:
@@ -79,9 +98,13 @@ public class BlockWarehouseStorage extends BlockBaseAutomation {
     }
 
     public void getSubBlocks(CreativeModeTab itemIn, NonNullList<ItemStack> items) {
-        items.add(LegacyItemStack.of(this, 1, 0));
-        items.add(LegacyItemStack.of(this, 1, 1));
-        items.add(LegacyItemStack.of(this, 1, 2));
+        if (fixedSize == null) {
+            items.add(LegacyItemStack.of(this, 1, 0));
+            items.add(LegacyItemStack.of(this, 1, 1));
+            items.add(LegacyItemStack.of(this, 1, 2));
+        } else {
+            items.add(new ItemStack(this));
+        }
     }
 
     @Override
@@ -91,13 +114,17 @@ public class BlockWarehouseStorage extends BlockBaseAutomation {
 
     @Override
     public int damageDropped(BlockState state) {
-        return state.getValue(SIZE).getMeta();
+        return fixedSize == null ? state.getValue(SIZE).getMeta() : 0;
     }
 
     @Override
     public void getDrops(NonNullList<ItemStack> drops, BlockGetter level, BlockPos pos, BlockState state, int fortune) {
-        // The generic self-drop loot table cannot preserve AW's legacy size metadata.
-        drops.add(LegacyItemStack.of(this, 1, damageDropped(state)));
+        Item item = fixedSize == null
+                ? AWAutomationBlocks.getWarehouseStorageItem(state.getValue(SIZE))
+                : asItem();
+        if (item != null) {
+            drops.add(new ItemStack(item));
+        }
     }
 
     @Override
@@ -125,6 +152,9 @@ public class BlockWarehouseStorage extends BlockBaseAutomation {
         }
 
         public static Size byMetadata(int meta) {
+            if (meta < 0 || meta >= values().length) {
+                return SMALL;
+            }
             return values()[meta];
         }
     }
@@ -132,7 +162,7 @@ public class BlockWarehouseStorage extends BlockBaseAutomation {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        final ResourceLocation assetLocation = new ResourceLocation(AncientWarfareCore.MOD_ID, "automation/" + getRegistryName().getPath());
+        final ResourceLocation assetLocation = new ResourceLocation(AncientWarfareCore.MOD_ID, "automation/warehouse_storage");
 
         LegacyModelLoader.setCustomStateMapper(this, new LegacyStateMapperBase() {
             @Override
@@ -142,7 +172,16 @@ public class BlockWarehouseStorage extends BlockBaseAutomation {
             }
         });
 
-        ModelLoaderHelper.registerItem(this.asItem(), "automation", false, meta -> "size=" + Size.values()[meta].name().toLowerCase());
+        if (fixedSize == null) {
+            ModelLoaderHelper.registerItem(this.asItem(), "automation", false,
+                    meta -> "size=" + Size.byMetadata(meta).getSerializedName());
+        } else {
+            // The fixed-id block still uses the original warehouse model.  Register
+            // its item directly against that model instead of looking for a new
+            // automation/warehouse_storage_<size> model that does not exist.
+            ModelLoaderHelper.registerItem(this,
+                    new ModelResourceLocation(assetLocation, "size=" + fixedSize.getSerializedName()));
+        }
 
         NetworkHandler.registerGui(NetworkHandler.GUI_WAREHOUSE_STORAGE, GuiWarehouseStorage.class);
     }

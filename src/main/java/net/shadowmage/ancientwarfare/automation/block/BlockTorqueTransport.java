@@ -3,6 +3,7 @@ package net.shadowmage.ancientwarfare.automation.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -21,9 +22,27 @@ import java.util.Optional;
 public abstract class BlockTorqueTransport extends BlockTorqueBase {
     private static final AABB[] CONNECTION_BOXES = createConnectionBoxes();
 
+    private final TorqueTier fixedTier;
+
     protected BlockTorqueTransport(String regName) {
+        this(regName, null);
+    }
+
+    protected BlockTorqueTransport(String regName, TorqueTier fixedTier) {
         super(LegacyMaterial.ROCK, regName);
+        this.fixedTier = fixedTier;
         this.setLightOpacity(1);
+        if (fixedTier != null) {
+            registerDefaultState(defaultBlockState().setValue(AutomationProperties.TIER, fixedTier));
+        }
+    }
+
+    public final TorqueTier getFixedTier() {
+        return fixedTier;
+    }
+
+    public final boolean isLegacyVariantBlock() {
+        return fixedTier == null;
     }
 
     @Override
@@ -33,30 +52,46 @@ public abstract class BlockTorqueTransport extends BlockTorqueBase {
 
     @Override
     public BlockState getStateFromMeta(int meta) {
-        return defaultBlockState().setValue(AutomationProperties.TIER, TorqueTier.byMetadata(meta));
+        return defaultBlockState().setValue(AutomationProperties.TIER,
+                fixedTier == null ? TorqueTier.byMetadata(meta) : fixedTier);
     }
 
     @Override
     public int getMetaFromState(BlockState state) {
-        return state.getValue(AutomationProperties.TIER).getMeta();
+        return fixedTier == null ? state.getValue(AutomationProperties.TIER).getMeta() : 0;
+    }
+
+    protected final TorqueTier getTier(BlockState state) {
+        return fixedTier == null ? state.getValue(AutomationProperties.TIER) : fixedTier;
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return getStateFromMeta(context.getItemInHand().getDamageValue());
+        return fixedTier == null
+                ? getStateFromMeta(context.getItemInHand().getDamageValue())
+                : defaultBlockState().setValue(AutomationProperties.TIER, fixedTier);
     }
 
     public void getSubBlocks(CreativeModeTab tab, NonNullList<ItemStack> list) {
-        list.add(LegacyItemStack.of(this, 1, 0));
-        list.add(LegacyItemStack.of(this, 1, 1));
-        list.add(LegacyItemStack.of(this, 1, 2));
+        if (fixedTier == null) {
+            list.add(LegacyItemStack.of(this, 1, 0));
+            list.add(LegacyItemStack.of(this, 1, 1));
+            list.add(LegacyItemStack.of(this, 1, 2));
+        } else {
+            list.add(new ItemStack(this));
+        }
     }
 
     @Override
     public void getDrops(NonNullList<ItemStack> drops, BlockGetter level, BlockPos pos, BlockState state, int fortune) {
-        // Bypass the metadata-blind fallback loot table and retain the torque tier.
-        drops.add(LegacyItemStack.of(this, 1, getMetaFromState(state)));
+        TorqueTier tier = getTier(state);
+        Item item = fixedTier == null ? getVariantItem(tier) : asItem();
+        if (item != null) {
+            drops.add(new ItemStack(item));
+        }
     }
+
+    protected abstract Item getVariantItem(TorqueTier tier);
 
     @Override
     public RotationType getRotationType() {

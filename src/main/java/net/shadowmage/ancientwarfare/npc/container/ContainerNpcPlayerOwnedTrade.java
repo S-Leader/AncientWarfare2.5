@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.shadowmage.ancientwarfare.core.compat.CapabilityItemHandler;
-import net.shadowmage.ancientwarfare.core.init.AWCoreItems;
+import net.shadowmage.ancientwarfare.core.item.ItemBackpack;
 import net.shadowmage.ancientwarfare.core.util.EntityTools;
 import net.shadowmage.ancientwarfare.npc.entity.NpcTrader;
 import net.shadowmage.ancientwarfare.npc.trade.POTradeList;
@@ -23,7 +23,7 @@ public class ContainerNpcPlayerOwnedTrade extends ContainerNpcBase<NpcTrader> {
         this.entity.startTrade(player);
 
         addPlayerSlots();
-        this.hand = EntityTools.getHandHoldingItem(entity, AWCoreItems.BACKPACK);
+        this.hand = EntityTools.getHandHoldingItem(entity, ItemBackpack.class);
         storage = hand != null ? entity.getItemInHand(hand).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElse(null) : null;
         if (storage != null) {
             for (int i = 0; i < storage.getSlots(); i++) {

@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "size=large": {
+            "model": "ancientwarfareautomation:block/warehouse_storage_large"
+        }
+    }
+}

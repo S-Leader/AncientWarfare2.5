@@ -105,16 +105,13 @@
             "content_type": "item",
             "items": [
                 {
-                    "name": "ancientwarfareautomation:torque_shaft",
-                    "data": 0
+                    "name": "ancientwarfareautomation:torque_shaft_light"
                 },
                 {
-                    "name": "ancientwarfareautomation:torque_shaft",
-                    "data": 1
+                    "name": "ancientwarfareautomation:torque_shaft_medium"
                 },
                 {
-                    "name": "ancientwarfareautomation:torque_shaft",
-                    "data": 2
+                    "name": "ancientwarfareautomation:torque_shaft_heavy"
                 }
             ]
         },
@@ -131,16 +128,13 @@
             "content_type": "item",
             "items": [
                 {
-                    "name": "ancientwarfareautomation:torque_junction",
-                    "data": 0
+                    "name": "ancientwarfareautomation:torque_junction_light"
                 },
                 {
-                    "name": "ancientwarfareautomation:torque_junction",
-                    "data": 1
+                    "name": "ancientwarfareautomation:torque_junction_medium"
                 },
                 {
-                    "name": "ancientwarfareautomation:torque_junction",
-                    "data": 2
+                    "name": "ancientwarfareautomation:torque_junction_heavy"
                 }
             ]
         },
@@ -161,16 +155,13 @@
             "content_type": "item",
             "items": [
                 {
-                    "name": "ancientwarfareautomation:torque_distributor",
-                    "data": 0
+                    "name": "ancientwarfareautomation:torque_distributor_light"
                 },
                 {
-                    "name": "ancientwarfareautomation:torque_distributor",
-                    "data": 1
+                    "name": "ancientwarfareautomation:torque_distributor_medium"
                 },
                 {
-                    "name": "ancientwarfareautomation:torque_distributor",
-                    "data": 2
+                    "name": "ancientwarfareautomation:torque_distributor_heavy"
                 }
             ]
         },

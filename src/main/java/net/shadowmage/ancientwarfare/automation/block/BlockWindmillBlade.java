@@ -27,7 +27,7 @@ import java.util.Optional;
 import static net.shadowmage.ancientwarfare.core.render.property.CoreProperties.UNLISTED_HORIZONTAL_FACING;
 
 public class BlockWindmillBlade extends BlockBaseAutomation implements LegacyBakeryProvider {
-    public static final LegacyModelProperty<Boolean> FORMED = LegacyModelProperty.create("formed");
+    public static final LegacyModelProperty<Boolean> FORMED = LegacyModelProperty.create("formed", false);
 
     public BlockWindmillBlade(String regName) {
         super(LegacyMaterial.WOOD, regName);

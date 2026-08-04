@@ -3,6 +3,7 @@ package net.shadowmage.ancientwarfare.automation.block;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
@@ -10,6 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.shadowmage.ancientwarfare.automation.init.AWAutomationBlocks;
 import net.shadowmage.ancientwarfare.automation.render.TorqueJunctionRenderer;
 import net.shadowmage.ancientwarfare.automation.render.property.AutomationProperties;
 import net.shadowmage.ancientwarfare.automation.tile.torque.TileConduitHeavy;
@@ -23,6 +25,15 @@ import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 public class BlockTorqueJunction extends BlockTorqueTransportSided implements LegacyBakeryProvider {
     public BlockTorqueJunction(String regName) {
         super(regName);
+    }
+
+    public BlockTorqueJunction(String regName, TorqueTier fixedTier) {
+        super(regName, fixedTier);
+    }
+
+    @Override
+    protected Item getVariantItem(TorqueTier tier) {
+        return AWAutomationBlocks.getTorqueJunctionItem(tier);
     }
 
     @Override
@@ -46,7 +57,7 @@ public class BlockTorqueJunction extends BlockTorqueTransportSided implements Le
 
     @Override
     public BlockEntity createTileEntity(Level world, BlockState state) {
-        switch (state.getValue(AutomationProperties.TIER)) {
+        switch (getTier(state)) {
             case LIGHT:
                 return new TileConduitLight();
             case MEDIUM:
@@ -60,7 +71,11 @@ public class BlockTorqueJunction extends BlockTorqueTransportSided implements Le
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        ModelLoaderHelper.registerItem(this, "automation", "light", false); //the actual switch for itemstack types is processed by renderer
+        if (getFixedTier() == null) {
+            ModelLoaderHelper.registerItem(this, "automation", "light", false);
+        } else {
+            ModelLoaderHelper.registerItem(this, modelLocation(getFixedTier()));
+        }
 
         LegacyModelBakery.registerBlockKeyGenerator(this, new BlockStateKeyGenerator.Builder().addKeyProperties(AutomationProperties.TIER, CoreProperties.UNLISTED_FACING).addKeyProperties(AutomationProperties.DYNAMIC).addKeyProperties(BlockTorqueTransportSided.CONNECTIONS).addKeyProperties(o -> String.format("%.6f", o), AutomationProperties.ROTATIONS).build());
 
@@ -68,7 +83,7 @@ public class BlockTorqueJunction extends BlockTorqueTransportSided implements Le
             @Override
             @OnlyIn(Dist.CLIENT)
             protected ModelResourceLocation getModelResourceLocation(BlockState state) {
-                switch (state.getValue(AutomationProperties.TIER)) {
+                switch (getTier(state)) {
                     case LIGHT:
                         return TorqueJunctionRenderer.LIGHT_MODEL_LOCATION;
                     case MEDIUM:
@@ -102,6 +117,14 @@ public class BlockTorqueJunction extends BlockTorqueTransportSided implements Le
                 return TorqueJunctionRenderer.INSTANCE.getSprite(TorqueTier.HEAVY);
             }
         });
+    }
+
+    private static ModelResourceLocation modelLocation(TorqueTier tier) {
+        return switch (tier) {
+            case LIGHT -> TorqueJunctionRenderer.LIGHT_MODEL_LOCATION;
+            case MEDIUM -> TorqueJunctionRenderer.MEDIUM_MODEL_LOCATION;
+            case HEAVY -> TorqueJunctionRenderer.HEAVY_MODEL_LOCATION;
+        };
     }
 
     @Override

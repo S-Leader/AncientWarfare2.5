@@ -16,7 +16,6 @@
         }
     },
     "result": {
-        "item": "ancientwarfare:backpack",
-        "data": 0
+        "item": "ancientwarfare:backpack_small"
     }
 }

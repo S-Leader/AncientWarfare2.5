@@ -10,12 +10,16 @@ public abstract class BlockTorqueTransportSided extends BlockTorqueTransport {
 
     static {
         for (Direction facing : Direction.values()) {
-            CONNECTIONS[facing.ordinal()] = LegacyModelProperty.create("connection_" + facing.name().toLowerCase());
+            CONNECTIONS[facing.ordinal()] = LegacyModelProperty.create("connection_" + facing.name().toLowerCase(), false);
         }
     }
 
     protected BlockTorqueTransportSided(String regName) {
         super(regName);
+    }
+
+    protected BlockTorqueTransportSided(String regName, TorqueTier fixedTier) {
+        super(regName, fixedTier);
     }
 
     @Override

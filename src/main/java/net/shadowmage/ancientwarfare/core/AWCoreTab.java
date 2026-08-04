@@ -26,6 +26,7 @@ public final class AWCoreTab {
                             .filter(item -> {
                                 var id = ForgeRegistries.ITEMS.getKey(item);
                                 return item != AWCoreItems.LEGACY_COMPONENT
+                                        && item != AWCoreItems.LEGACY_BACKPACK
                                         && id != null && AncientWarfareCore.MOD_ID.equals(id.getNamespace());
                             })
                             .flatMap(item -> LegacyCreativeTabContents.stacksFor(item).stream())

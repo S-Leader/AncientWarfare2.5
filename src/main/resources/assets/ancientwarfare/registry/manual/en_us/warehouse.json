@@ -33,16 +33,13 @@
             "content_type": "item",
             "items": [
                 {
-                    "name": "ancientwarfareautomation:warehouse_storage",
-                    "data": 0
+                    "name": "ancientwarfareautomation:warehouse_storage_small"
                 },
                 {
-                    "name": "ancientwarfareautomation:warehouse_storage",
-                    "data": 1
+                    "name": "ancientwarfareautomation:warehouse_storage_medium"
                 },
                 {
-                    "name": "ancientwarfareautomation:warehouse_storage",
-                    "data": 2
+                    "name": "ancientwarfareautomation:warehouse_storage_large"
                 }
             ]
         },

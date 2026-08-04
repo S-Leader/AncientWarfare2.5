@@ -253,7 +253,7 @@ public class NpcAIPlayerOwnedTrader extends NpcAI<NpcPlayerOwned> {
 
     private void doDeposit() {
         ItemStack backpack = npc.getMainHandItem();
-        if (!backpack.isEmpty() && backpack.getItem() instanceof ItemBackpack) {
+        if (ItemBackpack.isBackpack(backpack)) {
             IItemHandler inv = backpack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElse(null);
             BlockPos pos = orders.getRestockData().getDepositPoint();
             //noinspection ConstantConditions
@@ -264,7 +264,7 @@ public class NpcAIPlayerOwnedTrader extends NpcAI<NpcPlayerOwned> {
 
     private void doWithdraw() {
         ItemStack backpack = npc.getMainHandItem();
-        if (!backpack.isEmpty() && backpack.getItem() instanceof ItemBackpack) {
+        if (ItemBackpack.isBackpack(backpack)) {
             IItemHandler inv = backpack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElse(null);
             BlockPos pos = orders.getRestockData().getWithdrawPoint();
             //noinspection ConstantConditions

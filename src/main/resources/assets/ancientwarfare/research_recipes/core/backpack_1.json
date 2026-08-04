@@ -19,7 +19,6 @@
         }
     },
     "result": {
-        "item": "ancientwarfare:backpack",
-        "data": 1
+        "item": "ancientwarfare:backpack_travel"
     }
 }

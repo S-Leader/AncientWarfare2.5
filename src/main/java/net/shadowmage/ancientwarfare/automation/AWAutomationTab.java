@@ -8,6 +8,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.shadowmage.ancientwarfare.automation.init.AWAutomationBlocks;
 import net.shadowmage.ancientwarfare.core.init.AWCoreItems;
 import net.shadowmage.ancientwarfare.core.util.LegacyCreativeTabContents;
 import net.shadowmage.ancientwarfare.core.util.SortItemsFirstComparator;
@@ -33,7 +34,9 @@ public final class AWAutomationTab {
                         ForgeRegistries.ITEMS.getValues().stream()
                                 .filter(item -> {
                                     var id = ForgeRegistries.ITEMS.getKey(item);
-                                    return id != null && AncientWarfareAutomation.MOD_ID.equals(id.getNamespace());
+                                    return id != null
+                                            && AncientWarfareAutomation.MOD_ID.equals(id.getNamespace())
+                                            && !AWAutomationBlocks.isLegacyVariantItem(item);
                                 })
                                 .flatMap(item -> LegacyCreativeTabContents.stacksFor(item).stream())
                                 .forEach(stacks::add);

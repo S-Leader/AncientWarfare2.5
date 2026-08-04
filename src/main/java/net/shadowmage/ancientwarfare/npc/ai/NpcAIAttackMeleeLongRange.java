@@ -1,6 +1,5 @@
 package net.shadowmage.ancientwarfare.npc.ai;
 
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.shadowmage.ancientwarfare.core.config.AWCoreStatics;
@@ -34,10 +33,9 @@ public class NpcAIAttackMeleeLongRange extends NpcAIAttack<NpcBase> {
     protected void doAttack(double distanceToEntity) {
         npc.removeAITask(TASK_MOVE);
         if (getAttackDelay() <= 0) {
-            // The two-argument form updates the server entity and broadcasts the
-            // animation to tracking clients. SWINGING_ARMS remains disabled for
-            // combat, so this produces one visible swing instead of two cycles.
-            npc.swing(InteractionHand.MAIN_HAND, true);
+            // Use the NPC's synchronized one-shot animation clock.  Relying only
+            // on LivingEntity#swing did not consistently reach this custom renderer.
+            npc.triggerAttackAnimation();
             npc.doHurtTarget(getTarget());
             setAttackDelay(getCoolDown());
             npc.addExperience(AWNPCStatics.npcXpFromAttack);

@@ -47,7 +47,10 @@ public final class LegacyModelState {
     private static <T> void copyFromModelData(ModelData data, LegacyModelProperty<T> property,
                                               Map<LegacyModelProperty<?>, Object> values) {
         if (data.has(property.modelProperty())) {
-            values.put(property, data.get(property.modelProperty()));
+            T value = data.get(property.modelProperty());
+            if (value != null) {
+                values.put(property, value);
+            }
         }
     }
 
@@ -61,7 +64,8 @@ public final class LegacyModelState {
 
     @SuppressWarnings("unchecked")
     public <T> T getValue(LegacyModelProperty<T> property) {
-        return (T) modelValues.get(property);
+        Object value = modelValues.get(property);
+        return value != null ? (T) value : property.defaultValue();
     }
 
     @SuppressWarnings("unchecked")

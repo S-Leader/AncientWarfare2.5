@@ -142,7 +142,7 @@ public class FlywheelStorageRenderer implements LegacyBakery, ITESRRenderer {
         List<BakedQuad> bakedQuads = new ArrayList<>();
         QuadBakingVertexConsumer buffer = new QuadBakingVertexConsumer(bakedQuads::add);
 
-        TorqueTier tier = TorqueTier.byMetadata(stack.getDamageValue());
+        TorqueTier tier = TorqueTier.fromItemStack(stack);
         TextureAtlasSprite quadSprite = sprites.get(new ImmutablePair<>(false, tier));
         if (quadSprite != null) {
             buffer.setSprite(quadSprite);

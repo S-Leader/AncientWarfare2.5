@@ -19,7 +19,6 @@
         }
     },
     "result": {
-        "item": "ancientwarfare:backpack",
-        "data": 2
+        "item": "ancientwarfare:backpack_medium"
     }
 }

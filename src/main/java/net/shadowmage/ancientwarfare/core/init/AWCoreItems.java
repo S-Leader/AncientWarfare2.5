@@ -20,7 +20,14 @@ public final class AWCoreItems {
     public static Item IRON_HAMMER;
     public static Item MANUAL;
     public static Item RESEARCH_BOOK;
+    /** @deprecated use the fixed-id backpack fields. Kept as a source compatibility alias to SMALL_BACKPACK. */
+    @Deprecated
     public static Item BACKPACK;
+    public static Item LEGACY_BACKPACK;
+    public static Item SMALL_BACKPACK;
+    public static Item TRAVEL_BACKPACK;
+    public static Item MEDIUM_BACKPACK;
+    public static Item LARGE_BACKPACK;
     public static Item IRON_QUILL;
     public static Item STEEL_INGOT;
     /** Hidden compatibility item for old ancientwarfare:component stacks. */
@@ -45,7 +52,12 @@ public final class AWCoreItems {
             INFO_TOOL = LegacyRegistryHelper.register(helper, new ItemInfoTool());
             RESEARCH_BOOK = LegacyRegistryHelper.register(helper, new ItemResearchBook());
             LegacyRegistryHelper.register(helper, new ItemResearchNotes());
-            BACKPACK = LegacyRegistryHelper.register(helper, new ItemBackpack());
+            LEGACY_BACKPACK = LegacyRegistryHelper.register(helper, new ItemLegacyBackpack());
+            SMALL_BACKPACK = LegacyRegistryHelper.register(helper, new ItemBackpack("backpack_small", 1));
+            TRAVEL_BACKPACK = LegacyRegistryHelper.register(helper, new ItemBackpack("backpack_travel", 2));
+            MEDIUM_BACKPACK = LegacyRegistryHelper.register(helper, new ItemBackpack("backpack_medium", 3));
+            LARGE_BACKPACK = LegacyRegistryHelper.register(helper, new ItemBackpack("backpack_large", 4));
+            BACKPACK = SMALL_BACKPACK;
 
             LegacyRegistryHelper.register(helper, new ItemQuill("wooden_quill", Tiers.WOOD));
             LegacyRegistryHelper.register(helper, new ItemQuill("stone_quill", Tiers.STONE));
@@ -98,4 +110,14 @@ public final class AWCoreItems {
             default -> null;
         };
     }
+    public static Item getBackpackByLegacyMeta(int metadata) {
+        return switch (metadata) {
+            case 0 -> SMALL_BACKPACK;
+            case 1 -> TRAVEL_BACKPACK;
+            case 2 -> MEDIUM_BACKPACK;
+            case 3 -> LARGE_BACKPACK;
+            default -> SMALL_BACKPACK;
+        };
+    }
+
 }

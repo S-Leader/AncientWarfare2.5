@@ -34,6 +34,16 @@ public final class EntityTools {
         return null;
     }
 
+    @Nullable
+    public static InteractionHand getHandHoldingItem(LivingEntity entity, Class<? extends Item> itemClass) {
+        if (itemClass.isInstance(entity.getMainHandItem().getItem())) {
+            return InteractionHand.MAIN_HAND;
+        } else if (itemClass.isInstance(entity.getOffhandItem().getItem())) {
+            return InteractionHand.OFF_HAND;
+        }
+        return null;
+    }
+
     public static ItemStack getItemFromEitherHand(Player player, Class<?>... itemClasses) {
         for (Class<?> itemClass : itemClasses) {
             if (itemClass.isInstance(player.getMainHandItem().getItem())) {

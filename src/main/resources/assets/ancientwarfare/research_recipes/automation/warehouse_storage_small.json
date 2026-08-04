@@ -15,7 +15,6 @@
         }
     },
     "result": {
-        "item": "ancientwarfareautomation:warehouse_storage",
-        "data": 0
+        "item": "ancientwarfareautomation:warehouse_storage_small"
     }
 }
