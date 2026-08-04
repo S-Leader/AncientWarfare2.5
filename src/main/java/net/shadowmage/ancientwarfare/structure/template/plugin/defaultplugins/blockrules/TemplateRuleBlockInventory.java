@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import net.shadowmage.ancientwarfare.core.datafixes.ComponentItemFixer;
 import net.shadowmage.ancientwarfare.core.util.BlockTools;
 import net.shadowmage.ancientwarfare.core.util.Constants;
 import net.shadowmage.ancientwarfare.core.util.InventoryTools;
@@ -182,7 +183,7 @@ public class TemplateRuleBlockInventory extends TemplateRuleBlockTile {
         ItemStack stack;
         for (int i = 0; i < list.size(); i++) {
             itemTag = list.getCompound(i);
-            stack = ItemStack.of(itemTag);
+            stack = ItemStack.of(ComponentItemFixer.fixRecursively(itemTag.copy()));
             if (!stack.isEmpty()) {
                 slot = itemTag.getInt("slot");
                 stacks.set(slot, stack);

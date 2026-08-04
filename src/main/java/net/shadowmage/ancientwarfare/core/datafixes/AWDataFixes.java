@@ -12,7 +12,7 @@ import static net.shadowmage.ancientwarfare.core.datafixes.LegacyDataFixerRegist
  * the removed Forge 1.12 CompoundDataFixer API.
  */
 public final class AWDataFixes {
-    public static final int DATA_FIXER_VERSION = 11;
+    public static final int DATA_FIXER_VERSION = 12;
 
     private AWDataFixes() {
     }
@@ -30,6 +30,7 @@ public final class AWDataFixes {
         LegacyDataFixerRegistry.register(ITEM, new FactionExpansionItemFixer());
         LegacyDataFixerRegistry.register(ITEM, new RoutingOrderFilterCountsFixer());
         LegacyDataFixerRegistry.register(ITEM, new FoodBundleDataFixer());
+        LegacyDataFixerRegistry.register(ITEM, new ComponentItemFixer());
         LegacyDataFixerRegistry.register(BLOCK_ENTITY, new TileLootFixer());
         LegacyDataFixerRegistry.register(ENTITY, new NpcSkinFixer());
         LegacyDataFixerRegistry.register(BLOCK_ENTITY, new LootSettingsPotionRegistryNameFixer());

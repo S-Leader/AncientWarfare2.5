@@ -42,7 +42,7 @@ public class TileAdvancedSpawner extends TileUpdatable implements ITickable, IBl
     @Override
     public void readFromNBT(CompoundTag tag) {
         super.readFromNBT(tag);
-        settings.readFromNBT(tag.getCompound("spawnerSettings"));
+        settings.readFromNBT(tag);
     }
 
     @Override

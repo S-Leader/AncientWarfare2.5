@@ -15,6 +15,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.shadowmage.ancientwarfare.core.config.AWCoreStatics;
+import net.shadowmage.ancientwarfare.core.datafixes.ComponentItemFixer;
 import net.shadowmage.ancientwarfare.core.util.Constants;
 import net.shadowmage.ancientwarfare.core.util.EntityTools;
 import net.shadowmage.ancientwarfare.npc.entity.faction.*;
@@ -288,39 +289,144 @@ public class SpawnerSettings {
         return tag;
     }
 
-    public void readFromNBT(CompoundTag tag) {
+    public void readFromNBT(CompoundTag sourceTag) {
+        CompoundTag tag = unwrapSettingsTag(sourceTag);
         spawnGroups.clear();
-        respondToRedstone = tag.getBoolean(RESPOND_TO_REDSTONE_TAG);
+
+        if (tag.contains(RESPOND_TO_REDSTONE_TAG)) respondToRedstone = tag.getBoolean(RESPOND_TO_REDSTONE_TAG);
         if (respondToRedstone) {
-            redstoneMode = tag.getBoolean(REDSTONE_MODE_TAG);
-            prevRedstoneState = tag.getBoolean(PREV_REDSTONE_STATE_TAG);
+            if (tag.contains(REDSTONE_MODE_TAG)) redstoneMode = tag.getBoolean(REDSTONE_MODE_TAG);
+            if (tag.contains(PREV_REDSTONE_STATE_TAG)) prevRedstoneState = tag.getBoolean(PREV_REDSTONE_STATE_TAG);
         }
-        minDelay = Math.max(tag.getInt(MIN_DELAY_TAG), 10);
-        maxDelay = Math.max(tag.getInt(MAX_DELAY_TAG), 10);
-        spawnDelay = tag.getInt(SPAWN_DELAY_TAG);
-        playerRange = tag.getInt(PLAYER_RANGE_TAG);
-        mobRange = tag.getInt(MOB_RANGE_TAG);
-        range = tag.getInt(SPAWN_RANGE_TAG);
-        maxNearbyMonsters = tag.getInt(MAX_NEARBY_MONSTERS_TAG);
-        xpToDrop = tag.getInt(XP_TO_DROP_TAG);
-        lightSensitive = tag.getBoolean(LIGHT_SENSITIVE_TAG);
-        transparent = tag.getBoolean(TRANSPARENT_TAG);
-        debugMode = tag.getBoolean(DEBUG_MODE_TAG);
+        if (tag.contains(MIN_DELAY_TAG)) minDelay = Math.max(tag.getInt(MIN_DELAY_TAG), 10);
+        if (tag.contains(MAX_DELAY_TAG)) maxDelay = Math.max(tag.getInt(MAX_DELAY_TAG), minDelay);
+        if (tag.contains(SPAWN_DELAY_TAG)) spawnDelay = tag.getInt(SPAWN_DELAY_TAG);
+        if (tag.contains(PLAYER_RANGE_TAG)) playerRange = tag.getInt(PLAYER_RANGE_TAG);
+        if (tag.contains(MOB_RANGE_TAG)) mobRange = tag.getInt(MOB_RANGE_TAG);
+        if (tag.contains(SPAWN_RANGE_TAG)) range = tag.getInt(SPAWN_RANGE_TAG);
+        if (tag.contains(MAX_NEARBY_MONSTERS_TAG)) maxNearbyMonsters = tag.getInt(MAX_NEARBY_MONSTERS_TAG);
+        if (tag.contains(XP_TO_DROP_TAG)) xpToDrop = tag.getInt(XP_TO_DROP_TAG);
+        if (tag.contains(LIGHT_SENSITIVE_TAG)) lightSensitive = tag.getBoolean(LIGHT_SENSITIVE_TAG);
+        if (tag.contains(TRANSPARENT_TAG)) transparent = tag.getBoolean(TRANSPARENT_TAG);
+        if (tag.contains(DEBUG_MODE_TAG)) debugMode = tag.getBoolean(DEBUG_MODE_TAG);
+
         ListTag groupList = tag.getList(SPAWN_GROUPS_TAG, Constants.NBT.TAG_COMPOUND);
-        EntitySpawnGroup group;
         for (int i = 0; i < groupList.size(); i++) {
-            group = new EntitySpawnGroup(this);
+            EntitySpawnGroup group = new EntitySpawnGroup(this);
             group.readFromNBT(groupList.getCompound(i));
-            spawnGroups.add(group);
-        }
-        if (tag.contains(INVENTORY_TAG)) {
-            inventory.deserializeNBT(tag.getCompound(INVENTORY_TAG));
-        }
-        if (tag.contains(SPAWN_Y_OFFSET_TAG)) {
-            spawnYOffset = tag.getInt(SPAWN_Y_OFFSET_TAG);
+            if (!group.getEntitiesToSpawn().isEmpty()) {
+                spawnGroups.add(group);
+            }
         }
 
+        // 1.12 vanilla spawner NBT used SpawnData/SpawnPotentials instead of AW's
+        // spawnGroups tree. Convert it before the empty spawner removes itself.
+        if (spawnGroups.isEmpty() && !tag.contains(SPAWN_GROUPS_TAG)) {
+            readLegacySpawnerData(tag);
+        }
+
+        if (tag.contains(INVENTORY_TAG)) inventory.deserializeNBT(tag.getCompound(INVENTORY_TAG));
+        if (tag.contains(SPAWN_Y_OFFSET_TAG)) spawnYOffset = tag.getInt(SPAWN_Y_OFFSET_TAG);
+
+        // Vanilla/1.12 field names. Read only when the AW field was absent so a
+        // mixed tag cannot overwrite an explicitly configured modern value.
+        if (!tag.contains(MIN_DELAY_TAG) && tag.contains("MinSpawnDelay")) minDelay = Math.max(10, tag.getInt("MinSpawnDelay"));
+        if (!tag.contains(MAX_DELAY_TAG) && tag.contains("MaxSpawnDelay")) maxDelay = Math.max(minDelay, tag.getInt("MaxSpawnDelay"));
+        if (!tag.contains(SPAWN_DELAY_TAG) && tag.contains("Delay")) spawnDelay = tag.getInt("Delay");
+        if (!tag.contains(PLAYER_RANGE_TAG) && tag.contains("RequiredPlayerRange")) playerRange = tag.getInt("RequiredPlayerRange");
+        if (!tag.contains(SPAWN_RANGE_TAG) && tag.contains("SpawnRange")) range = tag.getInt("SpawnRange");
+        if (!tag.contains(MAX_NEARBY_MONSTERS_TAG) && tag.contains("MaxNearbyEntities")) maxNearbyMonsters = tag.getInt("MaxNearbyEntities");
+
         updateSpawnProperties();
+    }
+
+    /** Accept item tags, BlockEntityTag wrappers, tile NBT, and direct settings NBT. */
+    public static CompoundTag unwrapSettingsTag(CompoundTag source) {
+        if (source == null) return new CompoundTag();
+        if (source.contains("spawnerSettings", Constants.NBT.TAG_COMPOUND)) {
+            return source.getCompound("spawnerSettings");
+        }
+        if (source.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND)) {
+            CompoundTag blockEntityTag = source.getCompound("BlockEntityTag");
+            if (blockEntityTag.contains("spawnerSettings", Constants.NBT.TAG_COMPOUND)) {
+                return blockEntityTag.getCompound("spawnerSettings");
+            }
+            return blockEntityTag;
+        }
+        return source;
+    }
+
+    public static boolean containsSpawnerConfiguration(CompoundTag source) {
+        CompoundTag tag = unwrapSettingsTag(source);
+        return tag.contains(SPAWN_GROUPS_TAG) || tag.contains("SpawnData") || tag.contains("SpawnPotentials")
+                || tag.contains("EntityId") || tag.contains("entityId") || tag.contains("mobID");
+    }
+
+    private void readLegacySpawnerData(CompoundTag tag) {
+        ListTag potentials = tag.getList("SpawnPotentials", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < potentials.size(); i++) {
+            CompoundTag potential = potentials.getCompound(i);
+            CompoundTag entityData = extractLegacyEntityData(potential);
+            ResourceLocation entityId = extractLegacyEntityId(entityData);
+            if (entityId == null) continue;
+            EntitySpawnGroup group = createLegacyGroup(entityId, entityData, getLegacySpawnCount(tag));
+            int weight = potential.contains("Weight") ? potential.getInt("Weight") : potential.getInt("weight");
+            group.setWeight(weight <= 0 ? 1 : weight);
+            spawnGroups.add(group);
+        }
+
+        if (spawnGroups.isEmpty()) {
+            CompoundTag entityData = tag.contains("SpawnData", Constants.NBT.TAG_COMPOUND)
+                    ? extractLegacyEntityData(tag.getCompound("SpawnData")) : tag;
+            ResourceLocation entityId = extractLegacyEntityId(entityData);
+            if (entityId == null) {
+                // Malformed old spawners must remain usable instead of becoming an
+                // invisible empty block that deletes itself on the next tick.
+                entityId = new ResourceLocation("minecraft", "zombie");
+                entityData = new CompoundTag();
+            }
+            spawnGroups.add(createLegacyGroup(entityId, entityData, getLegacySpawnCount(tag)));
+        }
+    }
+
+    private EntitySpawnGroup createLegacyGroup(ResourceLocation entityId, CompoundTag entityData, int spawnCount) {
+        EntitySpawnGroup group = new EntitySpawnGroup(this);
+        EntitySpawnSettings setting = new EntitySpawnSettings(group);
+        setting.setEntityToSpawn(entityId);
+        CompoundTag custom = entityData.copy();
+        custom.remove("id");
+        custom.remove("EntityId");
+        custom.remove("entityId");
+        custom.remove("mobID");
+        if (!custom.isEmpty()) setting.setCustomSpawnTag(custom);
+        setting.setSpawnCountMin(spawnCount);
+        setting.setSpawnCountMax(spawnCount);
+        setting.setSpawnLimitTotal(-1);
+        group.addSpawnSetting(setting);
+        return group;
+    }
+
+    private static int getLegacySpawnCount(CompoundTag tag) {
+        return tag.contains("SpawnCount") ? Math.max(1, tag.getInt("SpawnCount")) : 1;
+    }
+
+    private static CompoundTag extractLegacyEntityData(CompoundTag tag) {
+        if (tag.contains("data", Constants.NBT.TAG_COMPOUND)) return extractLegacyEntityData(tag.getCompound("data"));
+        if (tag.contains("entity", Constants.NBT.TAG_COMPOUND)) return tag.getCompound("entity");
+        if (tag.contains("Entity", Constants.NBT.TAG_COMPOUND)) return tag.getCompound("Entity");
+        return tag;
+    }
+
+    @Nullable
+    private static ResourceLocation extractLegacyEntityId(CompoundTag tag) {
+        String id = "";
+        if (tag.contains("entityId")) id = tag.getString("entityId");
+        else if (tag.contains("EntityId")) id = tag.getString("EntityId");
+        else if (tag.contains("mobID")) id = tag.getString("mobID");
+        else if (tag.contains("id")) id = tag.getString("id");
+        if (id == null || id.isBlank() || id.endsWith("advanced_spawner_tile")) return null;
+        if (id.indexOf(':') < 0) id = "minecraft:" + id.toLowerCase(Locale.ROOT);
+        return ResourceLocation.tryParse(id);
     }
 
     void updateSpawnProperties() {
@@ -337,7 +443,8 @@ public class SpawnerSettings {
             }
             EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(entitySettings.entityId);
             Entity entity = entityType == null ? null : entityType.create(world);
-            factionName = entity instanceof NpcFaction ? entitySettings.customTag.getString(FACTION_NAME_TAG) : "";
+            factionName = entity instanceof NpcFaction && entitySettings.customTag != null
+                    ? entitySettings.customTag.getString(FACTION_NAME_TAG) : "";
         }
     }
 
@@ -583,7 +690,7 @@ public class SpawnerSettings {
         }
 
         public void readFromNBT(CompoundTag tag) {
-            groupWeight = tag.getInt("groupWeight");
+            setWeight(tag.contains("groupWeight") ? tag.getInt("groupWeight") : 1);
             ListTag settingsList = tag.getList("settingsList", Constants.NBT.TAG_COMPOUND);
             EntitySpawnSettings setting;
             for (int i = 0; i < settingsList.size(); i++) {
@@ -632,13 +739,22 @@ public class SpawnerSettings {
 
         public final void readFromNBT(CompoundTag tag) {
             hostile = !tag.contains(HOSTILE_TAG) || tag.getBoolean(HOSTILE_TAG);
-            remainingSpawnCount = tag.getInt(REMAINING_SPAWN_COUNT_TAG);
-            setEntityToSpawn(new ResourceLocation(tag.getString(ENTITY_ID_TAG)));
-            if (tag.contains(CUSTOM_TAG)) {
+            remainingSpawnCount = tag.contains(REMAINING_SPAWN_COUNT_TAG) ? tag.getInt(REMAINING_SPAWN_COUNT_TAG) : -1;
+            ResourceLocation parsed = extractLegacyEntityId(tag);
+            setEntityToSpawn(parsed == null ? new ResourceLocation("minecraft", "zombie") : parsed);
+            if (tag.contains(CUSTOM_TAG, Constants.NBT.TAG_COMPOUND)) {
                 customTag = tag.getCompound(CUSTOM_TAG);
+            } else {
+                CompoundTag legacyEntity = extractLegacyEntityData(tag);
+                CompoundTag copied = legacyEntity.copy();
+                copied.remove("id");
+                copied.remove(ENTITY_ID_TAG);
+                copied.remove("EntityId");
+                copied.remove("mobID");
+                if (!copied.isEmpty()) customTag = copied;
             }
-            minToSpawn = tag.getInt(MIN_TO_SPAWN_TAG);
-            maxToSpawn = tag.getInt(MAX_TO_SPAWN_TAG);
+            minToSpawn = tag.contains(MIN_TO_SPAWN_TAG) ? Math.max(1, tag.getInt(MIN_TO_SPAWN_TAG)) : 1;
+            maxToSpawn = tag.contains(MAX_TO_SPAWN_TAG) ? Math.max(minToSpawn, tag.getInt(MAX_TO_SPAWN_TAG)) : minToSpawn;
         }
 
         public final void setEntityToSpawn(Entity entity) {
@@ -822,6 +938,7 @@ public class SpawnerSettings {
                         temp.put(key, customTag.get(key).copy());
                     }
                 }
+                ComponentItemFixer.fixRecursively(temp);
                 e.load(temp);
                 if (e instanceof NpcFaction && customTag.contains(FACTION_NAME_TAG)) {
                     ((NpcFaction) e).setFactionNameAndDefaults(customTag.getString(FACTION_NAME_TAG));

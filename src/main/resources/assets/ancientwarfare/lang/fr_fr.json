@@ -801,5 +801,14 @@
   "item.gateDoubleWood.name": "Pont en bois (à battant)",
   "item.gateSingleIron.name": "Pont en fer (coulissante)",
   "item.gateSingleWood.name": "Pont en bois (coulissante)",
-  "item.gateDrawbridge.name": "Pont tournant (rotative)"
+  "item.gateDrawbridge.name": "Pont tournant (rotative)",
+  "item.ancientwarfare.component_wooden_gear": "Engrenages en bois",
+  "item.ancientwarfare.component_iron_gear": "Engrenages en fer",
+  "item.ancientwarfare.component_steel_gear": "Engrenages en acier",
+  "item.ancientwarfare.component_wooden_bearings": "Bagues en bois",
+  "item.ancientwarfare.component_iron_bearings": "Bagues en fer",
+  "item.ancientwarfare.component_steel_bearings": "Bagues en acier",
+  "item.ancientwarfare.component_wooden_shaft": "Arbre de torsion en bois",
+  "item.ancientwarfare.component_iron_shaft": "Arbre de torsion en fer",
+  "item.ancientwarfare.component_steel_shaft": "Arbre de torsion en acier"
 }

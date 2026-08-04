@@ -885,7 +885,7 @@ entity:
 plugin=vanillaHangingEntity
 number=9
 data:
-JSON:{yOffset:0.5f,xOffset:0.96875f,rotation:90.0f,mobID:"minecraft:item_frame",zOffset:0.5f,position:5772905807876L,entityData:{Motion:[0.0d,0.0d,0.0d],Facing:1b,ForgeData:{},ItemRotation:0b,Invulnerable:0b,Air:300s,OnGround:0b,Dimension:0,PortalCooldown:0,Rotation:[90.0f,0.0f],UpdateBlocked:0b,FallDistance:0.0f,Item:{id:"ancientwarfare:component",Count:1b,Damage:0s},ItemDropChance:1.0f,Pos:[124.96875d,13.5d,-1002.5d],Fire:-1s,TileY:13,TileX:124,TileZ:-1003},direction:1b,hangingOffset:0L}
+JSON:{yOffset:0.5f,xOffset:0.96875f,rotation:90.0f,mobID:"minecraft:item_frame",zOffset:0.5f,position:5772905807876L,entityData:{Motion:[0.0d,0.0d,0.0d],Facing:1b,ForgeData:{},ItemRotation:0b,Invulnerable:0b,Air:300s,OnGround:0b,Dimension:0,PortalCooldown:0,Rotation:[90.0f,0.0f],UpdateBlocked:0b,FallDistance:0.0f,Item:{id:"ancientwarfare:component_wooden_gear",Count:1b},ItemDropChance:1.0f,Pos:[124.96875d,13.5d,-1002.5d],Fire:-1s,TileY:13,TileX:124,TileZ:-1003},direction:1b,hangingOffset:0L}
 :enddata
 :endentity
 

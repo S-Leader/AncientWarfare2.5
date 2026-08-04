@@ -1838,5 +1838,14 @@
   "gui.ancientwarfarenpc.faction_name.wizardly": "Волшебники",
   "gui.ancientwarfarenpc.faction_name.xoltec": "Зольтеки",
   "gui.ancientwarfarenpc.faction_name.zamurai": "Дзамураи",
-  "gui.ancientwarfarenpc.faction_name.zimba": "Зимба"
+  "gui.ancientwarfarenpc.faction_name.zimba": "Зимба",
+  "item.ancientwarfare.component_wooden_gear": "Комплект деревянных шестерен",
+  "item.ancientwarfare.component_iron_gear": "Комплект железных шестерен",
+  "item.ancientwarfare.component_steel_gear": "Комплект стальных шестерен",
+  "item.ancientwarfare.component_wooden_bearings": "Комплект деревянных втулок",
+  "item.ancientwarfare.component_iron_bearings": "Комплект железных втулок",
+  "item.ancientwarfare.component_steel_bearings": "Комплект стальных втулок",
+  "item.ancientwarfare.component_wooden_shaft": "Деревянный крутящий вал",
+  "item.ancientwarfare.component_iron_shaft": "Железный крутящий вал",
+  "item.ancientwarfare.component_steel_shaft": "Стальной крутящий вал"
 }

@@ -1125,5 +1125,14 @@
   "keybind.vehicle.mouse.aim": "マウスエイムを有効/無効",
   "keybind.vehicle.ammo.select": "弾薬選択GUIを開く",
   "gui.ancientwarfarevehicles.ammo.no_ammo": "弾が装填されていません",
-  "gui.ancientwarfarenpc.no_chest_access": "このチェストは %s のものです。あなたは開けることが出来ません"
+  "gui.ancientwarfarenpc.no_chest_access": "このチェストは %s のものです。あなたは開けることが出来ません",
+  "item.ancientwarfare.component_wooden_gear": "木製ギアセット",
+  "item.ancientwarfare.component_iron_gear": "鉄製ギアセット",
+  "item.ancientwarfare.component_steel_gear": "鋼鉄製ギアセット",
+  "item.ancientwarfare.component_wooden_bearings": "木製軸受",
+  "item.ancientwarfare.component_iron_bearings": "鉄製軸受",
+  "item.ancientwarfare.component_steel_bearings": "鋼鉄製軸受",
+  "item.ancientwarfare.component_wooden_shaft": "木製トルクシャフト",
+  "item.ancientwarfare.component_iron_shaft": "鉄製トルクシャフト",
+  "item.ancientwarfare.component_steel_shaft": "鋼鉄製トルクシャフト"
 }

@@ -656,5 +656,14 @@
   "item.gateDoubleWood.name": "木門 (雙面開啟)",
   "item.gateSingleIron.name": "鐵門 (雙面開啟)",
   "item.gateSingleWood.name": "木門 (雙面開啟)",
-  "item.gateDrawbridge.name": "吊橋(旋轉打開)"
+  "item.gateDrawbridge.name": "吊橋(旋轉打開)",
+  "item.ancientwarfare.component_wooden_gear": "木齒輪",
+  "item.ancientwarfare.component_iron_gear": "鐵齒輪",
+  "item.ancientwarfare.component_steel_gear": "鋼鐵齒輪",
+  "item.ancientwarfare.component_wooden_bearings": "木軸襯",
+  "item.ancientwarfare.component_iron_bearings": "鐵軸襯",
+  "item.ancientwarfare.component_steel_bearings": "鋼軸襯",
+  "item.ancientwarfare.component_wooden_shaft": "木扭力",
+  "item.ancientwarfare.component_iron_shaft": "鐵扭力",
+  "item.ancientwarfare.component_steel_shaft": "鋼扭力"
 }

@@ -1,20 +1,19 @@
 {
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "S S",
-        " P ",
-        "S S"
-    ],
-    "key": {
-        "P": {
-            "item": "#PLANKWOOD"
-        },
-        "S": {
-            "item": "#STICKWOOD"
-        }
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "S S",
+    " P ",
+    "S S"
+  ],
+  "key": {
+    "P": {
+      "item": "#PLANKWOOD"
     },
-    "result": {
-        "item": "ancientwarfare:component",
-        "data": 0
+    "S": {
+      "item": "#STICKWOOD"
     }
+  },
+  "result": {
+    "item": "ancientwarfare:component_wooden_gear"
+  }
 }

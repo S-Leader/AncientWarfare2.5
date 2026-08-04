@@ -313,18 +313,23 @@ public abstract class NpcFaction extends NpcBase {
 
     @Override
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-        return getSound().equals("none") ? SoundEvents.PLAYER_HURT : AWNPCSounds.getSoundEventFromString(getSound() + "_hurt");
+        SoundEvent sound = "none".equals(getSound()) ? null : AWNPCSounds.getSoundEventFromString(getSound() + "_hurt");
+        return sound == null ? SoundEvents.PLAYER_HURT : sound;
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return getSound().equals("none") ? SoundEvents.PLAYER_DEATH : AWNPCSounds.getSoundEventFromString(getSound() + "_death");
+        SoundEvent sound = "none".equals(getSound()) ? null : AWNPCSounds.getSoundEventFromString(getSound() + "_death");
+        return sound == null ? SoundEvents.PLAYER_DEATH : sound;
     }
 
     private void playAttackSound() {
-        // don't play any sound if there is no specific attack sound
-        if (!getSound().equals("none")) {
-            playSound(AWNPCSounds.getSoundEventFromString(getSound() + "_attack"), 1.0F, 1.2F / (getRandom().nextFloat() * 0.2F + 0.9F));
+        if ("none".equals(getSound())) {
+            return;
+        }
+        SoundEvent sound = AWNPCSounds.getSoundEventFromString(getSound() + "_attack");
+        if (sound != null) {
+            playSound(sound, 1.0F, 1.2F / (getRandom().nextFloat() * 0.2F + 0.9F));
         }
     }
 

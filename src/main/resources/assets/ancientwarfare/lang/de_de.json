@@ -1108,5 +1108,14 @@
   "keybind.vehicle.turret.right": "Turm rechts",
   "keybind.vehicle.mouse.aim": "Mausziel aktivieren / deaktivieren",
   "keybind.vehicle.ammo.select": "Öffnen Sie die Munitionsauswahl-GUI",
-  "gui.ancientwarfarevehicles.ammo.no_ammo": "Das Fahrzeug ist nicht mit Munition beladen"
+  "gui.ancientwarfarevehicles.ammo.no_ammo": "Das Fahrzeug ist nicht mit Munition beladen",
+  "item.ancientwarfare.component_wooden_gear": "Hölzerner Gang eingestellt",
+  "item.ancientwarfare.component_iron_gear": "Eisen-Zahnradsatz",
+  "item.ancientwarfare.component_steel_gear": "Stahlzahnradsatz",
+  "item.ancientwarfare.component_wooden_bearings": "Holzbuchsen-Set",
+  "item.ancientwarfare.component_iron_bearings": "Eisenbuchsen-Set",
+  "item.ancientwarfare.component_steel_bearings": "Stahlbuchsen-Set",
+  "item.ancientwarfare.component_wooden_shaft": "Hölzerne Drehmomentwelle",
+  "item.ancientwarfare.component_iron_shaft": "Eisen-Drehmomentwelle",
+  "item.ancientwarfare.component_steel_shaft": "Stahl-Drehmomentwelle"
 }

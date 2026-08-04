@@ -23,7 +23,17 @@ public final class AWCoreItems {
     public static Item BACKPACK;
     public static Item IRON_QUILL;
     public static Item STEEL_INGOT;
-    public static ItemMulti COMPONENT;
+    /** Hidden compatibility item for old ancientwarfare:component stacks. */
+    public static Item LEGACY_COMPONENT;
+    public static Item WOODEN_GEAR_SET;
+    public static Item IRON_GEAR_SET;
+    public static Item STEEL_GEAR_SET;
+    public static Item WOODEN_BEARINGS;
+    public static Item IRON_BEARINGS;
+    public static Item STEEL_BEARINGS;
+    public static Item WOODEN_TORQUE_SHAFT;
+    public static Item IRON_TORQUE_SHAFT;
+    public static Item STEEL_TORQUE_SHAFT;
 
     public static void load() {
         LegacyOreDictionary.registerOre("ingotSteel", STEEL_INGOT);
@@ -51,19 +61,41 @@ public final class AWCoreItems {
 
             MANUAL = LegacyRegistryHelper.register(helper, new ItemManual());
 
-            COMPONENT = new ItemComponent().listenToProxy(AncientWarfareCore.proxy);
-            LegacyRegistryHelper.register(helper, COMPONENT);
-            COMPONENT.addSubItem(ItemComponent.WOODEN_GEAR_SET, "automation/component_wooden_gear#inventory", "gearWood");
-            COMPONENT.addSubItem(ItemComponent.IRON_GEAR_SET, "automation/component_iron_gear#inventory", "gearIron");
-            COMPONENT.addSubItem(ItemComponent.STEEL_GEAR_SET, "automation/component_steel_gear#inventory", "gearSteel");
-            COMPONENT.addSubItem(ItemComponent.WOODEN_BEARINGS, "automation/component_wooden_bearings#inventory", "bearingWood");
-            COMPONENT.addSubItem(ItemComponent.IRON_BEARINGS, "automation/component_iron_bearings#inventory", "bearingIron");
-            COMPONENT.addSubItem(ItemComponent.STEEL_BEARINGS, "automation/component_steel_bearings#inventory", "bearingSteel");
-            COMPONENT.addSubItem(ItemComponent.WOODEN_TORQUE_SHAFT, "automation/component_wooden_shaft#inventory", "shaftWood");
-            COMPONENT.addSubItem(ItemComponent.IRON_TORQUE_SHAFT, "automation/component_iron_shaft#inventory", "shaftIron");
-            COMPONENT.addSubItem(ItemComponent.STEEL_TORQUE_SHAFT, "automation/component_steel_shaft#inventory", "shaftSteel");
+            // Keep the old id only as an automatic save migration target.
+            LEGACY_COMPONENT = LegacyRegistryHelper.register(helper, new ItemLegacyComponent());
+
+            WOODEN_GEAR_SET = registerComponent(helper, "component_wooden_gear", "component_wooden_gear", "gearWood");
+            IRON_GEAR_SET = registerComponent(helper, "component_iron_gear", "component_iron_gear", "gearIron");
+            STEEL_GEAR_SET = registerComponent(helper, "component_steel_gear", "component_steel_gear", "gearSteel");
+            WOODEN_BEARINGS = registerComponent(helper, "component_wooden_bearings", "component_wooden_bearings", "bearingWood");
+            IRON_BEARINGS = registerComponent(helper, "component_iron_bearings", "component_iron_bearings", "bearingIron");
+            STEEL_BEARINGS = registerComponent(helper, "component_steel_bearings", "component_steel_bearings", "bearingSteel");
+            WOODEN_TORQUE_SHAFT = registerComponent(helper, "component_wooden_shaft", "component_wooden_shaft", "shaftWood");
+            IRON_TORQUE_SHAFT = registerComponent(helper, "component_iron_shaft", "component_iron_shaft", "shaftIron");
+            STEEL_TORQUE_SHAFT = registerComponent(helper, "component_steel_shaft", "component_steel_shaft", "shaftSteel");
 
             STEEL_INGOT = LegacyRegistryHelper.register(helper, new ItemBaseCore("steel_ingot"));
         });
+    }
+
+    private static Item registerComponent(RegisterEvent.RegisterHelper<Item> helper, String id, String model, String oreName) {
+        Item item = LegacyRegistryHelper.register(helper, new ItemComponent(id, model));
+        LegacyOreDictionary.registerOre(oreName, item);
+        return item;
+    }
+
+    public static Item getComponentByLegacyMeta(int metadata) {
+        return switch (metadata) {
+            case 0 -> WOODEN_GEAR_SET;
+            case 1 -> IRON_GEAR_SET;
+            case 2 -> STEEL_GEAR_SET;
+            case 3 -> WOODEN_BEARINGS;
+            case 4 -> IRON_BEARINGS;
+            case 5 -> STEEL_BEARINGS;
+            case 6 -> WOODEN_TORQUE_SHAFT;
+            case 7 -> IRON_TORQUE_SHAFT;
+            case 8 -> STEEL_TORQUE_SHAFT;
+            default -> null;
+        };
     }
 }

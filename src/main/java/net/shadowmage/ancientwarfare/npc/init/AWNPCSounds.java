@@ -163,7 +163,9 @@ public class AWNPCSounds {
     }
 
     public static SoundEvent getSoundEventFromString(String name) {
-        name = name.toLowerCase();
-        return npcSoundEvents.get(name);
+        if (name == null || name.isBlank()) {
+            return null;
+        }
+        return npcSoundEvents.get(name.toLowerCase(java.util.Locale.ROOT));
     }
 }

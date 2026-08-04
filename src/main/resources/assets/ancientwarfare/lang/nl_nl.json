@@ -603,5 +603,14 @@
   "item.gateDoubleWood.name": "Houten Poort (kliev open)",
   "item.gateSingleIron.name": "Ijzeren Poort (glijopen)",
   "item.gateSingleWood.name": "Houten Poort (glij open)",
-  "item.gateDrawbridge.name": "Ophaalbrug (draai open)"
+  "item.gateDrawbridge.name": "Ophaalbrug (draai open)",
+  "item.ancientwarfare.component_wooden_gear": "Houten Gear Set",
+  "item.ancientwarfare.component_iron_gear": "Ijzeren Gear Set",
+  "item.ancientwarfare.component_steel_gear": "Stalen Gear Set",
+  "item.ancientwarfare.component_wooden_bearings": "Houten Bushing Set",
+  "item.ancientwarfare.component_iron_bearings": "Ijzeren Bushing Set Set",
+  "item.ancientwarfare.component_steel_bearings": "Stalenl Bushing Set",
+  "item.ancientwarfare.component_wooden_shaft": "Houten Torque Shaft",
+  "item.ancientwarfare.component_iron_shaft": "Ijzeren Torque Shaft",
+  "item.ancientwarfare.component_steel_shaft": "Stalen Torque Shaft"
 }

@@ -34,6 +34,21 @@ public final class LegacyItemStack {
      * Converts a registry name plus 1.12 metadata through Mojang's item data fixer.
      */
     public static ItemStack of(String legacyItemName, int count, int legacyMeta, @Nullable CompoundTag itemTag) {
+        if ("ancientwarfare:component".equals(legacyItemName)) {
+            legacyItemName = switch (legacyMeta) {
+                case 0 -> "ancientwarfare:component_wooden_gear";
+                case 1 -> "ancientwarfare:component_iron_gear";
+                case 2 -> "ancientwarfare:component_steel_gear";
+                case 3 -> "ancientwarfare:component_wooden_bearings";
+                case 4 -> "ancientwarfare:component_iron_bearings";
+                case 5 -> "ancientwarfare:component_steel_bearings";
+                case 6 -> "ancientwarfare:component_wooden_shaft";
+                case 7 -> "ancientwarfare:component_iron_shaft";
+                case 8 -> "ancientwarfare:component_steel_shaft";
+                default -> legacyItemName;
+            };
+            legacyMeta = 0;
+        }
         if (legacyItemName != null && legacyItemName.startsWith("minecraft:")) {
             CompoundTag oldStack = new CompoundTag();
             oldStack.putString("id", legacyItemName);

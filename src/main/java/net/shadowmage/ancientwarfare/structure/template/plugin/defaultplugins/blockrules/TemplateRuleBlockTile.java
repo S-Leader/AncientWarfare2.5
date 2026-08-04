@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.block.BlockRotationHandler;
+import net.shadowmage.ancientwarfare.core.datafixes.ComponentItemFixer;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
 import net.shadowmage.ancientwarfare.structure.api.IStructureBuilder;
@@ -57,7 +58,7 @@ public class TemplateRuleBlockTile<T extends BlockEntity> extends TemplateRuleVa
         super.handlePlacement(world, turns, pos, builder);
         WorldTools.getTile(world, pos).ifPresent(tile -> {
             try {
-                tile.load(tag.copy());
+                tile.load(ComponentItemFixer.fixRecursively(tag.copy()));
                 rotateTe(tile, turns);
                 tile.setChanged();
             } catch (Exception e) {
@@ -100,7 +101,7 @@ public class TemplateRuleBlockTile<T extends BlockEntity> extends TemplateRuleVa
     public BlockEntity getTileEntity(int turns) {
         if (tileCache == null || tileCache.getA() != turns) {
             try {
-                CompoundTag previewTag = tag.copy();
+                CompoundTag previewTag = ComponentItemFixer.fixRecursively(tag.copy());
                 previewTag.putInt("x", 0);
                 previewTag.putInt("y", 0);
                 previewTag.putInt("z", 0);

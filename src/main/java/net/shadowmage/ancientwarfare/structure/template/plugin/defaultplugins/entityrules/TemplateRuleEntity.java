@@ -13,6 +13,7 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.shadowmage.ancientwarfare.core.datafixes.ComponentItemFixer;
 import net.shadowmage.ancientwarfare.core.util.BlockTools;
 import net.shadowmage.ancientwarfare.core.util.Constants;
 import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
@@ -76,7 +77,7 @@ public class TemplateRuleEntity<T extends Entity> extends TemplateRuleEntityBase
             AncientWarfareStructure.LOG.debug("Could not create entity for name: {} Entity skipped during structure creation.", registryName);
             return Optional.empty();
         }
-        CompoundTag entityNBT = getEntityNBT(pos, turns);
+        CompoundTag entityNBT = ComponentItemFixer.fixRecursively(getEntityNBT(pos, turns).copy());
         removeNonExistentAttributes(e, entityNBT);
 
         e.load(entityNBT);

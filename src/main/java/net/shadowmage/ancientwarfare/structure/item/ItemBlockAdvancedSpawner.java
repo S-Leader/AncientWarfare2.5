@@ -36,11 +36,12 @@ public class ItemBlockAdvancedSpawner extends ItemBlockBase implements IItemKeyI
     @Override
     public InteractionResult place(BlockPlaceContext context) {
         ItemStack stack = context.getItemInHand();
-        if (!stack.getOrCreateTag().contains(SPAWNER_SETTINGS_TAG)) {
+        CompoundTag rootTag = stack.getOrCreateTag();
+        if (!SpawnerSettings.containsSpawnerConfiguration(rootTag)) {
             SpawnerSettings settings = SpawnerSettings.getDefaultSettings();
             CompoundTag defaultTag = new CompoundTag();
             settings.writeToNBT(defaultTag);
-            stack.getOrCreateTag().put(SPAWNER_SETTINGS_TAG, defaultTag);
+            rootTag.put(SPAWNER_SETTINGS_TAG, defaultTag);
         }
         return super.place(context);
     }
@@ -51,7 +52,10 @@ public class ItemBlockAdvancedSpawner extends ItemBlockBase implements IItemKeyI
             ItemStack stack = context.getItemInHand();
             WorldTools.getTile(context.getLevel(), context.getClickedPos(), TileAdvancedSpawner.class).ifPresent(tile -> {
                 SpawnerSettings settings = new SpawnerSettings();
-                settings.readFromNBT(stack.getOrCreateTag().getCompound(SPAWNER_SETTINGS_TAG));
+                settings.readFromNBT(stack.getOrCreateTag());
+                if (settings.getSpawnGroups().isEmpty()) {
+                    settings = SpawnerSettings.getDefaultSettings();
+                }
                 tile.setSettings(settings);
             });
         }
@@ -75,12 +79,12 @@ public class ItemBlockAdvancedSpawner extends ItemBlockBase implements IItemKeyI
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable Level world, List<String> tooltip, TooltipFlag flagIn) {
         //noinspection ConstantConditions
-        if (!stack.hasTag() || !stack.getTag().contains(SPAWNER_SETTINGS_TAG)) {
+        if (!stack.hasTag() || !SpawnerSettings.containsSpawnerConfiguration(stack.getTag())) {
             tooltip.add(I18n.get("guistrings.corrupt_item"));
             return;
         }
         SpawnerSettings tooltipSettings = new SpawnerSettings();
-        tooltipSettings.readFromNBT(stack.getTag().getCompound(SPAWNER_SETTINGS_TAG));
+        tooltipSettings.readFromNBT(stack.getTag());
         List<EntitySpawnGroup> groups = tooltipSettings.getSpawnGroups();
         tooltip.add(I18n.get("guistrings.spawner.group_count") + ": " + groups.size());
         EntitySpawnGroup group;

@@ -1,17 +1,16 @@
 {
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "S S",
-        "   ",
-        "S S"
-    ],
-    "key": {
-        "S": {
-            "item": "#STICKWOOD"
-        }
-    },
-    "result": {
-        "item": "ancientwarfare:component",
-        "data": 3
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "S S",
+    "   ",
+    "S S"
+  ],
+  "key": {
+    "S": {
+      "item": "#STICKWOOD"
     }
+  },
+  "result": {
+    "item": "ancientwarfare:component_wooden_bearings"
+  }
 }

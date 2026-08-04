@@ -1870,5 +1870,15 @@
   "gui.ancientwarfarevehicle.inventory.pack": "Pack",
   "gui.ancientwarfarevehicle.ammo_selection.done": "Done",
   "gui.ancientwarfarevehicle.tooltip.material_level": "Material Level: %s",
-  "gui.ancientwarfarevehicle.tooltip.health": "Vehicle Health: %s"
+  "gui.ancientwarfarevehicle.tooltip.health": "Vehicle Health: %s",
+  "item.ancientwarfare.component_wooden_gear": "Wooden Gear Set",
+  "item.ancientwarfare.component_iron_gear": "Iron Gear Set",
+  "item.ancientwarfare.component_steel_gear": "Steel Gear Set",
+  "item.ancientwarfare.component_wooden_bearings": "Wooden Bushing Set",
+  "item.ancientwarfare.component_iron_bearings": "Iron Bushing Set Set",
+  "item.ancientwarfare.component_steel_bearings": "Steel Bushing Set",
+  "item.ancientwarfare.component_wooden_shaft": "Wooden Torque Shaft",
+  "item.ancientwarfare.component_iron_shaft": "Iron Torque Shaft",
+  "item.ancientwarfare.component_steel_shaft": "Steel Torque Shaft",
+  "item.ancientwarfare.component": "Legacy Component (converts automatically)"
 }

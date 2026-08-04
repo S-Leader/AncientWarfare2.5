@@ -1118,5 +1118,14 @@
   "keybind.vehicle.mouse.aim": "启用/禁用鼠标瞄准",
   "keybind.vehicle.ammo.select": "打开弹药选择 GUI",
   "gui.ancientwarfarevehicles.ammo.no_ammo": "载具尚未装填子弹",
-  "gui.ancientwarfarenpc.no_chest_access": "这个箱子属于 %s，它不会为你开放！"
+  "gui.ancientwarfarenpc.no_chest_access": "这个箱子属于 %s，它不会为你开放！",
+  "item.ancientwarfare.component_wooden_gear": "木质齿轮组",
+  "item.ancientwarfare.component_iron_gear": "铁质齿轮组",
+  "item.ancientwarfare.component_steel_gear": "钢质齿轮组",
+  "item.ancientwarfare.component_wooden_bearings": "木质套管",
+  "item.ancientwarfare.component_iron_bearings": "铁质套管",
+  "item.ancientwarfare.component_steel_bearings": "钢质套管",
+  "item.ancientwarfare.component_wooden_shaft": "木质扭转轴",
+  "item.ancientwarfare.component_iron_shaft": "铁质扭转轴",
+  "item.ancientwarfare.component_steel_shaft": "钢质扭转轴"
 }

@@ -7,6 +7,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.shadowmage.ancientwarfare.core.datafixes.ComponentItemFixer;
 import net.shadowmage.ancientwarfare.core.util.Constants;
 import net.shadowmage.ancientwarfare.core.util.InventoryTools;
 import net.shadowmage.ancientwarfare.core.util.MathUtils;
@@ -294,9 +295,9 @@ public class StructureTemplate {
         }
 
         public void deserializeNBT(CompoundTag tag) {
-            stackRequired = ItemStack.of(tag.getCompound("stackRequired"));
+            stackRequired = ItemStack.of(ComponentItemFixer.fixRecursively(tag.getCompound("stackRequired").copy()));
             if (tag.contains(STACK_TO_RETURN_TAG)) {
-                stackToReturn = ItemStack.of(tag.getCompound(STACK_TO_RETURN_TAG));
+                stackToReturn = ItemStack.of(ComponentItemFixer.fixRecursively(tag.getCompound(STACK_TO_RETURN_TAG).copy()));
                 requiredOriginalCount = tag.getInt("requiredOriginalCount");
             }
         }
