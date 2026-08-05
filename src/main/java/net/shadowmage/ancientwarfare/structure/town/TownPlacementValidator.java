@@ -22,7 +22,7 @@ public class TownPlacementValidator {
     private TownPlacementValidator() {
     }
 
-    private static int maxSize = 32;
+    private static final int ABSOLUTE_MAX_SIZE = 32;
     private static final int MIN_STRUCTURE_DISTANCE = TownGeneratorBorders.MAX_BORDER_WIDTH + 5;
 
     /*
@@ -34,7 +34,9 @@ public class TownPlacementValidator {
      * @param z world z to search from
      * @return maximal bounding area for a town, or null if no acceptable area was found starting in the specified chunk
      */
-    static Optional<TownBoundingArea> findGenerationPosition(Level world, int x, int z) {
+    static Optional<TownBoundingArea> findGenerationPosition(Level world, int x, int z, int requestedMaxSize, int requiredMinSize) {
+        int maxSize = Math.max(1, Math.min(ABSOLUTE_MAX_SIZE, requestedMaxSize));
+        int minimumRequiredSize = Math.max(1, Math.min(maxSize, requiredMinSize));
         if (isTownClose(world, x, z)) {
             return Optional.empty();
         }
@@ -47,11 +49,11 @@ public class TownPlacementValidator {
             return Optional.empty();
         }
 
-        int minY = Math.max(0, world.getSeaLevel() - 4);
+        int minY = Math.max(world.getMinBuildHeight(), world.getSeaLevel() - 4);
 
         TownBoundingArea area = new TownBoundingArea();
         area.minY = Math.max(minY, height - 3);
-        area.maxY = Math.min(255, area.minY + 40);
+        area.maxY = Math.min(world.getMaxBuildHeight() - 1, area.minY + 40);
         area.chunkMinX = cx;
         area.chunkMaxX = cx;
         area.chunkMinZ = cz;
@@ -64,8 +66,11 @@ public class TownPlacementValidator {
             return Optional.empty();
         }
 
-        expandBoundingArea(world, area, structureList);
+        expandBoundingArea(world, area, structureList, maxSize);
         shrinkTooLongArea(area);
+        if (Math.min(area.getChunkWidth(), area.getChunkLength()) < minimumRequiredSize) {
+            return Optional.empty();
+        }
         levelToAverageBorderHeight(world, area);
         return Optional.of(area);
     }
@@ -150,7 +155,7 @@ public class TownPlacementValidator {
         return dist < minDist;
     }
 
-    private static void expandBoundingArea(Level world, TownBoundingArea area, Collection<StructureEntry> structureList) {
+    private static void expandBoundingArea(Level world, TownBoundingArea area, Collection<StructureEntry> structureList, int maxSize) {
         boolean xneg = true;//if should try and expand on this direction next pass, once set to false it never checks that direction again
         boolean xpos = true;
         boolean zneg = true;
@@ -158,23 +163,23 @@ public class TownPlacementValidator {
         boolean didExpand = false;//set to true if any expansion occurred on that pass.  if false at end of pass, will break out of loop as no more expansion is possible
         do {
             didExpand = false;
-            if (xneg && area.getChunkWidth() <= maxSize) {
+            if (xneg && area.getChunkWidth() < maxSize) {
                 xneg = tryExpandXNeg(world, area, structureList);
                 didExpand = xneg;
             }
-            if (xpos && area.getChunkWidth() <= maxSize) {
+            if (xpos && area.getChunkWidth() < maxSize) {
                 xpos = tryExpandXPos(world, area, structureList);
                 didExpand = didExpand || xpos;
             }
-            if (zneg && area.getChunkLength() <= maxSize) {
+            if (zneg && area.getChunkLength() < maxSize) {
                 zneg = tryExpandZNeg(world, area, structureList);
                 didExpand = didExpand || zneg;
             }
-            if (zpos && area.getChunkLength() <= maxSize) {
+            if (zpos && area.getChunkLength() < maxSize) {
                 zpos = tryExpandZPos(world, area, structureList);
                 didExpand = didExpand || zpos;
             }
-        } while (didExpand && (area.getChunkWidth() <= maxSize || area.getChunkLength() <= maxSize));
+        } while (didExpand && (area.getChunkWidth() < maxSize || area.getChunkLength() < maxSize));
     }
 
     private static boolean tryExpandXNeg(Level world, TownBoundingArea area, Collection<StructureEntry> structureList) {
@@ -247,7 +252,8 @@ public class TownPlacementValidator {
     private static int getTopFilledHeight(LevelChunk chunk, int x, int z) {
         int maxY = chunk.getHighestSectionPosition() + 15;
         Block block;
-        for (int y = maxY; y > 0; y--) {
+        int minY = chunk.getMinBuildHeight();
+        for (int y = maxY; y >= minY; y--) {
             BlockState state = chunk.getBlockState(new BlockPos(x, y, z));
             block = state.getBlock();
             if (AWStructureStatics.isSkippable(state)) {

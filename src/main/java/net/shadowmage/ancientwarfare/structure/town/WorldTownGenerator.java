@@ -4,6 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.shadowmage.ancientwarfare.core.gamedata.AWGameData;
 import net.shadowmage.ancientwarfare.structure.config.AWStructureStatics;
+import net.shadowmage.ancientwarfare.structure.gamedata.StructureEntry;
+import net.shadowmage.ancientwarfare.structure.gamedata.StructureMap;
 import net.shadowmage.ancientwarfare.structure.gamedata.TownEntry;
 import net.shadowmage.ancientwarfare.structure.gamedata.TownMap;
 import net.shadowmage.ancientwarfare.structure.template.build.StructureBB;
@@ -41,7 +43,9 @@ public class WorldTownGenerator {
             return;
         }
 
-        TownPlacementValidator.findGenerationPosition(world, blockX, blockZ).ifPresent(area ->
+        int largestRelevantTown = templates.stream().mapToInt(TownTemplate::getMaxSize).max().orElse(0);
+        int smallestRelevantTown = templates.stream().mapToInt(TownTemplate::getMinSize).min().orElse(1);
+        TownPlacementValidator.findGenerationPosition(world, blockX, blockZ, largestRelevantTown, smallestRelevantTown).ifPresent(area ->
                 selectTerritoryTemplate(world, blockX, blockZ, templates, area));
     }
 
@@ -53,13 +57,11 @@ public class WorldTownGenerator {
     private void selectTemplateAndShrinkToMax(Level world, List<TownTemplate> templates, TownBoundingArea area, Territory territory) {
         TownTemplateManager.INSTANCE.selectTemplateFittingArea(world, area, templates, territory).ifPresent(
                 template -> {
-                    if (area.getChunkWidth() - 1 > template.getMaxSize())//shrink width down to town max size
-                    {
-                        area.chunkMaxX = area.chunkMinX + template.getMaxSize();
+                    if (area.getChunkWidth() > template.getMaxSize()) { // shrink width to the configured inclusive chunk count
+                        area.chunkMaxX = area.chunkMinX + template.getMaxSize() - 1;
                     }
-                    if (area.getChunkLength() - 1 > template.getMaxSize())//shrink length down to town max size
-                    {
-                        area.chunkMaxZ = area.chunkMinZ + template.getMaxSize();
+                    if (area.getChunkLength() > template.getMaxSize()) { // shrink length to the configured inclusive chunk count
+                        area.chunkMaxZ = area.chunkMinZ + template.getMaxSize() - 1;
                     }
                     generate(world, area, template);
                     territory.addClusterValue(template.getClusterValue());
@@ -72,6 +74,15 @@ public class WorldTownGenerator {
         /*
          * add the town to generated town map, to eliminate towns generating too close to eachother
          */
+        // Towns must also occupy the normal structure map. The 1.20 port had
+        // dropped this original registration, which allowed later world-gen
+        // attempts to reserve or build through a town while its many queued
+        // pieces were still being generated.
+        StructureMap structureMap = AWGameData.INSTANCE.getPerWorldData(world, StructureMap.class);
+        StructureEntry structureEntry = new StructureEntry(bb, template.getTownTypeName(), template.getClusterValue(),
+                area.getCenterX() >> 4, area.getCenterZ() >> 4);
+        structureMap.setGeneratedAt(world, area.getCenterX(), area.getCenterZ(), structureEntry, false);
+
         AWGameData.INSTANCE.getPerWorldData(world, TownMap.class).setGenerated(new TownEntry(bb, template.shouldPreventNaturalHostileSpawns()));
 
         /*

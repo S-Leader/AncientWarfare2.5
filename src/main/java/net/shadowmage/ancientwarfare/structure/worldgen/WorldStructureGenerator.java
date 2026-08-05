@@ -150,6 +150,41 @@ public class WorldStructureGenerator {
         return -1;
     }
 
+    /**
+     * Returns the Y coordinate of the top water block in a column.  The normal
+     * target-height lookup returns the first non-skippable block and is suitable
+     * for ground structures, but water structures need a stable waterline.  In
+     * particular, waterlogged plants, bubble columns, ice edges and modded ocean
+     * decoration must not move a ship or island up by one block.
+     */
+    public static int getWaterSurfaceY(Level world, int x, int z) {
+        if (world.dimension() == Level.NETHER) {
+            return -1;
+        }
+
+        int minimumY = world.getMinBuildHeight();
+        int maximumY = world.getMaxBuildHeight() - 1;
+        int preferredSurface = Math.min(maximumY, world.getSeaLevel() - 1);
+
+        // Vanilla and most modded oceans have their top source-water block at
+        // seaLevel - 1. Prefer that exact level so every part of a large ocean
+        // structure uses the same anchor height.
+        BlockState preferred = world.getBlockState(new BlockPos(x, preferredSurface, z));
+        if (preferred.getFluidState().is(FluidTags.WATER)) {
+            return preferredSurface;
+        }
+
+        // Rivers, custom dimensions and lowered/raised oceans may use another
+        // waterline. Find the highest real water-containing block instead.
+        for (int y = maximumY; y >= minimumY; y--) {
+            BlockState state = world.getBlockState(new BlockPos(x, y, z));
+            if (state.getFluidState().is(FluidTags.WATER)) {
+                return y;
+            }
+        }
+        return -1;
+    }
+
     public static void sprinkleSnow(Level world, StructureBB bb, int border) {
         BlockPos p1 = bb.min.offset(-border, 0, -border);
         BlockPos p2 = bb.max.offset(border, 0, border);

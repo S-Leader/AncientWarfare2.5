@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
 import net.shadowmage.ancientwarfare.structure.worldgen.Territory;
+import net.shadowmage.ancientwarfare.structure.worldgen.WorldStructureGenerator;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,7 +35,11 @@ public class TownTemplateManager {
     }
 
     List<TownTemplate> getTemplatesValidAtPosition(Level world, int x, int z) {
-        ResourceLocation biomeId = world.getBiome(new BlockPos(x, world.getSeaLevel(), z))
+        int surfaceY = WorldStructureGenerator.getTargetY(world, x, z, true);
+        if (surfaceY < world.getMinBuildHeight()) {
+            surfaceY = world.getSeaLevel();
+        }
+        ResourceLocation biomeId = world.getBiome(new BlockPos(x, surfaceY, z))
                 .unwrapKey().map(key -> key.location()).orElse(null);
         if (biomeId == null) {
             AncientWarfareStructure.LOG.debug("Unable to resolve the biome registry key while validating town generation at {}, {}", x, z);
@@ -66,7 +71,7 @@ public class TownTemplateManager {
         int totalWeight = 0;
         for (TownTemplate t : templates) {
             templateMinimumSize = t.getMinSize();
-            if (min >= templateMinimumSize && isCorrectTerritory(territory.getTerritoryName(), t) && territory.getRemainingClusterValue() > t.getClusterValue()) {
+            if (min >= templateMinimumSize && isCorrectTerritory(territory.getTerritoryName(), t) && territory.getRemainingClusterValue() >= t.getClusterValue()) {
                 searchCache.add(t);
                 totalWeight += t.getSelectionWeight();
             }

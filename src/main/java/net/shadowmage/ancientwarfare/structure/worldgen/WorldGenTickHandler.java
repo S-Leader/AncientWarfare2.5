@@ -145,18 +145,19 @@ public final class WorldGenTickHandler {
     private void genStructures() {
         int totalBlocks = 0;
         /*
-         * Only inspect the tickets that existed at the beginning of this pass.
-         * Unready cross-chunk structures are appended for a later tick instead of
-         * being removed and immediately retried in a tight loop.
+         * Keep strict FIFO ordering. Town callbacks are barriers: roads must not
+         * run before walls, and lamps/villagers must not run before buildings.
+         * The previous requeue-at-tail behaviour allowed an unloaded outer town
+         * piece to be skipped while its completion callback ran immediately.
          */
-        int ticketsToInspect = structuresToGen.size();
-        while (ticketsToInspect-- > 0 && !structuresToGen.isEmpty()
-                && totalBlocks < MAX_BLOCKS_TO_GEN_PER_TICK) {
-            StructureTicket structureTicket = structuresToGen.remove(0);
+        while (!structuresToGen.isEmpty() && totalBlocks < MAX_BLOCKS_TO_GEN_PER_TICK) {
+            StructureTicket structureTicket = structuresToGen.get(0);
             if (!structureTicket.isReady()) {
-                structuresToGen.add(structureTicket);
-                continue;
+                // isReady() may load a bounded number of missing chunks. Leave
+                // the ticket at the head and continue next tick without spinning.
+                break;
             }
+            structuresToGen.remove(0);
             totalBlocks += structureTicket.getBlocksToGenerate();
             structureTicket.call();
         }
@@ -218,7 +219,7 @@ public final class WorldGenTickHandler {
 
         @Override
         public boolean isReady() {
-            return builder.areRequiredChunksLoaded();
+            return builder.ensureRequiredChunksLoaded(4);
         }
 
         @Override
