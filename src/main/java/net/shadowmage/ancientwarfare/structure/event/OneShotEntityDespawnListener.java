@@ -9,6 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -52,8 +53,9 @@ public final class OneShotEntityDespawnListener {
     public void onEntityLeaveLevel(EntityLeaveLevelEvent event) {
         if (event.getLevel().isClientSide()
                 || !(event.getEntity() instanceof LivingEntity living)
-                || living.getHealth() <= 0
-                || living instanceof NpcFaction) {
+                || living instanceof NpcFaction
+                || living.getRemovalReason() != Entity.RemovalReason.DISCARDED
+                || living.getHealth() <= 0.0F) {
             return;
         }
 
@@ -65,6 +67,20 @@ public final class OneShotEntityDespawnListener {
         CapabilityRespawnData.get(living)
                 .filter(IRespawnData::canRespawn)
                 .ifPresent(data -> queueRespawn(data, event.getLevel()));
+    }
+
+    /**
+     * A killed entity must consume its one-shot-spawner association permanently.
+     * Otherwise its later removal can be mistaken for a distance despawn and the
+     * spawner is recreated after the player has legitimately defeated the mob.
+     */
+    @SubscribeEvent
+    public void onLivingDeath(LivingDeathEvent event) {
+        if (event.getEntity().level().isClientSide()) {
+            return;
+        }
+        CapabilityRespawnData.get(event.getEntity())
+                .ifPresent(data -> data.setRespawnPos(net.minecraft.core.BlockPos.ZERO));
     }
 
     /**

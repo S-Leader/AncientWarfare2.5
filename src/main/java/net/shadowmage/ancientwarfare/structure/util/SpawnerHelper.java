@@ -27,8 +27,24 @@ public class SpawnerHelper {
             return false;
         }
 
-        BlockPos respawnPos = findSpawnerPosition(serverLevel, originalPos);
-        if (respawnPos == null || !serverLevel.setBlock(respawnPos, AWStructureBlocks.ADVANCED_SPAWNER.defaultBlockState(), 3)) {
+        BlockState originalState = serverLevel.getBlockState(originalPos);
+
+        // Idempotence: if another entity from the same spawn group has already
+        // restored the one-shot spawner, this task is complete. Never search above
+        // or below it and create a second stacked spawner.
+        if (originalState.is(AWStructureBlocks.ADVANCED_SPAWNER)) {
+            return true;
+        }
+
+        // The respawn position is now the original spawner block position. Only that
+        // exact position is valid; vertical fallbacks were the direct cause of piles
+        // of four or five advanced spawners.
+        if (!originalState.isAir() && !originalState.canBeReplaced()) {
+            return false;
+        }
+
+        BlockPos respawnPos = originalPos.immutable();
+        if (!serverLevel.setBlock(respawnPos, AWStructureBlocks.ADVANCED_SPAWNER.defaultBlockState(), 3)) {
             return false;
         }
 
@@ -52,19 +68,4 @@ public class SpawnerHelper {
         return true;
     }
 
-    private static BlockPos findSpawnerPosition(ServerLevel level, BlockPos originalPos) {
-        // The entity may have spawned in water, tall grass, snow, or another
-        // replaceable block. Accept those positions instead of requiring literal air.
-        for (int yOffset : new int[]{0, 1, -1, 2}) {
-            BlockPos candidate = originalPos.offset(0, yOffset, 0);
-            if (!level.hasChunkAt(candidate)) {
-                continue;
-            }
-            BlockState state = level.getBlockState(candidate);
-            if (state.isAir() || state.canBeReplaced()) {
-                return candidate.immutable();
-            }
-        }
-        return null;
-    }
 }

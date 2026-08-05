@@ -97,18 +97,24 @@ public abstract class NpcFaction extends NpcBase {
     @Override
     public void checkDespawn() {
         boolean removedBefore = isRemoved();
+        boolean aliveBefore = isAlive() && getHealth() > 0.0F;
         Level currentLevel = level();
 
-        // Snapshot before Mob#checkDespawn can call discard(). EntityLeaveLevelEvent
-        // invalidates Forge capabilities synchronously, so reading the capability
-        // after super.checkDespawn() loses the one-shot spawner data.
-        RespawnData respawnSnapshot = removedBefore
+        // Snapshot only a living NPC. A dead/dying NPC may still receive one final
+        // checkDespawn call before its KILLED removal is completed; snapshotting it
+        // here would incorrectly recreate the one-shot spawner after a real kill.
+        RespawnData respawnSnapshot = removedBefore || !aliveBefore
                 ? null
                 : OneShotEntityDespawnListener.INSTANCE.snapshotRespawnData(this);
 
         super.checkDespawn();
 
-        if (!removedBefore && isRemoved() && respawnSnapshot != null) {
+        // Vanilla distance despawn uses DISCARDED. Death, dimension changes, chunk
+        // unloading and explicit removal use different reasons and must never restore
+        // a one-shot spawner.
+        if (!removedBefore
+                && respawnSnapshot != null
+                && getRemovalReason() == RemovalReason.DISCARDED) {
             OneShotEntityDespawnListener.INSTANCE.queueRespawn(respawnSnapshot, currentLevel);
         }
     }

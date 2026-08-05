@@ -922,8 +922,15 @@ public class SpawnerSettings {
 
         private void setRespawnData(Entity e) {
             CapabilityRespawnData.get(e).ifPresent(respawnData -> {
-                respawnData.setRespawnPos(e.blockPosition());
-                respawnData.setSpawnerSettings(getParentSettings().getParentSettings().writeToNBT(new CompoundTag()));
+                SpawnerSettings owner = getParentSettings().getParentSettings();
+
+                // Every entity produced by one one-shot spawner must point back to
+                // the spawner block, not to its randomized entity spawn location.
+                // Using e.blockPosition() gave every mob a different key, so a group
+                // of four or five mobs could recreate four or five stacked spawners.
+                BlockPos sourcePos = owner.pos == null ? e.blockPosition() : owner.pos;
+                respawnData.setRespawnPos(sourcePos.immutable());
+                respawnData.setSpawnerSettings(owner.writeToNBT(new CompoundTag()));
                 respawnData.setSpawnTime(e.level().getGameTime());
             });
         }
