@@ -23,7 +23,9 @@ import java.util.concurrent.TimeUnit;
 
 // Persistent per-level data is supplied through the modern SavedData-backed AWGameData service.
 public class TownMap extends WorldSavedData {
-    private static final Cache<Zone, Set<TownEntry>> CHUNK_TOWN_ENTRIES = CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).build();
+    private static final Cache<TownChunkCacheKey, Set<TownEntry>> CHUNK_TOWN_ENTRIES = CacheBuilder.newBuilder()
+            .expireAfterAccess(10, TimeUnit.MINUTES)
+            .build();
 
     private Set<TownEntry> townEntries = new HashSet<>();
 
@@ -34,11 +36,12 @@ public class TownMap extends WorldSavedData {
     public void setGenerated(TownEntry townEntry) {
         townEntry.setTownMap(this);
         townEntries.add(townEntry);
+        CHUNK_TOWN_ENTRIES.invalidateAll();
         markDirty();
     }
 
     public boolean shouldPreventSpawnAtPos(Level world, BlockPos pos) {
-        for (TownEntry entry : getTownsInChunk(pos)) {
+        for (TownEntry entry : getTownsInChunk(world, pos)) {
             if (entry.getBB().contains(pos) && entry.shouldPreventNaturalHostileSpawns() && !entry.getConquered()) {
                 if (ConquerHelper.checkBBNotConquered(world, entry.getBB())) {
                     return true;
@@ -50,19 +53,48 @@ public class TownMap extends WorldSavedData {
         return false;
     }
 
-    private Set<TownEntry> getTownsInChunk(BlockPos pos) {
+    private Set<TownEntry> getTownsInChunk(Level world, BlockPos pos) {
         Set<TownEntry> towns;
         ChunkPos chunkPos = new ChunkPos(pos);
-        BlockPos min = new BlockPos(chunkPos.x * 16, 1, chunkPos.z * 16);
-        BlockPos max = new BlockPos(chunkPos.x * 16 + 15, 255, chunkPos.z * 16 + 15);
+        BlockPos min = new BlockPos(chunkPos.x * 16, world.getMinBuildHeight(), chunkPos.z * 16);
+        BlockPos max = new BlockPos(chunkPos.x * 16 + 15, world.getMaxBuildHeight() - 1, chunkPos.z * 16 + 15);
         Zone chunkZone = new Zone(min, max);
         try {
-            towns = CHUNK_TOWN_ENTRIES.get(chunkZone, () -> getTownsIn(chunkZone));
+            TownChunkCacheKey cacheKey = new TownChunkCacheKey(this, chunkPos.x, chunkPos.z);
+            towns = CHUNK_TOWN_ENTRIES.get(cacheKey, () -> getTownsIn(chunkZone));
         } catch (ExecutionException e) {
             AncientWarfareNPC.LOG.error("Error getting structure entries in chunk for hostile entity check: ", e);
             return new HashSet<>();
         }
         return towns;
+    }
+
+    private static final class TownChunkCacheKey {
+        private final TownMap townMap;
+        private final int chunkX;
+        private final int chunkZ;
+
+        private TownChunkCacheKey(TownMap townMap, int chunkX, int chunkZ) {
+            this.townMap = townMap;
+            this.chunkX = chunkX;
+            this.chunkZ = chunkZ;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            return obj instanceof TownChunkCacheKey other
+                    && townMap == other.townMap
+                    && chunkX == other.chunkX
+                    && chunkZ == other.chunkZ;
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * (31 * System.identityHashCode(townMap) + chunkX) + chunkZ;
+        }
     }
 
     private Set<TownEntry> getTownsIn(Zone zone) {
@@ -101,6 +133,7 @@ public class TownMap extends WorldSavedData {
 
     @Override
     public void readFromNBT(CompoundTag tag) {
+        CHUNK_TOWN_ENTRIES.invalidateAll();
         townEntries.clear();
         legacyDeserialization(tag);
 

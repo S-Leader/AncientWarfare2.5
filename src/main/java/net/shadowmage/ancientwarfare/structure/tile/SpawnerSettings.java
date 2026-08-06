@@ -605,22 +605,30 @@ public class SpawnerSettings {
     }
 
     private boolean spawnsEntity(Predicate<Class<? extends Entity>> isEntityOfType) {
-        List<EntitySpawnGroup> groups = getSpawnGroups();
-        if (groups.isEmpty()) {
-            return false;
-        }
-        EntitySpawnGroup firstGroup = groups.get(0);
-        List<EntitySpawnSettings> spawnEntities = firstGroup.getEntitiesToSpawn();
-        if (spawnEntities.isEmpty()) {
-            return false;
-        }
-
         if (world == null) {
             return false;
         }
-        EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(spawnEntities.get(0).getEntityId());
-        Entity testEntity = entityType == null ? null : entityType.create(world);
-        return testEntity != null && isEntityOfType.test(testEntity.getClass());
+
+        // A spawner may contain multiple weighted groups and multiple entity entries
+        // per group. Checking only [0][0] lets a hostile faction NPC hidden in a later
+        // entry be ignored by protection-flag conquest checks.
+        for (EntitySpawnGroup group : getSpawnGroups()) {
+            for (EntitySpawnSettings spawnSetting : group.getEntitiesToSpawn()) {
+                if (spawnSetting.getSpawnTotal() == 0) {
+                    continue;
+                }
+                EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(spawnSetting.getEntityId());
+                Entity testEntity = entityType == null ? null : entityType.create(world);
+                if (testEntity != null && isEntityOfType.test(testEntity.getClass())) {
+                    testEntity.discard();
+                    return true;
+                }
+                if (testEntity != null) {
+                    testEntity.discard();
+                }
+            }
+        }
+        return false;
     }
 
     public static final class EntitySpawnGroup {

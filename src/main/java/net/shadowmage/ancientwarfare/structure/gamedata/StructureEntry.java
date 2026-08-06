@@ -19,7 +19,10 @@ public class StructureEntry {
     private StructureMap structureMap = null;
 
     public void setProtectionFlagPos(BlockPos protectionFlagPos) {
-        this.protectionFlagPos = protectionFlagPos;
+        if (hasProtectionFlag && this.protectionFlagPos.equals(protectionFlagPos)) {
+            return;
+        }
+        this.protectionFlagPos = protectionFlagPos.immutable();
         hasProtectionFlag = true;
         markStructureMapDirty();
     }
@@ -29,6 +32,9 @@ public class StructureEntry {
     }
 
     public void setConquered() {
+        if (isConquered && !preventNaturalHostileSpawns) {
+            return;
+        }
         isConquered = true;
         preventNaturalHostileSpawns = false;
         markStructureMapDirty();
@@ -69,6 +75,8 @@ public class StructureEntry {
         tag.putInt("cx", cx);
         tag.putInt("cz", cz);
         tag.putBoolean("preventHostile", preventNaturalHostileSpawns);
+        tag.putBoolean("hasProtectionFlag", hasProtectionFlag);
+        tag.putBoolean("isConquered", isConquered);
     }
 
     public void readFromNBT(CompoundTag tag) {
@@ -83,6 +91,16 @@ public class StructureEntry {
         cx = tag.getInt("cx");
         cz = tag.getInt("cz");
         preventNaturalHostileSpawns = tag.getBoolean("preventHostile");
+
+        // Older saves did not persist these two fields. A non-zero saved flag
+        // position is a reliable compatibility signal that the structure has a flag.
+        hasProtectionFlag = tag.contains("hasProtectionFlag")
+                ? tag.getBoolean("hasProtectionFlag")
+                : !protectionFlagPos.equals(BlockPos.ZERO);
+        isConquered = tag.getBoolean("isConquered");
+        if (isConquered) {
+            preventNaturalHostileSpawns = false;
+        }
     }
 
     public String getName() {

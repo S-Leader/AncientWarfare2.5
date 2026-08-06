@@ -33,9 +33,13 @@ public class TileProtectionFlag extends TileFlag {
     @Override
     protected void readNBT(CompoundTag tag) {
         super.readNBT(tag);
+        owner = Owner.EMPTY;
+        playerProfile = null;
         if (tag.contains(OWNER_TAG)) {
             owner = Owner.deserializeFromNBT(tag.getCompound(OWNER_TAG));
-            playerProfile = NbtUtils.readGameProfile(tag.getCompound(PLAYER_PROFILE_TAG));
+            if (tag.contains(PLAYER_PROFILE_TAG)) {
+                playerProfile = NbtUtils.readGameProfile(tag.getCompound(PLAYER_PROFILE_TAG));
+            }
         }
     }
 
@@ -44,7 +48,9 @@ public class TileProtectionFlag extends TileFlag {
         super.writeNBT(tag);
         if (owner != Owner.EMPTY) {
             tag.put(OWNER_TAG, owner.serializeToNBT(new CompoundTag()));
-            tag.put(PLAYER_PROFILE_TAG, NbtUtils.writeGameProfile(new CompoundTag(), playerProfile));
+            if (playerProfile != null) {
+                tag.put(PLAYER_PROFILE_TAG, NbtUtils.writeGameProfile(new CompoundTag(), playerProfile));
+            }
         }
         return tag;
     }
@@ -52,12 +58,23 @@ public class TileProtectionFlag extends TileFlag {
     @Override
     public void clearRemoved() {
         super.clearRemoved();
-        AWGameData.INSTANCE.getPerWorldData(world, StructureMap.class).getStructureAt(world, pos).ifPresent(structure -> {
-            if (!structure.getProtectionFlagPos().equals(pos)) {
+        StructureMap structureMap = AWGameData.INSTANCE.getPerWorldData(world, StructureMap.class);
+        structureMap.getStructureForProtectionFlag(world, pos).ifPresent(structure -> {
+            boolean changed = false;
+            if (!structure.hasProtectionFlag() || !structure.getProtectionFlagPos().equals(pos)) {
                 structure.setProtectionFlagPos(pos);
-                if (!world.isClientSide) {
-                    NetworkHandler.sendToAllPlayers(new PacketStructureEntry(world.dimension().location().toString(), structure.getChunkX(), structure.getChunkZ(), structure));
-                }
+                changed = true;
+            }
+            // Repair old saves: the tile owner was persisted, but StructureEntry's
+            // conquered/has-flag flags were not. Reconcile them when the tile loads.
+            if (isPlayerOwned() && !structure.getConquered()) {
+                structure.setConquered();
+                changed = true;
+            }
+            if (changed && !world.isClientSide) {
+                NetworkHandler.sendToAllPlayers(new PacketStructureEntry(
+                        world.dimension().location().toString(),
+                        structure.getChunkX(), structure.getChunkZ(), structure));
             }
         });
     }
@@ -76,7 +93,8 @@ public class TileProtectionFlag extends TileFlag {
             return;
         }
 
-        Optional<StructureEntry> structure = AWGameData.INSTANCE.getPerWorldData(world, StructureMap.class).getStructureAt(world, pos);
+        Optional<StructureEntry> structure = AWGameData.INSTANCE.getPerWorldData(world, StructureMap.class)
+                .getStructureForProtectionFlag(world, pos);
         if (!structure.isPresent()) {
             return;
         }
@@ -86,6 +104,9 @@ public class TileProtectionFlag extends TileFlag {
             turnOffSoundBlocks(st);
             setOwner(player, player.getGameProfile());
             st.setConquered();
+            ConquerHelper.invalidate(world, st.getBB());
+            NetworkHandler.sendToAllPlayers(new PacketStructureEntry(
+                    world.dimension().location().toString(), st.getChunkX(), st.getChunkZ(), st));
             player.displayClientMessage(Component.translatable("gui.ancientwarfarestructure.structure_conquered", st.getName()), true);
             world.playSound(null, pos, AWStructureSounds.PROTECTION_FLAG_CLAIM, SoundSource.BLOCKS, 1, 1);
         }

@@ -31,13 +31,19 @@ public class TownEntry {
     public static TownEntry deserializeNBT(CompoundTag tag) {
         StructureBB bb = new StructureBB(BlockPos.ZERO, BlockPos.ZERO);
         bb.deserializeNBT(tag.getCompound("bb"));
-        return new TownEntry(bb, tag.getBoolean("preventNaturalHostileSpawns"));
+        TownEntry entry = new TownEntry(bb, tag.getBoolean("preventNaturalHostileSpawns"));
+        entry.isConquered = tag.getBoolean("isConquered");
+        if (entry.isConquered) {
+            entry.preventNaturalHostileSpawns = false;
+        }
+        return entry;
     }
 
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.put("bb", bb.serializeNBT());
         tag.putBoolean("preventNaturalHostileSpawns", preventNaturalHostileSpawns);
+        tag.putBoolean("isConquered", isConquered);
         return tag;
     }
 

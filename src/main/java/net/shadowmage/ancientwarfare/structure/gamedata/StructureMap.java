@@ -16,6 +16,7 @@ import net.shadowmage.ancientwarfare.core.util.Constants;
 import net.shadowmage.ancientwarfare.core.util.Zone;
 import net.shadowmage.ancientwarfare.npc.AncientWarfareNPC;
 import net.shadowmage.ancientwarfare.structure.network.PacketStructureEntry;
+import net.shadowmage.ancientwarfare.structure.template.build.StructureBB;
 import net.shadowmage.ancientwarfare.structure.util.ConquerHelper;
 
 import java.util.*;
@@ -23,7 +24,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class StructureMap extends WorldSavedData {
-    private static final Cache<Zone, Set<StructureEntry>> CHUNK_STRUCTURE_ENTRIES = CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).build();
+    private static final Cache<ChunkStructureCacheKey, Set<StructureEntry>> CHUNK_STRUCTURE_ENTRIES = CacheBuilder.newBuilder()
+            .expireAfterAccess(10, TimeUnit.MINUTES)
+            .build();
 
     private StructureDimensionMap map;
 
@@ -34,6 +37,7 @@ public class StructureMap extends WorldSavedData {
 
     @Override
     public void readFromNBT(CompoundTag nbttagcompound) {
+        CHUNK_STRUCTURE_ENTRIES.invalidateAll();
         CompoundTag mapTag = nbttagcompound.getCompound("map");
         map.readFromNBT(this, mapTag);
     }
@@ -63,11 +67,12 @@ public class StructureMap extends WorldSavedData {
     private Set<StructureEntry> getStructuresInChunk(Level world, BlockPos pos) {
         Set<StructureEntry> structures;
         ChunkPos chunkPos = new ChunkPos(pos);
-        BlockPos min = new BlockPos(chunkPos.x * 16, 1, chunkPos.z * 16);
-        BlockPos max = new BlockPos(chunkPos.x * 16 + 15, 255, chunkPos.z * 16 + 15);
+        BlockPos min = new BlockPos(chunkPos.x * 16, world.getMinBuildHeight(), chunkPos.z * 16);
+        BlockPos max = new BlockPos(chunkPos.x * 16 + 15, world.getMaxBuildHeight() - 1, chunkPos.z * 16 + 15);
         Zone chunkZone = new Zone(min, max);
         try {
-            structures = CHUNK_STRUCTURE_ENTRIES.get(chunkZone, () -> getStructuresIn(world, chunkZone));
+            ChunkStructureCacheKey cacheKey = new ChunkStructureCacheKey(world, chunkPos.x, chunkPos.z);
+            structures = CHUNK_STRUCTURE_ENTRIES.get(cacheKey, () -> getStructuresIn(world, chunkZone));
         } catch (ExecutionException e) {
             AncientWarfareNPC.LOG.error("Error getting structure entries in chunk for hostile entity check: ", e);
             return new HashSet<>();
@@ -98,6 +103,41 @@ public class StructureMap extends WorldSavedData {
             }
         }
         return Optional.empty();
+    }
+
+    /**
+     * Resolve the structure belonging to a protection flag. In overlapping structure
+     * bounding boxes, getStructureAt() can return an arbitrary entry. Prefer an entry
+     * already bound to this exact flag position, otherwise bind the smallest unclaimed
+     * containing entry so a nearby large structure cannot steal the flag.
+     */
+    public Optional<StructureEntry> getStructureForProtectionFlag(Level world, BlockPos pos) {
+        StructureEntry best = null;
+        long bestVolume = Long.MAX_VALUE;
+
+        for (StructureEntry structure : getEntriesNear(world, pos.getX(), pos.getZ(), 1, true, new ArrayList<>())) {
+            if (!structure.getBB().contains(pos)) {
+                continue;
+            }
+
+            if (structure.getProtectionFlagPos().equals(pos)
+                    && (structure.hasProtectionFlag() || !pos.equals(BlockPos.ZERO))) {
+                return Optional.of(structure);
+            }
+
+            if (structure.hasProtectionFlag()) {
+                continue;
+            }
+
+            StructureBB bb = structure.getBB();
+            long volume = (long) bb.getXSize() * bb.getYSize() * bb.getZSize();
+            if (volume < bestVolume) {
+                best = structure;
+                bestVolume = volume;
+            }
+        }
+
+        return Optional.ofNullable(best);
     }
 
     public Optional<StructureEntry> getStructureAt(Level world, int chunkX, int chunkZ) {
@@ -152,6 +192,34 @@ public class StructureMap extends WorldSavedData {
 
     public boolean isGeneratedUnique(String name) {
         return this.map.generatedUniques.contains(name);
+    }
+
+    private static final class ChunkStructureCacheKey {
+        private final Level world;
+        private final int chunkX;
+        private final int chunkZ;
+
+        private ChunkStructureCacheKey(Level world, int chunkX, int chunkZ) {
+            this.world = world;
+            this.chunkX = chunkX;
+            this.chunkZ = chunkZ;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            return obj instanceof ChunkStructureCacheKey other
+                    && world == other.world
+                    && chunkX == other.chunkX
+                    && chunkZ == other.chunkZ;
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * (31 * System.identityHashCode(world) + chunkX) + chunkZ;
+        }
     }
 
     private static class StructureDimensionMap {
