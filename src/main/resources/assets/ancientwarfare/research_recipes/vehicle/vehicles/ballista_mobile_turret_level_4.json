@@ -29,8 +29,7 @@
     ],
     "result": {
         "type": "minecraft:item_nbt",
-        "item": "ancientwarfarevehicle:spawner",
-        "data": 7,
+        "item": "ancientwarfarevehicle:ballista_mobile_turret",
         "nbt": "{spawnData:{level:4}}"
     }
 }

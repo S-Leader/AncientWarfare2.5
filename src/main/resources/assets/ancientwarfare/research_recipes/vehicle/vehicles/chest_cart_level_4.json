@@ -18,8 +18,7 @@
     ],
     "result": {
         "type": "minecraft:item_nbt",
-        "item": "ancientwarfarevehicle:spawner",
-        "data": 17,
+        "item": "ancientwarfarevehicle:chest_cart",
         "nbt": "{spawnData:{level:4}}"
     }
 }

@@ -29,8 +29,7 @@
     ],
     "result": {
         "type": "minecraft:item_nbt",
-        "item": "ancientwarfarevehicle:spawner",
-        "data": 15,
+        "item": "ancientwarfarevehicle:trebuchet_mobile",
         "nbt": "{spawnData:{level:4}}"
     }
 }

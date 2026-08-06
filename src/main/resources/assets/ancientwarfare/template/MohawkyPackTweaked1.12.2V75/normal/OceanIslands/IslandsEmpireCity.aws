@@ -23534,7 +23534,7 @@ entity:
 plugin=entity
 number=122
 data:
-JSON:{yOffset:0.0f,xOffset:0.18893462f,rotation:275.49506f,mobID:"minecraft:item",zOffset:0.76155263f,position:17871560245301L,entityData:{Motion:[4.9E-324d,-0.0d,4.9E-324d],Health:5s,Invulnerable:0b,Air:300s,OnGround:1b,Dimension:0,PortalCooldown:0,Rotation:[95.49505f,0.0f],UpdateBlocked:0b,FallDistance:0.0f,Item:{id:"ancientwarfarevehicle:spawner",Count:1b,tag:{spawnData:{level:3,health:140.0f}},Damage:5s},Pos:[1754.8110653705173d,149.0d,-957.761552638247d],PickupDelay:0s,Fire:-1s,ForgeCaps:{"llibrary:extendedentitydatacapability":{}},Lifespan:6000,Age:3258s}}
+JSON:{yOffset:0.0f,xOffset:0.18893462f,rotation:275.49506f,mobID:"minecraft:item",zOffset:0.76155263f,position:17871560245301L,entityData:{Motion:[4.9E-324d,-0.0d,4.9E-324d],Health:5s,Invulnerable:0b,Air:300s,OnGround:1b,Dimension:0,PortalCooldown:0,Rotation:[95.49505f,0.0f],UpdateBlocked:0b,FallDistance:0.0f,Item:{id:"ancientwarfarevehicle:ballista_stand_turret",Count:1b,tag:{spawnData:{level:3,health:140.0f}},Damage:0s},Pos:[1754.8110653705173d,149.0d,-957.761552638247d],PickupDelay:0s,Fire:-1s,ForgeCaps:{"llibrary:extendedentitydatacapability":{}},Lifespan:6000,Age:3258s}}
 :enddata
 :endentity
 

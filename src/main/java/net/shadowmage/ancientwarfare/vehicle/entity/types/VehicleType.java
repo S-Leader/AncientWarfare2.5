@@ -8,7 +8,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
-import net.shadowmage.ancientwarfare.core.util.LegacyItemStack;
 import net.shadowmage.ancientwarfare.vehicle.AncientWarfareVehicles;
 import net.shadowmage.ancientwarfare.vehicle.armors.IVehicleArmor;
 import net.shadowmage.ancientwarfare.vehicle.entity.IVehicleType;
@@ -334,11 +333,8 @@ public abstract class VehicleType implements IVehicleType {
 
     @Override
     public ItemStack getStackForLevel(int level) {
-        ItemStack stack = LegacyItemStack.of(AWVehicleItems.SPAWNER, 1, this.getGlobalVehicleType());
-        CompoundTag tag = new CompoundTag();
-        tag.putInt("level", level);
-        stack.getOrCreateTag().put("spawnData", tag);
-        return stack;
+        net.shadowmage.ancientwarfare.vehicle.item.ItemSpawner item = AWVehicleItems.getVehicleItem(this);
+        return item == null ? ItemStack.EMPTY : item.createStack(level);
     }
 
     @Override
@@ -396,27 +392,19 @@ public abstract class VehicleType implements IVehicleType {
         return Optional.empty();
     }
 
-    private static List<ItemStack> displayItemCache = null;
-
     public static List<ItemStack> getCreativeDisplayItems() {
-        if (displayItemCache != null) {
-            return displayItemCache;
-        }
-        List<ItemStack> stacks = new ArrayList<ItemStack>();
-        ItemStack stack;
+        List<ItemStack> stacks = new ArrayList<>();
         for (IVehicleType type : vehicleTypes) {
             if (type == null || type.getMaterialType() == null || !type.isEnabled()) {
                 continue;
             }
-            for (int i = 0; i < type.getMaterialType().getNumOfLevels(); i++) {
-                stack = LegacyItemStack.of(AWVehicleItems.SPAWNER, 1, type.getGlobalVehicleType());
-                CompoundTag tag = new CompoundTag();
-                tag.putInt("level", i);
-                stack.getOrCreateTag().put("spawnData", tag);
-                stacks.add(stack);
+            for (int level = 0; level < type.getMaterialType().getNumOfLevels(); level++) {
+                ItemStack stack = type.getStackForLevel(level);
+                if (!stack.isEmpty()) {
+                    stacks.add(stack);
+                }
             }
         }
-        displayItemCache = stacks;
         return stacks;
     }
 

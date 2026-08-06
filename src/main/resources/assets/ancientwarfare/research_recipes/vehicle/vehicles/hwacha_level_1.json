@@ -16,8 +16,7 @@
     ],
     "result": {
         "type": "minecraft:item_nbt",
-        "item": "ancientwarfarevehicle:spawner",
-        "data": 12,
+        "item": "ancientwarfarevehicle:hwacha",
         "nbt": "{spawnData:{level:1}}"
     }
 }

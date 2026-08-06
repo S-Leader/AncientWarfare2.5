@@ -23,8 +23,7 @@
     ],
     "result": {
         "type": "minecraft:item_nbt",
-        "item": "ancientwarfarevehicle:spawner",
-        "data": 4,
+        "item": "ancientwarfarevehicle:ballista_stand",
         "nbt": "{spawnData:{level:2}}"
     }
 }

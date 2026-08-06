@@ -21,8 +21,7 @@
     ],
     "result": {
         "type": "minecraft:item_nbt",
-        "item": "ancientwarfarevehicle:spawner",
-        "data": 11,
+        "item": "ancientwarfarevehicle:cannon_mobile",
         "nbt": "{spawnData:{level:4}}"
     }
 }

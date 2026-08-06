@@ -71,7 +71,6 @@ public class VehicleRegistry {
                 String key = vehicle.getConfigName();
                 vehicle.setEnabled(config.get(VEHICLE_CONFIG_CATEGORY, key + ".enabled", vehicle.isEnabled(), "Enable this vehicle type.").getBoolean(vehicle.isEnabled()));
                 if (!vehicle.isEnabled()) {
-                    VehicleType.vehicleTypes[vehicle.getGlobalVehicleType()] = null;
                     continue;
                 }
                 vehicle.setEnabledForCrafting(config.get(VEHICLE_CONFIG_CATEGORY, key + ".craftable", vehicle.isEnabledForCrafting(), "Allow crafting this vehicle.").getBoolean(vehicle.isEnabledForCrafting()));

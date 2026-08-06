@@ -26,8 +26,7 @@
     ],
     "result": {
         "type": "minecraft:item_nbt",
-        "item": "ancientwarfarevehicle:spawner",
-        "data": 16,
+        "item": "ancientwarfarevehicle:trebuchet_giant",
         "nbt": "{spawnData:{level:0}}"
     }
 }

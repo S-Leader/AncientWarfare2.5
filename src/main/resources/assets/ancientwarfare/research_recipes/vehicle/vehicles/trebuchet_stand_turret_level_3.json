@@ -29,8 +29,7 @@
     ],
     "result": {
         "type": "minecraft:item_nbt",
-        "item": "ancientwarfarevehicle:spawner",
-        "data": 14,
+        "item": "ancientwarfarevehicle:trebuchet_stand_turret",
         "nbt": "{spawnData:{level:3}}"
     }
 }

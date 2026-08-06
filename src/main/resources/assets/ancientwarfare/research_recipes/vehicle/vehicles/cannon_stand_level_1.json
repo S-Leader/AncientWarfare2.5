@@ -18,8 +18,7 @@
     ],
     "result": {
         "type": "minecraft:item_nbt",
-        "item": "ancientwarfarevehicle:spawner",
-        "data": 9,
+        "item": "ancientwarfarevehicle:cannon_stand",
         "nbt": "{spawnData:{level:1}}"
     }
 }

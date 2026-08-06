@@ -4202,8 +4202,7 @@
                     ],
                     "output": [
                         {
-                            "name": "ancientwarfarevehicle:spawner",
-                            "data": 20,
+                            "name": "ancientwarfarevehicle:boat_transport",
                             "nbt": "{spawnData:{level:0}}"
                         }
                     ],
@@ -4220,8 +4219,7 @@
                     ],
                     "output": [
                         {
-                            "name": "ancientwarfarevehicle:spawner",
-                            "data": 20,
+                            "name": "ancientwarfarevehicle:boat_transport",
                             "nbt": "{spawnData:{level:1}}"
                         }
                     ],
@@ -4238,8 +4236,7 @@
                     ],
                     "output": [
                         {
-                            "name": "ancientwarfarevehicle:spawner",
-                            "data": 20,
+                            "name": "ancientwarfarevehicle:boat_transport",
                             "nbt": "{spawnData:{level:2}}"
                         }
                     ],
@@ -4256,8 +4253,7 @@
                     ],
                     "output": [
                         {
-                            "name": "ancientwarfarevehicle:spawner",
-                            "data": 20,
+                            "name": "ancientwarfarevehicle:boat_transport",
                             "nbt": "{spawnData:{level:3}}"
                         }
                     ],

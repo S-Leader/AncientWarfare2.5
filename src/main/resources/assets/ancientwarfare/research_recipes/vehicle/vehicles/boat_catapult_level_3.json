@@ -28,8 +28,7 @@
     ],
     "result": {
         "type": "minecraft:item_nbt",
-        "item": "ancientwarfarevehicle:spawner",
-        "data": 19,
+        "item": "ancientwarfarevehicle:boat_catapult",
         "nbt": "{spawnData:{level:3}}"
     }
 }

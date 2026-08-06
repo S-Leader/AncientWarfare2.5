@@ -2,8 +2,8 @@ package net.shadowmage.ancientwarfare.structure.template;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import net.shadowmage.ancientwarfare.core.network.NetworkHandler;
 import net.shadowmage.ancientwarfare.core.util.Constants;
@@ -81,7 +81,7 @@ public class StructureTemplateManager {
 
     public static Optional<StructureTemplate> getTemplate(String name) {
         StructureTemplate template = loadedTemplates.get(name);
-        if (template == null && FMLEnvironment.dist == Dist.CLIENT && allTemplateNames.contains(name)) {
+        if (template == null && EffectiveSide.get() == LogicalSide.CLIENT && allTemplateNames.contains(name)) {
             PacketStructure pkt = new PacketStructure();
             pkt.packetData.putString(SYNC_TEMPLATE_TAG, name);
             NetworkHandler.sendToServer(pkt);

@@ -6,6 +6,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -22,7 +23,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import net.shadowmage.ancientwarfare.core.render.model.LegacyModelLoader;
-import net.shadowmage.ancientwarfare.vehicle.AncientWarfareVehicles;
 import net.shadowmage.ancientwarfare.vehicle.config.AWVehicleStatics;
 import net.shadowmage.ancientwarfare.vehicle.entity.IVehicleType;
 import net.shadowmage.ancientwarfare.vehicle.entity.VehicleBase;
@@ -33,58 +33,69 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Placement item for one concrete vehicle type. Material level and preserved health remain
+ * per-stack state, but the vehicle identity is now the registered item itself.
+ */
 public class ItemSpawner extends ItemBaseVehicle {
     private static final String LEVEL_TAG = "level";
     private static final String HEALTH_TAG = "health";
     private static final String SPAWN_DATA_TAG = "spawnData";
 
-    public ItemSpawner() {
-        super("spawner");
+    private final IVehicleType vehicleType;
+
+    public ItemSpawner(IVehicleType vehicleType) {
+        super(vehicleType.getConfigName());
+        this.vehicleType = vehicleType;
         setHasSubtypes(true);
         setMaxStackSize(1);
+    }
+
+    public IVehicleType getVehicleType() {
+        return vehicleType;
     }
 
     @Override
     public InteractionResultHolder<ItemStack> onItemRightClick(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-
         if (world.isClientSide) {
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         }
-
-        if (stack.isEmpty()) {
+        if (stack.isEmpty() || !vehicleType.isEnabled()) {
             return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
         }
-
-        //noinspection ConstantConditions
-        if (stack.hasTag() && stack.getTag().contains(SPAWN_DATA_TAG)) {
-            if (rayTraceAndSpawnVehicle(world, player, hand, stack))
-                return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
-            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
-        }
-        AncientWarfareVehicles.LOG.error("Vehicle spawner item was missing NBT data, something may have corrupted this item");
-        return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+        return rayTraceAndSpawnVehicle(world, player, hand, stack)
+                ? new InteractionResultHolder<>(InteractionResult.SUCCESS, stack)
+                : new InteractionResultHolder<>(InteractionResult.FAIL, stack);
     }
 
     private boolean rayTraceAndSpawnVehicle(Level world, Player player, InteractionHand hand, ItemStack stack) {
-        //noinspection ConstantConditions
-        CompoundTag tag = stack.getTag().getCompound(SPAWN_DATA_TAG);
-        int level = tag.getInt(LEVEL_TAG);
-        Optional<VehicleBase> v = VehicleType.getVehicleForType(world, stack.getDamageValue(), level);
-        if (!v.isPresent()) {
-            return true;
+        CompoundTag tag = getSpawnData(stack);
+        int level = getMaterialLevel(stack);
+        Optional<VehicleBase> vehicleOptional = VehicleType.getVehicleForType(world, vehicleType.getGlobalVehicleType(), level);
+        if (vehicleOptional.isEmpty()) {
+            return false;
         }
-        VehicleBase vehicle = v.get();
+        VehicleBase vehicle = vehicleOptional.get();
         if (tag.contains(HEALTH_TAG)) {
             vehicle.setHealth(tag.getFloat(HEALTH_TAG));
         }
         BlockHitResult rayTrace = getPlayerPOVHitResult(world, player, ClipContext.Fluid.ANY);
         if (rayTrace.getType() != HitResult.Type.BLOCK) {
-            return true;
+            return false;
         }
         spawnVehicle(world, player, vehicle, rayTrace);
         updateSpawnerStackCount(player, hand, stack);
-        return false;
+        return true;
+    }
+
+    private CompoundTag getSpawnData(ItemStack stack) {
+        return stack.getOrCreateTag().getCompound(SPAWN_DATA_TAG);
+    }
+
+    private int getMaterialLevel(ItemStack stack) {
+        int maxLevel = Math.max(0, vehicleType.getMaterialType().getNumOfLevels() - 1);
+        return Mth.clamp(getSpawnData(stack).getInt(LEVEL_TAG), 0, maxLevel);
     }
 
     private void updateSpawnerStackCount(Player player, InteractionHand hand, ItemStack stack) {
@@ -118,65 +129,53 @@ public class ItemSpawner extends ItemBaseVehicle {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable Level world, List<String> tooltip, TooltipFlag flagIn) {
         super.addInformation(stack, world, tooltip, flagIn);
-        //noinspection ConstantConditions
-        if (stack.hasTag() && stack.getTag().contains(SPAWN_DATA_TAG)) {
-            CompoundTag tag = stack.getTag().getCompound(SPAWN_DATA_TAG);
-            int level = tag.getInt(LEVEL_TAG);
-            tooltip.add(I18n.get("gui.ancientwarfarevehicle.tooltip.material_level", level));
-            if (tag.contains(HEALTH_TAG)) {
-                tooltip.add(I18n.get("gui.ancientwarfarevehicle.tooltip.health", tag.getFloat(HEALTH_TAG)));
-            }
-
-            //Read the tooltip from the vehicle TYPE directly — constructing an entity here
-            //ran every frame and blew up outside the EntityType factory.
-            IVehicleType type = VehicleType.getVehicleType(stack.getDamageValue());
-            if (type == null) {
-                return;
-            }
-            tooltip.addAll(type.getDisplayTooltip().stream()
-                    .filter(java.util.Objects::nonNull)
-                    .map(I18n::get)
-                    .collect(Collectors.toSet()));
+        CompoundTag tag = getSpawnData(stack);
+        tooltip.add(I18n.get("gui.ancientwarfarevehicle.tooltip.material_level", getMaterialLevel(stack)));
+        if (tag.contains(HEALTH_TAG)) {
+            tooltip.add(I18n.get("gui.ancientwarfarevehicle.tooltip.health", tag.getFloat(HEALTH_TAG)));
         }
+        tooltip.addAll(vehicleType.getDisplayTooltip().stream()
+                .filter(java.util.Objects::nonNull)
+                .map(I18n::get)
+                .collect(Collectors.toSet()));
     }
 
     @Override
     public String getDescriptionId(ItemStack stack) {
-        int type = stack.getDamageValue();
-        IVehicleType vehicle = type >= 0 && type < VehicleType.vehicleTypes.length ? VehicleType.vehicleTypes[type] : null;
-        return vehicle == null || vehicle.getDisplayName() == null ? "item.spawner" : vehicle.getDisplayName();
+        return vehicleType.getDisplayName() == null ? super.getDescriptionId(stack) : vehicleType.getDisplayName();
     }
 
     public void getSubItems(CreativeModeTab tab, NonNullList<ItemStack> items) {
-        items.addAll(VehicleType.getCreativeDisplayItems());
+        if (!vehicleType.isEnabled()) {
+            return;
+        }
+        for (int level = 0; level < vehicleType.getMaterialType().getNumOfLevels(); level++) {
+            items.add(createStack(level));
+        }
+    }
+
+    public ItemStack createStack(int level) {
+        ItemStack stack = new ItemStack(this);
+        CompoundTag spawnData = new CompoundTag();
+        spawnData.putInt(LEVEL_TAG, Mth.clamp(level, 0, Math.max(0, vehicleType.getMaterialType().getNumOfLevels() - 1)));
+        stack.getOrCreateTag().put(SPAWN_DATA_TAG, spawnData);
+        return stack;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         String modelPath = "vehicle/%s";
-
         LegacyModelLoader.setCustomMeshDefinition(this, stack -> {
-            if (stack.hasTag()) {
-                //noinspection ConstantConditions
-                int level = stack.getTag().getCompound(SPAWN_DATA_TAG).getInt(LEVEL_TAG);
-                IVehicleType type = VehicleType.getVehicleType(stack.getDamageValue());
-                String variant = type == null ? "catapult_stand_0" : type.getConfigName() + "_" + level;
-                return new ModelResourceLocation(new ResourceLocation(AncientWarfareCore.MOD_ID, String.format(modelPath, variant)), "inventory");
-            }
+            String variant = vehicleType.getConfigName() + "_" + getMaterialLevel(stack);
             return new ModelResourceLocation(new ResourceLocation(AncientWarfareCore.MOD_ID,
-                    String.format(modelPath, "catapult_stand_0")), "inventory");
+                    String.format(modelPath, variant)), "inventory");
         });
 
-        for (IVehicleType type : VehicleType.vehicleTypes) {
-            if (type == null || type.getMaterialType() == null || !type.isEnabled()) {
-                continue;
-            }
-            for (int level = 0; level < type.getMaterialType().getNumOfLevels(); level++) {
-                LegacyModelLoader.registerItemVariants(this,
-                        new ModelResourceLocation(new ResourceLocation(AncientWarfareCore.MOD_ID,
-                                String.format(modelPath, type.getConfigName() + "_" + level)), "inventory"));
-            }
+        for (int level = 0; level < vehicleType.getMaterialType().getNumOfLevels(); level++) {
+            LegacyModelLoader.registerItemVariants(this,
+                    new ModelResourceLocation(new ResourceLocation(AncientWarfareCore.MOD_ID,
+                            String.format(modelPath, vehicleType.getConfigName() + "_" + level)), "inventory"));
         }
     }
 }

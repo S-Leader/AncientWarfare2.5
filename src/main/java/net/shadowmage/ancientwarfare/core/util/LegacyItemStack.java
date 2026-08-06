@@ -66,6 +66,33 @@ public final class LegacyItemStack {
             };
             legacyMeta = 0;
         }
+        if ("ancientwarfarevehicle:spawner".equals(legacyItemName)) {
+            legacyItemName = switch (legacyMeta) {
+                case 0 -> "ancientwarfarevehicle:catapult_stand";
+                case 1 -> "ancientwarfarevehicle:catapult_stand_turret";
+                case 2 -> "ancientwarfarevehicle:catapult_mobile";
+                case 3 -> "ancientwarfarevehicle:catapult_mobile_turret";
+                case 4 -> "ancientwarfarevehicle:ballista_stand";
+                case 5 -> "ancientwarfarevehicle:ballista_stand_turret";
+                case 6 -> "ancientwarfarevehicle:ballista_mobile";
+                case 7 -> "ancientwarfarevehicle:ballista_mobile_turret";
+                case 8 -> "ancientwarfarevehicle:battering_ram";
+                case 9 -> "ancientwarfarevehicle:cannon_stand";
+                case 10 -> "ancientwarfarevehicle:cannon_stand_turret";
+                case 11 -> "ancientwarfarevehicle:cannon_mobile";
+                case 12 -> "ancientwarfarevehicle:hwacha";
+                case 13 -> "ancientwarfarevehicle:trebuchet_stand";
+                case 14 -> "ancientwarfarevehicle:trebuchet_stand_turret";
+                case 15 -> "ancientwarfarevehicle:trebuchet_mobile";
+                case 16 -> "ancientwarfarevehicle:trebuchet_giant";
+                case 17 -> "ancientwarfarevehicle:chest_cart";
+                case 18 -> "ancientwarfarevehicle:boat_ballista";
+                case 19 -> "ancientwarfarevehicle:boat_catapult";
+                case 20 -> "ancientwarfarevehicle:boat_transport";
+                default -> legacyItemName;
+            };
+            legacyMeta = 0;
+        }
         if (legacyItemName != null && legacyItemName.startsWith("minecraft:")) {
             CompoundTag oldStack = new CompoundTag();
             oldStack.putString("id", legacyItemName);

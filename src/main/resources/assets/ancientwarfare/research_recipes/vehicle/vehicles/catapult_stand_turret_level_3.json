@@ -21,8 +21,7 @@
     ],
     "result": {
         "type": "minecraft:item_nbt",
-        "item": "ancientwarfarevehicle:spawner",
-        "data": 1,
+        "item": "ancientwarfarevehicle:catapult_stand_turret",
         "nbt": "{spawnData:{level:3}}"
     }
 }

@@ -23,8 +23,7 @@
     ],
     "result": {
         "type": "minecraft:item_nbt",
-        "item": "ancientwarfarevehicle:spawner",
-        "data": 20,
+        "item": "ancientwarfarevehicle:boat_transport",
         "nbt": "{spawnData:{level:2}}"
     }
 }

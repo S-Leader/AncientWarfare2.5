@@ -7,7 +7,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
-import net.shadowmage.ancientwarfare.structure.template.build.StructureBB;
 import net.shadowmage.ancientwarfare.structure.template.build.StructureBuilder;
 import net.shadowmage.ancientwarfare.structure.town.WorldTownGenerator;
 
@@ -17,6 +16,7 @@ import java.util.List;
 
 public final class WorldGenTickHandler {
     private static final int MAX_BLOCKS_TO_GEN_PER_TICK = 10000;
+    private static final int MAX_TEMPLATE_POSITIONS_PER_STEP = 1000;
     public static final WorldGenTickHandler INSTANCE = new WorldGenTickHandler();
     private final List<ChunkGenerationTicket> newChunkChecks;
     private final List<ChunkGenerationTicket> chunkChecks;
@@ -87,9 +87,18 @@ public final class WorldGenTickHandler {
         }
         int remainingStructures = structuresToGen.size();
         while (remainingStructures-- > 0 && !structuresToGen.isEmpty()) {
-            StructureTicket ticket = structuresToGen.remove(0);
-            if (ticket.isReady()) {
+            StructureTicket ticket = structuresToGen.get(0);
+            if (!ticket.isReady()) {
+                break;
+            }
+            try {
                 ticket.call();
+            } catch (Exception ex) {
+                AncientWarfareStructure.LOG.error("Error running deferred structure-generation callback", ex);
+                ticket.markFailed();
+            }
+            if (ticket.isComplete()) {
+                structuresToGen.remove(0);
             }
         }
         while (!townChunksToGen.isEmpty()) {
@@ -157,9 +166,16 @@ public final class WorldGenTickHandler {
                 // the ticket at the head and continue next tick without spinning.
                 break;
             }
-            structuresToGen.remove(0);
-            totalBlocks += structureTicket.getBlocksToGenerate();
-            structureTicket.call();
+            try {
+                structureTicket.call();
+            } catch (Exception ex) {
+                AncientWarfareStructure.LOG.error("Error running deferred structure-generation callback", ex);
+                structureTicket.markFailed();
+            }
+            totalBlocks += Math.max(1, structureTicket.getBlocksToGenerate());
+            if (structureTicket.isComplete()) {
+                structuresToGen.remove(0);
+            }
         }
         if (!newStructureGenTickets.isEmpty()) {
             structuresToGen.addAll(newStructureGenTickets);
@@ -199,10 +215,18 @@ public final class WorldGenTickHandler {
         default boolean isReady() {
             return true;
         }
+
+        default boolean isComplete() {
+            return true;
+        }
+
+        default void markFailed() {
+        }
     }
 
     private static final class StructureGenerationTicket implements StructureTicket {
         private final StructureBuilder builder;
+        private boolean failed;
 
         private StructureGenerationTicket(StructureBuilder builder) {
             this.builder = builder;
@@ -210,22 +234,30 @@ public final class WorldGenTickHandler {
 
         @Override
         public void call() {
-            try {
-                builder.instantConstruction();
-            } catch (Exception ex) {
-                AncientWarfareStructure.LOG.error("Error building structure {}: ", builder.getTemplate().name, ex);
+            if (!failed && !builder.isFinalized()) {
+                builder.buildSome(MAX_TEMPLATE_POSITIONS_PER_STEP);
             }
         }
 
         @Override
         public boolean isReady() {
-            return builder.ensureRequiredChunksLoaded(4);
+            return failed || builder.ensureRequiredChunksLoaded(4);
+        }
+
+        @Override
+        public boolean isComplete() {
+            return failed || builder.isFinalized();
+        }
+
+        @Override
+        public void markFailed() {
+            failed = true;
+            AncientWarfareStructure.LOG.error("Aborting failed structure {}", builder.getTemplate().name);
         }
 
         @Override
         public int getBlocksToGenerate() {
-            StructureBB bb = builder.getBoundingBox();
-            return bb.getXSize() * bb.getZSize() * bb.getYSize();
+            return MAX_TEMPLATE_POSITIONS_PER_STEP;
         }
     }
 }
