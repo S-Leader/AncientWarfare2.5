@@ -78,7 +78,7 @@ public class TownGenerator {
 
         generateGrid();
         TownGeneratorWalls.generateWalls(world, this, template, rng);
-        WorldGenTickHandler.INSTANCE.addStructureGenCallback(new WorldGenTickHandler.StructureTicket() {
+        WorldGenTickHandler.INSTANCE.addTownStructureGenCallback(new WorldGenTickHandler.StructureTicket() {
             @Override
             public void call() {
                 generateRoads();

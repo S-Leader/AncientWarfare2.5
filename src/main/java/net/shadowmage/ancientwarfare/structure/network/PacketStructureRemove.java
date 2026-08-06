@@ -30,6 +30,6 @@ public class PacketStructureRemove extends PacketBase {
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void execute() {
-        StructureTemplateManager.removeTemplate(structureName);
+        StructureTemplateManager.removeClientTemplate(structureName);
     }
 }

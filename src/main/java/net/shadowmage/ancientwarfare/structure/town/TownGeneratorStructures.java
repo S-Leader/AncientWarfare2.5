@@ -38,7 +38,7 @@ class TownGeneratorStructures {
             blocks.addAll(exteriorBlocks);
         }
 
-        WorldGenTickHandler.INSTANCE.addStructureGenCallback(new WorldGenTickHandler.StructureTicket() {
+        WorldGenTickHandler.INSTANCE.addTownStructureGenCallback(new WorldGenTickHandler.StructureTicket() {
             @Override
             public void call() {
                 gen.template.getLamp().ifPresent(lamp -> TownGeneratorStructures.generateLamps(blocks, lamp, gen));
@@ -250,7 +250,7 @@ class TownGeneratorStructures {
             }
         }
 
-        WorldGenTickHandler.INSTANCE.addStructureForGeneration(new StructureBuilder(world, template, net.minecraft.core.Direction.SOUTH, pos));
+        WorldGenTickHandler.INSTANCE.addTownStructureForGeneration(new StructureBuilder(world, template, net.minecraft.core.Direction.SOUTH, pos));
     }
 
     private static boolean checkForNeighboringDoor(List<BlockPos> doors, int x, int z, Direction dir) {
@@ -344,7 +344,7 @@ class TownGeneratorStructures {
         BlockPos buildKey = bb.getRLCorner(face, BlockPos.ZERO).relative(face.getClockWise(), template.getOffset().getX()).relative(face.getOpposite(), template.getOffset().getZ()).above(gen.townBounds.min.getY() - template.getOffset().getY());
         bb.add(0, -template.getOffset().getY(), 0);
         gen.structureDoors.add(buildKey);
-        WorldGenTickHandler.INSTANCE.addStructureForGeneration(new StructureBuilder(gen.world, template, face, buildKey, bb));
+        WorldGenTickHandler.INSTANCE.addTownStructureForGeneration(new StructureBuilder(gen.world, template, face, buildKey, bb));
     }
 
     /*

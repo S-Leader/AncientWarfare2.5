@@ -5,6 +5,8 @@ import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.shadowmage.ancientwarfare.core.network.PacketBase;
 import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
 import net.shadowmage.ancientwarfare.structure.template.StructureTemplateManager;
@@ -35,7 +37,7 @@ public class PacketStructure extends PacketBase {
     }
 
     @Override
-    protected void execute() {
-        StructureTemplateManager.onTemplateData(packetData);
+    protected void execute(Player player) {
+        StructureTemplateManager.onTemplateData(packetData, player instanceof ServerPlayer);
     }
 }

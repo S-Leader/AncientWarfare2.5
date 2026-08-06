@@ -22,13 +22,26 @@ public class StructureTemplateManager {
     private static final String SINGLE_STRUCTURE_TAG = "singleStructure";
     private static final String SYNC_TEMPLATE_TAG = "syncTemplate";
     private static final String STRUCTURE_LIST_TAG = "structureList";
-    private static HashMap<String, StructureTemplate> loadedTemplates = new HashMap<>();
 
-    //used on client side - only these get synced on log on and then get displayed in structure selection guis, subsequent calls to getTemplate will trigger syncing of the full template detail
+    /**
+     * Authoritative templates loaded from disk. This map is used by world generation and the logical server.
+     * It must never be cleared by a client-bound template-list packet in an integrated server.
+     */
+    private static final Map<String, StructureTemplate> loadedTemplates = new HashMap<>();
+
+    /**
+     * Templates explicitly synchronized by the currently connected server for client GUIs/previews.
+     * Keeping this separate is required because logical client and logical server share static fields in
+     * singleplayer.
+     */
+    private static final Map<String, StructureTemplate> clientLoadedTemplates = new HashMap<>();
+
+    // Used on the logical client. Only names are sent on login; details are requested lazily.
     private static Set<String> allTemplateNames = new HashSet<>();
     private static Set<String> survivalTemplateNames = new HashSet<>();
+    private static boolean clientTemplateListReceived = false;
 
-    private static Set<ITemplateObserver> observers = new HashSet<>();
+    private static final Set<ITemplateObserver> observers = new HashSet<>();
 
     public static void addTemplate(StructureTemplate template) {
         if (template.getValidationSettings() == null) {
@@ -37,12 +50,17 @@ public class StructureTemplateManager {
         if (template.getValidationSettings().isWorldGenEnabled()) {
             WorldGenStructureManager.INSTANCE.registerWorldGenStructure(template);
         }
-        if (loadedTemplates.keySet().contains(template.name)) {
+        if (loadedTemplates.containsKey(template.name)) {
             AncientWarfareStructure.proxy.clearTemplatePreviewCache();
         }
         loadedTemplates.put(template.name, template);
 
         syncTemplateToClient(template);
+    }
+
+    private static void addClientTemplate(StructureTemplate template) {
+        clientLoadedTemplates.put(template.name, template);
+        observers.forEach(observer -> observer.notifyTemplateChange(template));
     }
 
     private static void syncTemplateToClient(StructureTemplate template) {
@@ -74,49 +92,92 @@ public class StructureTemplateManager {
         return false;
     }
 
+    public static void removeClientTemplate(String name) {
+        clientLoadedTemplates.remove(name);
+        allTemplateNames.remove(name);
+        survivalTemplateNames.remove(name);
+    }
+
     public static void removeAll() {
-        //creating a new list because otherwise we run into concurrent modification exception as the collection is both queried and modified
+        // creating a new list because otherwise we run into concurrent modification exception as the collection is both queried and modified
         new ArrayList<>(loadedTemplates.keySet()).forEach(StructureTemplateManager::removeTemplate);
     }
 
     public static Optional<StructureTemplate> getTemplate(String name) {
-        StructureTemplate template = loadedTemplates.get(name);
-        if (template == null && EffectiveSide.get() == LogicalSide.CLIENT && allTemplateNames.contains(name)) {
-            PacketStructure pkt = new PacketStructure();
-            pkt.packetData.putString(SYNC_TEMPLATE_TAG, name);
-            NetworkHandler.sendToServer(pkt);
+        if (isSynchronizedClientView()) {
+            StructureTemplate template = clientLoadedTemplates.get(name);
+            if (template == null && allTemplateNames.contains(name)) {
+                PacketStructure pkt = new PacketStructure();
+                pkt.packetData.putString(SYNC_TEMPLATE_TAG, name);
+                NetworkHandler.sendToServer(pkt);
+            }
+            return Optional.ofNullable(template);
         }
-        return Optional.ofNullable(template);
+        return Optional.ofNullable(loadedTemplates.get(name));
+    }
+
+    private static boolean isSynchronizedClientView() {
+        return clientTemplateListReceived && EffectiveSide.get() == LogicalSide.CLIENT;
     }
 
     public static Map<String, StructureTemplate> getSurvivalStructures() {
-        return loadedTemplates.entrySet().stream().filter(e -> e.getValue().getValidationSettings().isSurvival()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        Map<String, StructureTemplate> templates = isSynchronizedClientView() ? clientLoadedTemplates : loadedTemplates;
+        return templates.entrySet().stream()
+                .filter(e -> e.getValue().getValidationSettings().isSurvival())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    public static void onTemplateData(CompoundTag tag) {
+    /**
+     * Handles a template packet on its actual logical reception side.
+     *
+     * @param tag packet payload
+     * @param serverSide true for a client -> server request, false for a server -> client synchronization packet
+     */
+    public static void onTemplateData(CompoundTag tag, boolean serverSide) {
         if (tag.contains(SINGLE_STRUCTURE_TAG)) {
             StructureTemplate template = StructureTemplate.deserializeNBT(tag.getCompound(SINGLE_STRUCTURE_TAG));
-            addTemplate(template);
-            observers.forEach(observer -> observer.notifyTemplateChange(template));
+            if (serverSide) {
+                // Preserve the old packet semantics for any server-bound full-template packet.
+                addTemplate(template);
+            } else {
+                addClientTemplate(template);
+            }
         } else if (tag.contains(SYNC_TEMPLATE_TAG)) {
-            getTemplate(tag.getString(SYNC_TEMPLATE_TAG)).ifPresent(StructureTemplateManager::syncTemplateToClient);
-        } else if (tag.contains(STRUCTURE_LIST_TAG)) {
-            loadedTemplates.clear();
+            if (serverSide) {
+                StructureTemplate template = loadedTemplates.get(tag.getString(SYNC_TEMPLATE_TAG));
+                if (template != null) {
+                    syncTemplateToClient(template);
+                }
+            }
+        } else if (tag.contains(STRUCTURE_LIST_TAG) && !serverSide) {
+            // Never clear loadedTemplates here. In integrated singleplayer that is the same JVM/static state
+            // used by the logical server and doing so removes every town building template from worldgen.
+            clientLoadedTemplates.clear();
             allTemplateNames = NBTHelper.getStringSet(tag.getList(STRUCTURE_LIST_TAG, Constants.NBT.TAG_STRING));
             survivalTemplateNames = NBTHelper.getStringSet(tag.getList("survivalStructures", Constants.NBT.TAG_STRING));
+            clientTemplateListReceived = true;
         }
     }
 
     public static Set<String> getTemplates() {
-        return allTemplateNames;
+        if (isSynchronizedClientView()) {
+            return Collections.unmodifiableSet(allTemplateNames);
+        }
+        return Collections.unmodifiableSet(loadedTemplates.keySet());
     }
 
     public static Set<String> getSurvivalTemplates() {
-        return survivalTemplateNames;
+        if (isSynchronizedClientView()) {
+            return Collections.unmodifiableSet(survivalTemplateNames);
+        }
+        return loadedTemplates.entrySet().stream()
+                .filter(e -> e.getValue().getValidationSettings().isSurvival())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     public static boolean templateExists(String name) {
-        return loadedTemplates.keySet().contains(name);
+        return isSynchronizedClientView() ? clientLoadedTemplates.containsKey(name) : loadedTemplates.containsKey(name);
     }
 
     public static void registerObserver(ITemplateObserver observer) {

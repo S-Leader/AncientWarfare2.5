@@ -27,13 +27,13 @@ dimensionWhiteList=true
 dimensionList=
 biomeGroupList=smingol
 biomeWhiteList=true
-biomeList=nt:tundra,nt:icy_tundra,biomesoplenty:snowy_tundra,biomesoplenty:tundra,biomesoplenty:steppe
+biomeList=nt:tundra,nt:icy_tundra,biomesoplenty:tundra,biomesoplenty:dryland
 leveling=16
 fill=16
 border=6
 blockSwap=true
 territoryName=smingol
-biomeReplacement=biomesoplenty:steppe
+biomeReplacement=biomesoplenty:dryland
 minGenerationHeight=0
 maxGenerationHeight=255
 :endvalidation

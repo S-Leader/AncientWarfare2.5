@@ -109,7 +109,7 @@ public class TownGeneratorWalls {
     }
 
     private static void constructTemplate(Level world, StructureTemplate template, Direction face, BlockPos pos) {
-        WorldGenTickHandler.INSTANCE.addStructureForGeneration(new StructureBuilder(world, template, face, pos.relative(face.getCounterClockWise(), 15 - template.getOffset().getX())));
+        WorldGenTickHandler.INSTANCE.addTownStructureForGeneration(new StructureBuilder(world, template, face, pos.relative(face.getCounterClockWise(), 15 - template.getOffset().getX())));
     }
 
 }
