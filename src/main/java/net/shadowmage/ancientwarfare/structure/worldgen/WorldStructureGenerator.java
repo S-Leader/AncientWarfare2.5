@@ -63,7 +63,7 @@ public class WorldStructureGenerator {
     }
 
     void generateAt(int chunkX, int chunkZ, Level world) {
-        long t1 = System.currentTimeMillis();
+        long generationStart = System.currentTimeMillis();
         long seed = (((long) chunkX) << 32) | (((long) chunkZ) & 0xffffffffL);
         rng.setSeed(seed);
         int x = chunkX * 16 + rng.nextInt(16);
@@ -75,22 +75,32 @@ public class WorldStructureGenerator {
 
         TerritoryManager.getTerritory(chunkX, chunkZ, world).ifPresent(territory -> {
             Direction face = Direction.from2DDataValue(rng.nextInt(4));
+            Optional<StructureTemplate> selectedTemplate;
+
             world.getProfiler().push("AWTemplateSelection");
-            Optional<StructureTemplate> t = WorldGenStructureManager.INSTANCE.selectTemplateForGeneration(world, rng, x, y, z, face, territory);
-            world.getProfiler().pop();
-            AncientWarfareStructure.LOG.debug("Template selection took: {} ms.", System.currentTimeMillis() - t1);
-            if (!t.isPresent()) {
+            try {
+                selectedTemplate = WorldGenStructureManager.INSTANCE
+                        .selectTemplateForGeneration(world, rng, x, y, z, face, territory);
+            } finally {
+                world.getProfiler().pop();
+            }
+
+            AncientWarfareStructure.LOG.debug("Template selection took: {} ms.",
+                    System.currentTimeMillis() - generationStart);
+            if (selectedTemplate.isEmpty()) {
                 return;
             }
-            StructureTemplate template = t.get();
+
+            StructureTemplate template = selectedTemplate.get();
             StructureMap map = AWGameData.INSTANCE.getPerWorldData(world, StructureMap.class);
 
             world.getProfiler().push("AWTemplateGeneration");
-            if (attemptStructureGenerationAt(world, new BlockPos(x, y, z), face, template, map)) {
-                territory.addClusterValue(template.getValidationSettings().getClusterValue());
-                AncientWarfareStructure.LOG.info("Generated structure: {} at {}, {}, {}, time: {}ms", template.name, x, y, z, System.currentTimeMillis() - t1);
+            try {
+                attemptStructureGenerationAt(world, new BlockPos(x, y, z), face,
+                        template, map, territory, generationStart);
+            } finally {
+                world.getProfiler().pop();
             }
-            world.getProfiler().pop();
         });
     }
 
@@ -220,7 +230,9 @@ public class WorldStructureGenerator {
         return steps;
     }
 
-    private boolean attemptStructureGenerationAt(Level world, BlockPos pos, Direction face, StructureTemplate template, StructureMap map) {
+    private boolean attemptStructureGenerationAt(Level world, BlockPos pos, Direction face,
+                                                 StructureTemplate template, StructureMap map,
+                                                 Territory territory, long generationStart) {
         long t1 = System.currentTimeMillis();
         int prevY = pos.getY();
         StructureBB bb = new StructureBB(pos, face, template.getSize(), template.getOffset());
@@ -244,9 +256,8 @@ public class WorldStructureGenerator {
             return false;
         }
         if (template.getValidationSettings().validatePlacement(world, pos.getX(), pos.getY(), pos.getZ(), face, template, bb)) {
-            WorldGenStatistics.addStructureGeneratedInfo(template.name, world, pos);
             AncientWarfareStructure.LOG.debug("Validation took: {} ms", System.currentTimeMillis() - t1);
-            generateStructureAt(world, pos, face, template, map);
+            generateStructureAt(world, pos, face, template, map, territory, generationStart);
             return true;
         }
         return false;
@@ -268,9 +279,57 @@ public class WorldStructureGenerator {
         return !(maxDistance > 30 && world.getRandom().nextFloat() * (MAX_DISTANCE_WITHIN_CLUSTER - maxDistance) > 30);
     }
 
-    private void generateStructureAt(Level world, BlockPos pos, Direction face, StructureTemplate template, StructureMap map) {
-        map.setGeneratedAt(world, pos.getX(), pos.getZ(), new StructureEntry(pos.getX(), pos.getY(), pos.getZ(), face, template), template.getValidationSettings().isUnique());
-        WorldGenTickHandler.INSTANCE.addStructureForGeneration(new StructureBuilderWorldGen(world, template, face, pos));
+    private void generateStructureAt(Level world, BlockPos pos, Direction face,
+                                     StructureTemplate template, StructureMap map,
+                                     Territory territory, long generationStart) {
+        boolean unique = template.getValidationSettings().isUnique();
+        int clusterValue = template.getValidationSettings().getClusterValue();
+        StructureEntry entry = new StructureEntry(pos.getX(), pos.getY(), pos.getZ(), face, template);
+
+        /*
+         * Reserve the location immediately so other queued attempts cannot overlap
+         * it. The reservation and territory budget are rolled back by the ticket
+         * if chunk preparation or construction later fails.
+         */
+        try {
+            map.setGeneratedAt(world, pos.getX(), pos.getZ(), entry, unique);
+        } catch (Exception exception) {
+            // setGeneratedAt may have inserted the entry before a sync packet failed.
+            map.removeGeneratedAt(world, pos.getX(), pos.getZ(), entry, unique);
+            throw exception;
+        }
+        territory.addClusterValue(clusterValue);
+
+        boolean[] rollbackPerformed = {false};
+        Runnable onSuccess = () -> {
+            WorldGenStatistics.addStructureGeneratedInfo(template.name, world, pos);
+            AncientWarfareStructure.LOG.info(
+                    "Generated structure: {} at {}, {}, {}, time: {}ms",
+                    template.name, pos.getX(), pos.getY(), pos.getZ(),
+                    System.currentTimeMillis() - generationStart);
+        };
+
+        Runnable onFailure = () -> {
+            if (rollbackPerformed[0]) {
+                return;
+            }
+            rollbackPerformed[0] = true;
+
+            map.removeGeneratedAt(world, pos.getX(), pos.getZ(), entry, unique);
+            territory.removeClusterValue(clusterValue);
+            AncientWarfareStructure.LOG.warn(
+                    "Rolled back failed structure reservation: {} at {}, {}, {}",
+                    template.name, pos.getX(), pos.getY(), pos.getZ());
+        };
+
+        try {
+            WorldGenTickHandler.INSTANCE.addStructureForGeneration(
+                    new StructureBuilderWorldGen(world, template, face, pos),
+                    onSuccess, onFailure);
+        } catch (Exception exception) {
+            onFailure.run();
+            throw exception;
+        }
     }
 
 }

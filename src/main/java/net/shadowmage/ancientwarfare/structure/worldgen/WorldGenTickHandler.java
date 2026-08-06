@@ -19,6 +19,7 @@ public final class WorldGenTickHandler {
     private static final int MAX_BLOCKS_TO_GEN_PER_TICK = 10000;
     private static final int MAX_TOWN_TEMPLATE_POSITIONS_PER_TICK = 10000;
     private static final int MAX_TOWN_TEMPLATE_POSITIONS_PER_STEP = 1000;
+    private static final int MAX_STANDALONE_STRUCTURE_WAIT_TICKS = 1200;
 
     public static final WorldGenTickHandler INSTANCE = new WorldGenTickHandler();
 
@@ -57,6 +58,20 @@ public final class WorldGenTickHandler {
         townStructuresToGen = new ArrayList<>();
     }
 
+    /** Clears every transient queue between integrated/dedicated server sessions. */
+    public void reset() {
+        newChunkChecks.clear();
+        chunkChecks.clear();
+        newWorldGenTickets.clear();
+        newTownGenTickets.clear();
+        chunksToGen.clear();
+        townChunksToGen.clear();
+        newStructureGenTickets.clear();
+        structuresToGen.clear();
+        newTownStructureGenTickets.clear();
+        townStructuresToGen.clear();
+    }
+
     /**
      * Entry point from ChunkEvent.Load. Territory lookup loads neighboring chunks,
      * which deadlocks the 1.20 chunk pipeline if done inside the load event itself —
@@ -79,7 +94,18 @@ public final class WorldGenTickHandler {
      * houses, cosmetics or lamps.
      */
     public void addStructureForGeneration(StructureBuilder builder) {
-        newStructureGenTickets.add(new StructureGenerationTicket(builder));
+        addStructureForGeneration(builder, null, null);
+    }
+
+    /**
+     * Queues an ordinary structure with completion hooks. Natural worldgen uses
+     * these hooks to commit statistics on success and roll back its provisional
+     * structure-map/territory reservation if construction fails or times out.
+     */
+    public void addStructureForGeneration(StructureBuilder builder,
+                                          @Nullable Runnable onSuccess,
+                                          @Nullable Runnable onFailure) {
+        newStructureGenTickets.add(new StructureGenerationTicket(builder, onSuccess, onFailure));
     }
 
     /**
@@ -109,11 +135,22 @@ public final class WorldGenTickHandler {
     @SubscribeEvent
     public void serverTick(TickEvent.ServerTickEvent evt) {
         if (evt.phase == TickEvent.Phase.END) {
-            runChunkChecks();
-            genChunks();
-            genStructures();
-            genTownStructures();
-            genTowns();
+            runSafely("deferred chunk checks", this::runChunkChecks);
+            runSafely("standalone structure selection", this::genChunks);
+            runSafely("standalone structure construction", this::genStructures);
+            runSafely("town structure construction", this::genTownStructures);
+            runSafely("town selection", this::genTowns);
+        }
+    }
+
+
+    private void runSafely(String phase, Runnable task) {
+        try {
+            task.run();
+        } catch (Exception exception) {
+            AncientWarfareStructure.LOG.error(
+                    "Ancient Warfare worldgen phase '{}' failed; later phases and future ticks will continue",
+                    phase, exception);
         }
     }
 
@@ -121,7 +158,7 @@ public final class WorldGenTickHandler {
         while (!chunkChecks.isEmpty() || !newChunkChecks.isEmpty()) {
             runChunkChecks();
         }
-        while (!chunksToGen.isEmpty()) {
+        while (!chunksToGen.isEmpty() || !newWorldGenTickets.isEmpty()) {
             genChunks();
         }
 
@@ -132,8 +169,19 @@ public final class WorldGenTickHandler {
         int remainingStructures = structuresToGen.size();
         while (remainingStructures-- > 0 && !structuresToGen.isEmpty()) {
             StructureTicket ticket = structuresToGen.remove(0);
-            if (ticket.isReady()) {
-                ticket.call();
+            try {
+                if (ticket.isReady()) {
+                    ticket.call();
+                } else if (ticket instanceof StructureGenerationTicket generationTicket) {
+                    generationTicket.fail("server stopped before required chunks became available", null);
+                }
+            } catch (Exception exception) {
+                if (ticket instanceof StructureGenerationTicket generationTicket) {
+                    generationTicket.fail("exception during final worldgen flush", exception);
+                } else {
+                    AncientWarfareStructure.LOG.error(
+                            "Discarding failed structure callback during final worldgen flush", exception);
+                }
             }
         }
 
@@ -143,53 +191,74 @@ public final class WorldGenTickHandler {
         }
         genTownStructures();
 
-        while (!townChunksToGen.isEmpty()) {
+        while (!townChunksToGen.isEmpty() || !newTownGenTickets.isEmpty()) {
             genTowns();
         }
     }
 
     private void runChunkChecks() {
-        while (!chunkChecks.isEmpty()) {
-            ChunkGenerationTicket ticket = chunkChecks.remove(0);
-            Level world = ticket.getWorld();
-            if (world != null) {
-                WorldStructureGenerator.INSTANCE.queueChunkForGeneration(ticket.chunkX, ticket.chunkZ, world);
-                WorldTownGenerator.INSTANCE.queueChunkForGeneration(ticket.chunkX, ticket.chunkZ, world);
-            }
-        }
         if (!newChunkChecks.isEmpty()) {
             chunkChecks.addAll(newChunkChecks);
             newChunkChecks.clear();
         }
+
+        while (!chunkChecks.isEmpty()) {
+            ChunkGenerationTicket ticket = chunkChecks.remove(0);
+            try {
+                Level world = ticket.getWorld();
+                if (world != null) {
+                    WorldStructureGenerator.INSTANCE.queueChunkForGeneration(ticket.chunkX, ticket.chunkZ, world);
+                    WorldTownGenerator.INSTANCE.queueChunkForGeneration(ticket.chunkX, ticket.chunkZ, world);
+                }
+            } catch (Exception exception) {
+                AncientWarfareStructure.LOG.error(
+                        "Skipping failed deferred worldgen check for chunk [{}, {}]",
+                        ticket.chunkX, ticket.chunkZ, exception);
+            }
+        }
     }
 
     private void genChunks() {
-        while (!chunksToGen.isEmpty()) {
-            ChunkGenerationTicket ticket = chunksToGen.remove(0);
-            Level world = ticket.getWorld();
-            if (world != null) {
-                WorldStructureGenerator.INSTANCE.generateAt(ticket.chunkX, ticket.chunkZ, world);
-            }
-        }
         if (!newWorldGenTickets.isEmpty()) {
             chunksToGen.addAll(newWorldGenTickets);
             newWorldGenTickets.clear();
         }
+
+        while (!chunksToGen.isEmpty()) {
+            ChunkGenerationTicket ticket = chunksToGen.remove(0);
+            try {
+                Level world = ticket.getWorld();
+                if (world != null) {
+                    WorldStructureGenerator.INSTANCE.generateAt(ticket.chunkX, ticket.chunkZ, world);
+                }
+            } catch (Exception exception) {
+                AncientWarfareStructure.LOG.error(
+                        "Skipping failed standalone structure-generation attempt for chunk [{}, {}]",
+                        ticket.chunkX, ticket.chunkZ, exception);
+            }
+        }
     }
 
     private void genTowns() {
-        int countGenerated = 0;
-        while (!townChunksToGen.isEmpty() && countGenerated < 20) {
-            ChunkGenerationTicket ticket = townChunksToGen.remove(0);
-            Level world = ticket.getWorld();
-            if (world != null) {
-                WorldTownGenerator.INSTANCE.attemptGeneration(world, ticket.chunkX * 16, ticket.chunkZ * 16);
-            }
-            countGenerated++;
-        }
         if (!newTownGenTickets.isEmpty()) {
             townChunksToGen.addAll(newTownGenTickets);
             newTownGenTickets.clear();
+        }
+
+        int countGenerated = 0;
+        while (!townChunksToGen.isEmpty() && countGenerated < 20) {
+            ChunkGenerationTicket ticket = townChunksToGen.remove(0);
+            try {
+                Level world = ticket.getWorld();
+                if (world != null) {
+                    WorldTownGenerator.INSTANCE.attemptGeneration(world, ticket.chunkX * 16, ticket.chunkZ * 16);
+                }
+            } catch (Exception exception) {
+                AncientWarfareStructure.LOG.error(
+                        "Skipping failed town-generation attempt for chunk [{}, {}]",
+                        ticket.chunkX, ticket.chunkZ, exception);
+            }
+            countGenerated++;
         }
     }
 
@@ -199,19 +268,47 @@ public final class WorldGenTickHandler {
      * castles, dungeons or other world-generation buildings.
      */
     private void genStructures() {
-        int totalBlocks = 0;
-        while (!structuresToGen.isEmpty() && totalBlocks < MAX_BLOCKS_TO_GEN_PER_TICK) {
-            StructureTicket structureTicket = structuresToGen.get(0);
-            if (!structureTicket.isReady()) {
-                break;
-            }
-            structuresToGen.remove(0);
-            totalBlocks += structureTicket.getBlocksToGenerate();
-            structureTicket.call();
-        }
         if (!newStructureGenTickets.isEmpty()) {
             structuresToGen.addAll(newStructureGenTickets);
             newStructureGenTickets.clear();
+        }
+
+        int totalBlocks = 0;
+        int ticketsToInspect = structuresToGen.size();
+
+        /*
+         * Never leave an unready or broken ticket pinned at index zero. Each
+         * ticket present at the beginning of this tick is inspected at most once.
+         * Unready tickets rotate to the tail, so one missing chunk cannot stop all
+         * later Ancient Warfare ruins and small buildings from spawning.
+         */
+        while (ticketsToInspect-- > 0
+                && !structuresToGen.isEmpty()
+                && totalBlocks < MAX_BLOCKS_TO_GEN_PER_TICK) {
+            StructureTicket structureTicket = structuresToGen.remove(0);
+
+            try {
+                if (!structureTicket.isReady()) {
+                    if (structureTicket instanceof StructureGenerationTicket generationTicket
+                            && generationTicket.recordWaitTick()) {
+                        generationTicket.fail("required chunks did not become available within "
+                                + MAX_STANDALONE_STRUCTURE_WAIT_TICKS + " ticks", null);
+                    } else {
+                        structuresToGen.add(structureTicket);
+                    }
+                    continue;
+                }
+
+                totalBlocks += Math.max(1, structureTicket.getBlocksToGenerate());
+                structureTicket.call();
+            } catch (Exception exception) {
+                if (structureTicket instanceof StructureGenerationTicket generationTicket) {
+                    generationTicket.fail("exception while preparing or building the structure", exception);
+                } else {
+                    AncientWarfareStructure.LOG.error(
+                            "Discarding failed standalone structure callback ticket", exception);
+                }
+            }
         }
     }
 
@@ -284,21 +381,40 @@ public final class WorldGenTickHandler {
         }
     }
 
-    /** Ordinary standalone structure ticket; retains the original behaviour. */
+    /** Ordinary standalone structure ticket; retains all-at-once construction. */
     private static final class StructureGenerationTicket implements StructureTicket {
         private final StructureBuilder builder;
+        @Nullable
+        private final Runnable onSuccess;
+        @Nullable
+        private final Runnable onFailure;
+        private int waitTicks;
+        private boolean completed;
+        private boolean failed;
 
-        private StructureGenerationTicket(StructureBuilder builder) {
+        private StructureGenerationTicket(StructureBuilder builder,
+                                          @Nullable Runnable onSuccess,
+                                          @Nullable Runnable onFailure) {
             this.builder = builder;
+            this.onSuccess = onSuccess;
+            this.onFailure = onFailure;
         }
 
         @Override
         public void call() {
-            try {
-                builder.instantConstruction();
-            } catch (Exception exception) {
-                AncientWarfareStructure.LOG.error(
-                        "Error building structure {}: ", builder.getTemplate().name, exception);
+            if (completed || failed) {
+                return;
+            }
+
+            builder.instantConstruction();
+            completed = true;
+            if (onSuccess != null) {
+                try {
+                    onSuccess.run();
+                } catch (Exception callbackException) {
+                    AncientWarfareStructure.LOG.error(
+                            "Structure was built, but its completion callback failed", callbackException);
+                }
             }
         }
 
@@ -311,6 +427,44 @@ public final class WorldGenTickHandler {
         public int getBlocksToGenerate() {
             StructureBB bb = builder.getBoundingBox();
             return bb.getXSize() * bb.getZSize() * bb.getYSize();
+        }
+
+        private boolean recordWaitTick() {
+            waitTicks++;
+            return waitTicks >= MAX_STANDALONE_STRUCTURE_WAIT_TICKS;
+        }
+
+        private void fail(String reason, @Nullable Exception exception) {
+            if (completed || failed) {
+                return;
+            }
+            failed = true;
+
+            String templateName;
+            try {
+                templateName = builder.getTemplate() == null
+                        ? "<unknown>"
+                        : builder.getTemplate().name;
+            } catch (Exception ignored) {
+                templateName = "<unreadable>";
+            }
+
+            if (exception == null) {
+                AncientWarfareStructure.LOG.error(
+                        "Discarding failed standalone structure {}: {}", templateName, reason);
+            } else {
+                AncientWarfareStructure.LOG.error(
+                        "Discarding failed standalone structure {}: {}", templateName, reason, exception);
+            }
+
+            if (onFailure != null) {
+                try {
+                    onFailure.run();
+                } catch (Exception rollbackException) {
+                    AncientWarfareStructure.LOG.error(
+                            "Error rolling back failed standalone structure {}", templateName, rollbackException);
+                }
+            }
         }
     }
 

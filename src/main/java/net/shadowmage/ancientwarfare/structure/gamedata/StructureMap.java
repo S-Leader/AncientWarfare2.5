@@ -119,10 +119,31 @@ public class StructureMap extends WorldSavedData {
     public void setGeneratedAt(String dimension, int cx, int cz, StructureEntry entry, boolean unique, boolean sync) {
         entry.setStructureMap(this);
         map.setGeneratedAt(dimension, cx, cz, entry, unique);
+        CHUNK_STRUCTURE_ENTRIES.invalidateAll();
         markDirty();
         if (sync) {
             NetworkHandler.sendToAllPlayers(new PacketStructureEntry(dimension, cx, cz, entry));
         }
+    }
+
+    /**
+     * Removes a provisional natural-worldgen reservation only when the entry at
+     * the coordinate is still the exact entry supplied by the failed ticket.
+     * This prevents an old failure callback from deleting a newer structure that
+     * reused the same anchor chunk.
+     */
+    public boolean removeGeneratedAt(Level world, int worldX, int worldZ,
+                                     StructureEntry expectedEntry, boolean unique) {
+        String dimension = dimensionKey(world);
+        int cx = worldX >> 4;
+        int cz = worldZ >> 4;
+        if (!map.removeGeneratedAt(dimension, cx, cz, expectedEntry, unique)) {
+            return false;
+        }
+
+        CHUNK_STRUCTURE_ENTRIES.invalidateAll();
+        markDirty();
+        return true;
     }
 
     private static String dimensionKey(Level world) {
@@ -157,6 +178,22 @@ public class StructureMap extends WorldSavedData {
             if (unique) {
                 generatedUniques.add(entry.name);
             }
+        }
+
+        private boolean removeGeneratedAt(String dimension, int chunkX, int chunkZ,
+                                          StructureEntry expectedEntry, boolean unique) {
+            StructureWorldMap worldMap = mapsByDimension.get(dimension);
+            if (worldMap == null || !worldMap.removeGeneratedAt(chunkX, chunkZ, expectedEntry)) {
+                return false;
+            }
+
+            if (unique) {
+                generatedUniques.remove(expectedEntry.name);
+            }
+            if (worldMap.isEmpty()) {
+                mapsByDimension.remove(dimension);
+            }
+            return true;
         }
 
         public void readFromNBT(StructureMap structureMap, CompoundTag tag) {
@@ -248,6 +285,35 @@ public class StructureMap extends WorldSavedData {
             }
             if (z > largestGeneratedZ) {
                 largestGeneratedZ = z;
+            }
+        }
+
+        public boolean removeGeneratedAt(int chunkX, int chunkZ, StructureEntry expectedEntry) {
+            HashMap<Integer, StructureEntry> zEntries = worldMap.get(chunkX);
+            if (zEntries == null || zEntries.get(chunkZ) != expectedEntry) {
+                return false;
+            }
+
+            zEntries.remove(chunkZ);
+            if (zEntries.isEmpty()) {
+                worldMap.remove(chunkX);
+            }
+            recalculateLargestGeneratedSize();
+            return true;
+        }
+
+        public boolean isEmpty() {
+            return worldMap.isEmpty();
+        }
+
+        private void recalculateLargestGeneratedSize() {
+            largestGeneratedX = 0;
+            largestGeneratedZ = 0;
+            for (HashMap<Integer, StructureEntry> zEntries : worldMap.values()) {
+                for (StructureEntry entry : zEntries.values()) {
+                    largestGeneratedX = Math.max(largestGeneratedX, entry.bb.getXSize());
+                    largestGeneratedZ = Math.max(largestGeneratedZ, entry.bb.getZSize());
+                }
             }
         }
 

@@ -34,7 +34,11 @@ public class Territory implements INBTSerializable<CompoundTag> {
     }
 
     public void addClusterValue(int value) {
-        totalClusterValue += value;
+        totalClusterValue = Math.max(0, totalClusterValue + value);
+    }
+
+    public void removeClusterValue(int value) {
+        totalClusterValue = Math.max(0, totalClusterValue - Math.max(0, value));
     }
 
     void addChunk(long chunkPos) {
