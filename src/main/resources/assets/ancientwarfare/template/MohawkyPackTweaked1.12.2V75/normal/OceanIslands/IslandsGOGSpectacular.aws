@@ -27165,7 +27165,7 @@ rule:
 plugin=vanillaBlocks
 number=492
 data:
-JSON:{blockState:{blockName:"explorercraft:cherry_fence_gate",properties:{in_wall:"false",powered:"false",facing:"west",open:"false"}}}
+JSON:{blockState:{blockName:"minecraft:cherry_fence_gate",properties:{in_wall:"false",powered:"false",facing:"west",open:"false"}}}
 :enddata
 :endrule
 
