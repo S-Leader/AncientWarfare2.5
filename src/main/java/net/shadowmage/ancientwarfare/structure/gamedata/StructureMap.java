@@ -190,6 +190,28 @@ public class StructureMap extends WorldSavedData {
         return world.dimension().location().toString();
     }
 
+    /**
+     * Persistent-worldgen rollback variant. Object identity cannot survive a save/reload,
+     * so match the current anchor entry by name and exact bounding box before removing it.
+     */
+    public boolean removeGeneratedAt(Level world, int worldX, int worldZ,
+                                     String expectedName, StructureBB expectedBounds, boolean unique) {
+        String dimension = dimensionKey(world);
+        int cx = worldX >> 4;
+        int cz = worldZ >> 4;
+        Optional<StructureEntry> current = map.getEntryAt(dimension, cx, cz);
+        if (current.isEmpty()) {
+            return false;
+        }
+        StructureEntry entry = current.get();
+        if (!entry.getName().equals(expectedName)
+                || !entry.getBB().min.equals(expectedBounds.min)
+                || !entry.getBB().max.equals(expectedBounds.max)) {
+            return false;
+        }
+        return removeGeneratedAt(world, worldX, worldZ, entry, unique);
+    }
+
     public boolean isGeneratedUnique(String name) {
         return this.map.generatedUniques.contains(name);
     }

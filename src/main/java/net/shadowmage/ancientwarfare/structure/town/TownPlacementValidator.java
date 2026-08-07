@@ -78,35 +78,27 @@ public class TownPlacementValidator {
     private static final int STEP = 4;
 
     private static void levelToAverageBorderHeight(Level world, TownBoundingArea area) {
+        // Modern terrain has isolated holes, pools and sharp decoration that skew a
+        // plain arithmetic average. Use the handoff port's representative median
+        // idea while keeping the original AW2 rectangular expansion algorithm.
         int minX = area.getBlockMinX() - 1;
         int maxX = area.getBlockMaxX() + 1;
         int minZ = area.getBlockMinZ() - 1;
         int maxZ = area.getBlockMaxZ() + 1;
-
-        int totalLevel = 0;
-        int totalPoints = 0;
+        ArrayList<Integer> samples = new ArrayList<>();
 
         for (int x = minX + STEP; x < maxX; x += STEP) {
-            totalLevel += WorldStructureGenerator.getTargetY(world, x, minZ, false);
-            totalPoints++;
+            samples.add(WorldStructureGenerator.getTargetY(world, x, minZ, false));
+            samples.add(WorldStructureGenerator.getTargetY(world, x, maxZ, false));
         }
-
         for (int z = minZ + STEP; z < maxZ; z += STEP) {
-            totalLevel += WorldStructureGenerator.getTargetY(world, minX, z, false);
-            totalPoints++;
+            samples.add(WorldStructureGenerator.getTargetY(world, minX, z, false));
+            samples.add(WorldStructureGenerator.getTargetY(world, maxX, z, false));
         }
-
-        for (int x = maxX - STEP; x > minX; x -= STEP) {
-            totalLevel += WorldStructureGenerator.getTargetY(world, x, maxZ, false);
-            totalPoints++;
-        }
-
-        for (int z = maxZ - STEP; z > minZ; z -= STEP) {
-            totalLevel += WorldStructureGenerator.getTargetY(world, maxX, z, false);
-            totalPoints++;
-        }
-        if (totalPoints > 0) {
-            area.setSurfaceY(totalLevel / totalPoints);
+        samples.removeIf(y -> y < world.getMinBuildHeight());
+        if (!samples.isEmpty()) {
+            samples.sort(Integer::compareTo);
+            area.setSurfaceY(samples.get(samples.size() / 2));
         }
     }
 
@@ -227,20 +219,25 @@ public class TownPlacementValidator {
     }
 
     private static boolean isAverageHeightWithin(Level world, int cx, int cz, int min, int max) {
-        LevelChunk chunk = world.getChunk(cx, cz);
-        int val;
-        int total = 0;
-        for (int x = (cx << 4); x < ((cx << 4) + 16); x++) {
-            for (int z = (cz << 4); z < ((cz << 4) + 16); z++) {
-                val = getTopFilledHeight(chunk, x, z);
-                if (val < 0) {
+        ArrayList<Integer> samples = new ArrayList<>(64);
+        int startX = cx << 4;
+        int startZ = cz << 4;
+        for (int x = startX; x < startX + 16; x += 2) {
+            for (int z = startZ; z < startZ + 16; z += 2) {
+                int y = WorldStructureGenerator.getTargetY(world, x, z, false);
+                if (y < world.getMinBuildHeight()) {
                     return false;
-                }//exit out if a non-proper block-type is detected
-                total += val;
+                }
+                samples.add(y);
             }
         }
-        total /= 256; //make it the average top-height of all blocks in chunk
-        return total >= min && total <= max;
+        samples.sort(Integer::compareTo);
+        int low = samples.get((int) Math.round((samples.size() - 1) * 0.10D));
+        int median = samples.get(samples.size() / 2);
+        int high = samples.get((int) Math.round((samples.size() - 1) * 0.90D));
+
+        // Ignore isolated pits/peaks, but still reject genuinely steep chunks.
+        return median >= min && median <= max && high - low <= 18;
     }
 
     /*

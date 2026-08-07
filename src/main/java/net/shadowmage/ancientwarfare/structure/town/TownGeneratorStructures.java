@@ -41,9 +41,21 @@ class TownGeneratorStructures {
         WorldGenTickHandler.INSTANCE.addTownStructureGenCallback(new WorldGenTickHandler.StructureTicket() {
             @Override
             public void call() {
-                gen.template.getLamp().ifPresent(lamp -> TownGeneratorStructures.generateLamps(blocks, lamp, gen));
-                WorldStructureGenerator.sprinkleSnow(gen.world, gen.maximalBounds, 0);
-                gen.generateVillagers();
+                TownGenerationPlan.Section previous = TownGenerationPlan.getSection();
+                if (TownGenerationPlan.isCapturing()) {
+                    TownGenerationPlan.setSection(TownGenerationPlan.Section.LAMPS);
+                }
+                try {
+                    gen.template.getLamp().ifPresent(lamp -> TownGeneratorStructures.generateLamps(blocks, lamp, gen));
+                } finally {
+                    if (TownGenerationPlan.isCapturing()) {
+                        TownGenerationPlan.setSection(previous);
+                    }
+                }
+                if (!TownGenerationPlan.isCapturing()) {
+                    WorldStructureGenerator.sprinkleSnow(gen.world, gen.maximalBounds, 0);
+                    gen.generateVillagers();
+                }
             }
 
             @Override
@@ -244,9 +256,11 @@ class TownGeneratorStructures {
         BlockPos pos = new BlockPos(x, y, z);
 
         StructureBB bb = new StructureBB(pos, net.minecraft.core.Direction.SOUTH, template);
-        for (BlockPos posToCheck : BlockPos.betweenClosed(bb.min.offset(0, template.getOffset().getY(), 0), bb.max)) {
-            if (!world.isEmptyBlock(posToCheck)) {
-                return;
+        if (!TownGenerationPlan.isCapturing()) {
+            for (BlockPos posToCheck : BlockPos.betweenClosed(bb.min.offset(0, template.getOffset().getY(), 0), bb.max)) {
+                if (!world.isEmptyBlock(posToCheck)) {
+                    return;
+                }
             }
         }
 

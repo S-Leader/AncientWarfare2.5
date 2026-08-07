@@ -23,6 +23,8 @@ import net.shadowmage.ancientwarfare.structure.worldgen.stats.WorldGenStatistics
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Optional;
 import java.util.Random;
 
@@ -41,8 +43,9 @@ public class WorldStructureGenerator {
 
     /**
      * Called once for newly-created chunks by {@link WorldGenerationEventHandler}.
-     * The expensive structure validation and placement still runs through the
-     * existing tick queue so chunk generation is not blocked by a full template build.
+     * Only the candidate coordinates are deferred. Validation and the complete AWS
+     * build happen later on ServerTickEvent, so ChunkEvent.Load never performs a full
+     * template build and no long-lived builder ticket is needed.
      */
     public void queueChunkForGeneration(int chunkX, int chunkZ, Level world) {
         TerritoryManager.getTerritory(chunkX, chunkZ, world).ifPresent(territory -> {
@@ -69,37 +72,46 @@ public class WorldStructureGenerator {
         int x = chunkX * 16 + rng.nextInt(16);
         int z = chunkZ * 16 + rng.nextInt(16);
         int y = getTargetY(world, x, z, false) + 1;
-        if (y <= 0) {
+        if (y <= world.getMinBuildHeight()) {
             return;
         }
 
         TerritoryManager.getTerritory(chunkX, chunkZ, world).ifPresent(territory -> {
-            Direction face = Direction.from2DDataValue(rng.nextInt(4));
-            Optional<StructureTemplate> selectedTemplate;
-
-            world.getProfiler().push("AWTemplateSelection");
-            try {
-                selectedTemplate = WorldGenStructureManager.INSTANCE
-                        .selectTemplateForGeneration(world, rng, x, y, z, face, territory);
-            } finally {
-                world.getProfiler().pop();
-            }
-
-            AncientWarfareStructure.LOG.debug("Template selection took: {} ms.",
-                    System.currentTimeMillis() - generationStart);
-            if (selectedTemplate.isEmpty()) {
-                return;
-            }
-
-            StructureTemplate template = selectedTemplate.get();
             StructureMap map = AWGameData.INSTANCE.getPerWorldData(world, StructureMap.class);
+            Set<String> triedTemplates = new HashSet<>();
 
-            world.getProfiler().push("AWTemplateGeneration");
-            try {
-                attemptStructureGenerationAt(world, new BlockPos(x, y, z), face,
-                        template, map, territory, generationStart);
-            } finally {
-                world.getProfiler().pop();
+            // Handoff-style failure isolation: a bad placement does not consume the
+            // whole natural-generation opportunity. Re-run weighted selection and
+            // try up to eight distinct compatible templates at this candidate point.
+            for (int draw = 0; draw < 16 && triedTemplates.size() < 8; draw++) {
+                Direction face = Direction.from2DDataValue(rng.nextInt(4));
+                Optional<StructureTemplate> selectedTemplate;
+
+                world.getProfiler().push("AWTemplateSelection");
+                try {
+                    selectedTemplate = WorldGenStructureManager.INSTANCE
+                            .selectTemplateForGeneration(world, rng, x, y, z, face, territory);
+                } finally {
+                    world.getProfiler().pop();
+                }
+
+                if (selectedTemplate.isEmpty()) {
+                    return;
+                }
+                StructureTemplate template = selectedTemplate.get();
+                if (!triedTemplates.add(template.name)) {
+                    continue;
+                }
+
+                world.getProfiler().push("AWTemplateGeneration");
+                try {
+                    if (attemptStructureGenerationAt(world, new BlockPos(x, y, z), face,
+                            template, map, territory, generationStart)) {
+                        return;
+                    }
+                } finally {
+                    world.getProfiler().pop();
+                }
             }
         });
     }
@@ -285,51 +297,31 @@ public class WorldStructureGenerator {
         boolean unique = template.getValidationSettings().isUnique();
         int clusterValue = template.getValidationSettings().getClusterValue();
         StructureEntry entry = new StructureEntry(pos.getX(), pos.getY(), pos.getZ(), face, template);
+        StructureBuilderWorldGen builder = new StructureBuilderWorldGen(world, template, face, pos);
 
-        /*
-         * Reserve the location immediately so other queued attempts cannot overlap
-         * it. The reservation and territory budget are rolled back by the ticket
-         * if chunk preparation or construction later fails.
-         */
+        // Natural AWS placement runs from ServerTickEvent (never ChunkEvent.Load).
+        // Load exactly the chunks intersected by the rotated BB, then build now.
+        // There is no long-lived queue ticket that can poison later generation.
+        if (!builder.ensureRequiredChunksLoaded(Integer.MAX_VALUE)) {
+            throw new IllegalStateException("Unable to load all chunks required by " + template.name
+                    + ": " + builder.getRequiredChunks());
+        }
+        builder.instantConstruction();
+
+        // Commit only after the structure is fully built. This mirrors the modern
+        // handoff generator and removes the provisional-map/rollback failure mode.
         try {
             map.setGeneratedAt(world, pos.getX(), pos.getZ(), entry, unique);
         } catch (Exception exception) {
-            // setGeneratedAt may have inserted the entry before a sync packet failed.
             map.removeGeneratedAt(world, pos.getX(), pos.getZ(), entry, unique);
             throw exception;
         }
         territory.addClusterValue(clusterValue);
-
-        boolean[] rollbackPerformed = {false};
-        Runnable onSuccess = () -> {
-            WorldGenStatistics.addStructureGeneratedInfo(template.name, world, pos);
-            AncientWarfareStructure.LOG.info(
-                    "Generated structure: {} at {}, {}, {}, time: {}ms",
-                    template.name, pos.getX(), pos.getY(), pos.getZ(),
-                    System.currentTimeMillis() - generationStart);
-        };
-
-        Runnable onFailure = () -> {
-            if (rollbackPerformed[0]) {
-                return;
-            }
-            rollbackPerformed[0] = true;
-
-            map.removeGeneratedAt(world, pos.getX(), pos.getZ(), entry, unique);
-            territory.removeClusterValue(clusterValue);
-            AncientWarfareStructure.LOG.warn(
-                    "Rolled back failed structure reservation: {} at {}, {}, {}",
-                    template.name, pos.getX(), pos.getY(), pos.getZ());
-        };
-
-        try {
-            WorldGenTickHandler.INSTANCE.addStructureForGeneration(
-                    new StructureBuilderWorldGen(world, template, face, pos),
-                    onSuccess, onFailure);
-        } catch (Exception exception) {
-            onFailure.run();
-            throw exception;
-        }
+        WorldGenStatistics.addStructureGeneratedInfo(template.name, world, pos);
+        AncientWarfareStructure.LOG.info(
+                "Generated standalone structure: {} at {}, {}, {}, time: {}ms",
+                template.name, pos.getX(), pos.getY(), pos.getZ(),
+                System.currentTimeMillis() - generationStart);
     }
 
 }

@@ -18,6 +18,7 @@ import net.shadowmage.ancientwarfare.structure.template.StructureTemplateManager
 import net.shadowmage.ancientwarfare.structure.template.build.StructureBB;
 import net.shadowmage.ancientwarfare.structure.town.TownTemplate.TownStructureEntry;
 import net.shadowmage.ancientwarfare.structure.worldgen.WorldGenTickHandler;
+import net.shadowmage.ancientwarfare.structure.worldgen.WorldStructureGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +91,43 @@ public class TownGenerator {
                 return 100;
             }
         });
+    }
+
+    /**
+     * Replays the original 1.12 town layout algorithm without touching the world.
+     * Queue calls and road writes are captured into a deterministic plan.
+     */
+    public TownGenerationPlan createPlan() {
+        determineStructuresToGenerate();
+        generateGrid();
+        TownGenerationPlan plan = new TownGenerationPlan();
+        TownGenerationPlan.begin(plan);
+        try {
+            TownGenerationPlan.setSection(TownGenerationPlan.Section.WALLS);
+            TownGeneratorWalls.generateWalls(world, this, template, rng);
+            TownGenerationPlan.setSection(TownGenerationPlan.Section.BUILDINGS);
+            generateRoads();
+            TownGeneratorStructures.generateStructures(this);
+        } finally {
+            TownGenerationPlan.end();
+        }
+        return plan;
+    }
+
+    /** Terrain/biome preparation is a separate persistent phase. */
+    void prepareTerrain() {
+        changeBiome(exteriorBounds);
+        TownGeneratorBorders.generateBorders(world, exteriorBounds);
+        TownGeneratorBorders.levelTownArea(world, exteriorBounds);
+    }
+
+    void placeRoadBlock(BlockPos pos) {
+        genRoadBlock(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    void finishTown() {
+        WorldStructureGenerator.sprinkleSnow(world, maximalBounds, 0);
+        generateVillagers();
     }
 
     private void changeBiome(StructureBB bb) {
@@ -473,6 +511,10 @@ public class TownGenerator {
     }
 
     private void genRoadBlock(int x, int y, int z) {
+        BlockPos pos = new BlockPos(x, y, z);
+        if (TownGenerationPlan.captureRoad(pos)) {
+            return;
+        }
         List<BlockState> roadBlocks = template.getRoadFillBlocks();
         BlockState roadBlock;
         if (roadBlocks.size() == 1) {
@@ -480,7 +522,6 @@ public class TownGenerator {
         } else {
             roadBlock = roadBlocks.get(world.getRandom().nextInt(roadBlocks.size()));
         }
-        BlockPos pos = new BlockPos(x, y, z);
         world.setBlock(pos, roadBlock, 3);
         world.setBlock(pos.below(), Blocks.COBBLESTONE.defaultBlockState(), 3);
     }

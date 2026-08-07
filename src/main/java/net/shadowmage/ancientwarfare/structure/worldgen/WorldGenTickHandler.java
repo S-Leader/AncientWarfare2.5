@@ -10,6 +10,8 @@ import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
 import net.shadowmage.ancientwarfare.structure.template.build.StructureBB;
 import net.shadowmage.ancientwarfare.structure.template.build.StructureBuilder;
 import net.shadowmage.ancientwarfare.structure.town.WorldTownGenerator;
+import net.shadowmage.ancientwarfare.structure.town.TownGenerationPlan;
+import net.shadowmage.ancientwarfare.structure.town.PersistentTownGenerationManager;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import java.util.List;
 
 public final class WorldGenTickHandler {
     private static final int MAX_BLOCKS_TO_GEN_PER_TICK = 10000;
+    private static final int MAX_STANDALONE_ATTEMPTS_PER_TICK = 20;
     private static final int MAX_TOWN_TEMPLATE_POSITIONS_PER_TICK = 10000;
     private static final int MAX_TOWN_TEMPLATE_POSITIONS_PER_STEP = 1000;
     private static final int MAX_STANDALONE_STRUCTURE_WAIT_TICKS = 1200;
@@ -31,8 +34,9 @@ public final class WorldGenTickHandler {
     private final List<ChunkGenerationTicket> townChunksToGen;
 
     /*
-     * Normal standalone structures retain their original queue and their original
-     * all-at-once StructureBuilder#instantConstruction behaviour.
+     * Compatibility queue for explicit/non-natural standalone construction. Natural
+     * AWS worldgen now builds directly from the deferred chunk-attempt queue and does
+     * not create a long-lived StructureBuilder ticket.
      */
     private final List<StructureTicket> newStructureGenTickets;
     private final List<StructureTicket> structuresToGen;
@@ -70,6 +74,7 @@ public final class WorldGenTickHandler {
         structuresToGen.clear();
         newTownStructureGenTickets.clear();
         townStructuresToGen.clear();
+        PersistentTownGenerationManager.INSTANCE.resetTransientState();
     }
 
     /**
@@ -120,6 +125,9 @@ public final class WorldGenTickHandler {
      * and stay ordered relative to town phase callbacks.
      */
     public void addTownStructureForGeneration(StructureBuilder builder) {
+        if (TownGenerationPlan.captureBuilder(builder)) {
+            return;
+        }
         newTownStructureGenTickets.add(new TownStructureGenerationTicket(builder));
     }
 
@@ -128,6 +136,13 @@ public final class WorldGenTickHandler {
      * only after every wall ticket before this callback has completed.
      */
     public void addTownStructureGenCallback(StructureTicket ticket) {
+        if (TownGenerationPlan.isCapturing()) {
+            // Planning executes barriers immediately because all actual world mutation
+            // is captured instead of queued. This lets the original 1.12 callback
+            // chain produce one deterministic persistent plan in a single pass.
+            ticket.call();
+            return;
+        }
         newTownStructureGenTickets.add(new TownCallbackTicket(ticket));
     }
 
@@ -139,6 +154,7 @@ public final class WorldGenTickHandler {
             runSafely("standalone structure selection", this::genChunks);
             runSafely("standalone structure construction", this::genStructures);
             runSafely("town structure construction", this::genTownStructures);
+            runSafely("persistent town construction", PersistentTownGenerationManager.INSTANCE::tickAllLevels);
             runSafely("town selection", this::genTowns);
         }
     }
@@ -224,7 +240,8 @@ public final class WorldGenTickHandler {
             newWorldGenTickets.clear();
         }
 
-        while (!chunksToGen.isEmpty()) {
+        int attempts = 0;
+        while (!chunksToGen.isEmpty() && attempts++ < MAX_STANDALONE_ATTEMPTS_PER_TICK) {
             ChunkGenerationTicket ticket = chunksToGen.remove(0);
             try {
                 Level world = ticket.getWorld();
@@ -233,7 +250,7 @@ public final class WorldGenTickHandler {
                 }
             } catch (Exception exception) {
                 AncientWarfareStructure.LOG.error(
-                        "Skipping failed standalone structure-generation attempt for chunk [{}, {}]",
+                        "Skipping failed standalone structure-generation attempt for chunk [{}, {}]; later candidates will continue",
                         ticket.chunkX, ticket.chunkZ, exception);
             }
         }

@@ -40,6 +40,20 @@ public class TownMap extends WorldSavedData {
         markDirty();
     }
 
+    /** Removes a provisional town reservation after a failed persistent build. */
+    public boolean removeGenerated(StructureBB expected) {
+        boolean removed = townEntries.removeIf(entry -> sameBounds(entry.getBB(), expected));
+        if (removed) {
+            CHUNK_TOWN_ENTRIES.invalidateAll();
+            markDirty();
+        }
+        return removed;
+    }
+
+    private static boolean sameBounds(StructureBB a, StructureBB b) {
+        return a.min.equals(b.min) && a.max.equals(b.max);
+    }
+
     public boolean shouldPreventSpawnAtPos(Level world, BlockPos pos) {
         for (TownEntry entry : getTownsInChunk(world, pos)) {
             if (entry.getBB().contains(pos) && entry.shouldPreventNaturalHostileSpawns() && !entry.getConquered()) {

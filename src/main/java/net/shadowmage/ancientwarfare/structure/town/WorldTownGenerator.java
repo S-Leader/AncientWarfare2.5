@@ -1,14 +1,9 @@
 package net.shadowmage.ancientwarfare.structure.town;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.shadowmage.ancientwarfare.core.gamedata.AWGameData;
 import net.shadowmage.ancientwarfare.structure.config.AWStructureStatics;
-import net.shadowmage.ancientwarfare.structure.gamedata.StructureEntry;
-import net.shadowmage.ancientwarfare.structure.gamedata.StructureMap;
-import net.shadowmage.ancientwarfare.structure.gamedata.TownEntry;
-import net.shadowmage.ancientwarfare.structure.gamedata.TownMap;
-import net.shadowmage.ancientwarfare.structure.template.build.StructureBB;
 import net.shadowmage.ancientwarfare.structure.worldgen.Territory;
 import net.shadowmage.ancientwarfare.structure.worldgen.TerritoryManager;
 import net.shadowmage.ancientwarfare.structure.worldgen.WorldGenTickHandler;
@@ -63,32 +58,20 @@ public class WorldTownGenerator {
                     if (area.getChunkLength() > template.getMaxSize()) { // shrink length to the configured inclusive chunk count
                         area.chunkMaxZ = area.chunkMinZ + template.getMaxSize() - 1;
                     }
-                    generate(world, area, template);
-                    territory.addClusterValue(template.getClusterValue());
+                    if (world instanceof ServerLevel serverLevel) {
+                        PersistentTownGenerationManager.INSTANCE.queue(serverLevel, area, template, territory);
+                    }
                 }
         );
     }
 
     public void generate(Level world, TownBoundingArea area, TownTemplate template) {
-        StructureBB bb = new StructureBB(new BlockPos(area.getBlockMinX(), area.getMinY(), area.getBlockMinZ()), new BlockPos(area.getBlockMaxX(), area.getMaxY(), area.getBlockMaxZ()));
-        /*
-         * add the town to generated town map, to eliminate towns generating too close to eachother
-         */
-        // Towns must also occupy the normal structure map. The 1.20 port had
-        // dropped this original registration, which allowed later world-gen
-        // attempts to reserve or build through a town while its many queued
-        // pieces were still being generated.
-        StructureMap structureMap = AWGameData.INSTANCE.getPerWorldData(world, StructureMap.class);
-        StructureEntry structureEntry = new StructureEntry(bb, template.getTownTypeName(), template.getClusterValue(),
-                area.getCenterX() >> 4, area.getCenterZ() >> 4);
-        structureMap.setGeneratedAt(world, area.getCenterX(), area.getCenterZ(), structureEntry, false);
-
-        AWGameData.INSTANCE.getPerWorldData(world, TownMap.class).setGenerated(new TownEntry(bb, template.shouldPreventNaturalHostileSpawns()));
-
-        /*
-         * and finally initialize generation.  The townGenerator will do borders, walls, roads, and add any structures to the world-gen tick handler for generation.
-         */
-        new TownGenerator(world, area, template).generate();
+        if (!(world instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        TerritoryManager.getTerritory(area.getCenterX() >> 4, area.getCenterZ() >> 4, world)
+                .ifPresent(territory -> PersistentTownGenerationManager.INSTANCE.queue(
+                        serverLevel, area, template, territory));
     }
 
 }
