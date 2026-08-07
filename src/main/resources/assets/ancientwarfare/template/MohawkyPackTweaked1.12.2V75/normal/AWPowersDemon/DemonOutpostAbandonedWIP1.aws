@@ -790,7 +790,7 @@ rule:
 plugin=vanillaBlocks
 number=36
 data:
-JSON:{blockState:{blockName:"futuremc:grindstone",properties:{face:"floor",facing:"west"}}}
+JSON:{blockState:{blockName:"minecraft:grindstone",properties:{face:"floor",facing:"west"}}}
 :enddata
 :endrule
 

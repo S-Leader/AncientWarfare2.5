@@ -2998,7 +2998,7 @@ rule:
 plugin=blockTile
 number=7
 data:
-JSON:{blockState:{blockName:"ancientwarfarestructure:advanced_spawner",properties:{transparent:"true"}},teData:{id:"ancientwarfarestructure:advanced_spawner_tile",spawnerSettings:{minDelay:10,spawnDelay:4,lightSensitive:0b,spawnGroups:[{settingsList:[{remainingSpawnCount:10,hostile:0b,customTag:{Variant:0,ArmorDropChances:[0.085f,0.085f,0.085f,0.085f],Ancient:0b,ArmorItems:[{},{},{},{}],HandDropChances:[0.085f,0.085f],Scale:1.810991f,HandItems:[{},{}]},maxToSpawn:10,entityId:"iceandfire:seaserpent",minToSpawn:10}],groupWeight:1}],playerRange:20,respondToRedstone:0b,inventory:{Size:9,Items:[]},spawnRange:10,transparent:1b,maxDelay:10,spawnYOffset:0,xpToDrop:0,mobRange:0,debugMode:0b,maxNearbyMonsters:0}}}
+JSON:{blockState:{blockName:"ancientwarfarestructure:advanced_spawner",properties:{transparent:"true"}},teData:{id:"ancientwarfarestructure:advanced_spawner_tile",spawnerSettings:{minDelay:10,spawnDelay:4,lightSensitive:0b,spawnGroups:[{settingsList:[{remainingSpawnCount:10,hostile:0b,customTag:{Variant:0,ArmorDropChances:[0.085f,0.085f,0.085f,0.085f],Ancient:0b,ArmorItems:[{},{},{},{}],HandDropChances:[0.085f,0.085f],Scale:1.810991f,HandItems:[{},{}]},maxToSpawn:10,entityId:"iceandfire:sea_serpent",minToSpawn:10}],groupWeight:1}],playerRange:20,respondToRedstone:0b,inventory:{Size:9,Items:[]},spawnRange:10,transparent:1b,maxDelay:10,spawnYOffset:0,xpToDrop:0,mobRange:0,debugMode:0b,maxNearbyMonsters:0}}}
 :enddata
 :endrule
 

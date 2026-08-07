@@ -1019,7 +1019,7 @@ rule:
 plugin=vanillaBlocks
 number=52
 data:
-JSON:{blockState:{blockName:"minecraftfuture:grindstone",properties:{face:"wall",facing:"south"}}}
+JSON:{blockState:{blockName:"minecraft:grindstone",properties:{face:"wall",facing:"south"}}}
 :enddata
 :endrule
 
