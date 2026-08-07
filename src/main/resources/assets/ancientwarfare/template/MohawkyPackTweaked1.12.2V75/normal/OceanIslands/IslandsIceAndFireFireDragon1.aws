@@ -2381,7 +2381,7 @@ rule:
 plugin=blockTile
 number=14
 data:
-JSON:{blockState:{blockName:"ancientwarfarestructure:urn"},teData:{lootSettings:{lootRolls:3,splashPotion:0b,hasLoot:1b,lootTableName:"ancientwarfare:chests/beast_treasure_hoard",spawnEntity:1b,entity:"iceandfire:firedragon"},id:"ancientwarfarestructure:urn_tile"}}
+JSON:{blockState:{blockName:"ancientwarfarestructure:urn"},teData:{lootSettings:{lootRolls:3,splashPotion:0b,hasLoot:1b,lootTableName:"ancientwarfare:chests/beast_treasure_hoard",spawnEntity:1b,entity:"iceandfire:fire_dragon"},id:"ancientwarfarestructure:urn_tile"}}
 :enddata
 :endrule
 

@@ -1118,7 +1118,7 @@ rule:
 plugin=blockTile
 number=86
 data:
-JSON:{blockState:{blockName:"ancientwarfarestructure:advanced_spawner",properties:{transparent:"true"}},teData:{id:"ancientwarfarestructure:advanced_spawner_tile",spawnerSettings:{minDelay:10,spawnDelay:967,lightSensitive:0b,spawnGroups:[{settingsList:[{remainingSpawnCount:1,hostile:0b,customTag:{Variant:1,ArmorDropChances:[0.085f,0.085f,0.085f,0.085f],ArmorItems:[{},{},{},{}],HandDropChances:[0.085f,0.085f],Items:[],Gender:1b,AgingDisabled:0b,DeadProg:0.0f,DeathStage:0,HandItems:[{},{}],AgeTicks:1752273,ModelDead:0b},maxToSpawn:1,entityId:"iceandfire:icedragon",minToSpawn:1}],groupWeight:1}],playerRange:30,respondToRedstone:0b,inventory:{Size:9,Items:[]},spawnRange:20,transparent:1b,maxDelay:5000,xpToDrop:50,mobRange:30,debugMode:0b,maxNearbyMonsters:2}}}
+JSON:{blockState:{blockName:"ancientwarfarestructure:advanced_spawner",properties:{transparent:"true"}},teData:{id:"ancientwarfarestructure:advanced_spawner_tile",spawnerSettings:{minDelay:10,spawnDelay:967,lightSensitive:0b,spawnGroups:[{settingsList:[{remainingSpawnCount:1,hostile:0b,customTag:{Variant:1,ArmorDropChances:[0.085f,0.085f,0.085f,0.085f],ArmorItems:[{},{},{},{}],HandDropChances:[0.085f,0.085f],Items:[],Gender:1b,AgingDisabled:0b,DeadProg:0.0f,DeathStage:0,HandItems:[{},{}],AgeTicks:1752273,ModelDead:0b},maxToSpawn:1,entityId:"iceandfire:ice_dragon",minToSpawn:1}],groupWeight:1}],playerRange:30,respondToRedstone:0b,inventory:{Size:9,Items:[]},spawnRange:20,transparent:1b,maxDelay:5000,xpToDrop:50,mobRange:30,debugMode:0b,maxNearbyMonsters:2}}}
 :enddata
 :endrule
 
