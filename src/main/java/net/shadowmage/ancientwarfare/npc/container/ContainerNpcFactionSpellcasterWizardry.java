@@ -27,7 +27,7 @@ public class ContainerNpcFactionSpellcasterWizardry extends ContainerNpcBase<Npc
         super(player, x);
         skinSettings = entity.getSkinSettings();
         maxHealth = entity.getMaxHealthOverride();
-        assignedSpells = entity.getSpells();
+        assignedSpells = entity.getSpellIds();
         allSpells.addAll(assignedSpells);
     }
 

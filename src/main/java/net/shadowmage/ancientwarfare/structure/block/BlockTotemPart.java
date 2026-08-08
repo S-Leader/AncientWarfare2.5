@@ -47,11 +47,18 @@ import static net.shadowmage.ancientwarfare.core.render.property.CoreProperties.
 
 public class BlockTotemPart extends BlockBaseStructure {
     public static final String VARIANT_TAG = "variant";
-    private static final EnumProperty<Variant> VARIANT = EnumProperty.create(VARIANT_TAG, Variant.class);
-    private static final BooleanProperty VISIBLE = BooleanProperty.create("visible");
+    public static final EnumProperty<Variant> VARIANT = EnumProperty.create(VARIANT_TAG, Variant.class);
+    public static final BooleanProperty VISIBLE = BooleanProperty.create("visible");
 
     public BlockTotemPart() {
         super(LegacyMaterial.WOOD, "totem_part");
+        // In 1.12 the model got VARIANT from getActualState(). 1.20 chunk models
+        // are baked from the state stored in the world, so every visual property
+        // must also have a real default value.
+        registerDefaultState(defaultBlockState()
+                .setValue(FACING, Direction.NORTH)
+                .setValue(VISIBLE, true)
+                .setValue(VARIANT, Variant.BASE));
     }
 
     @Override
@@ -100,7 +107,10 @@ public class BlockTotemPart extends BlockBaseStructure {
 
     @Override
     public BlockState getStateFromMeta(int meta) {
-        return defaultBlockState().setValue(FACING, Direction.from2DDataValue(meta)).setValue(VISIBLE, ((meta >> 2) & 1) > 0);
+        return defaultBlockState()
+                .setValue(FACING, Direction.from2DDataValue(meta))
+                .setValue(VISIBLE, ((meta >> 2) & 1) > 0)
+                .setValue(VARIANT, Variant.BASE);
     }
 
     @Override
@@ -110,7 +120,20 @@ public class BlockTotemPart extends BlockBaseStructure {
 
     @Override
     public BlockState getActualState(BlockState state, BlockGetter world, BlockPos pos) {
-        return WorldTools.getTile(world, pos, TileTotemPart.class).map(te -> state.setValue(VARIANT, te.getVariant())).orElse(state);
+        return WorldTools.getTile(world, pos, TileTotemPart.class)
+                .map(te -> withVariant(state, te.getVariant()))
+                .orElse(state);
+    }
+
+    /**
+     * Mirrors the tile's legacy variant into the real blockstate. Modern chunk
+     * rendering never calls the old 1.12 getActualState hook.
+     */
+    public static BlockState withVariant(BlockState state, Variant variant) {
+        if (!state.hasProperty(VARIANT)) {
+            return state;
+        }
+        return state.setValue(VARIANT, variant == null ? Variant.BASE : variant);
     }
 
     @Override
@@ -126,7 +149,10 @@ public class BlockTotemPart extends BlockBaseStructure {
 
     @Override
     public BlockState getStateForPlacement(Level worldIn, BlockPos pos, Direction facing, float hitX, float hitY, float hitZ, int meta, LivingEntity placer) {
-        return defaultBlockState().setValue(FACING, placer.getDirection()).setValue(VISIBLE, true);
+        return defaultBlockState()
+                .setValue(FACING, placer.getDirection())
+                .setValue(VISIBLE, true)
+                .setValue(VARIANT, Variant.BASE);
     }
 
     @Override
@@ -174,7 +200,7 @@ public class BlockTotemPart extends BlockBaseStructure {
 
         LegacyModelLoader.setCustomMeshDefinition(this.asItem(), stack -> {
             if (!stack.hasTag()) {
-                return new ModelResourceLocation(baseLocation, String.format(modelPropString, true, Variant.BASE.getName().toLowerCase(Locale.ENGLISH)));
+                return new ModelResourceLocation(baseLocation, String.format(modelPropString, Variant.BASE.getName().toLowerCase(Locale.ENGLISH)));
             }
             CompoundTag tag = stack.getTag();
             //noinspection ConstantConditions
@@ -460,7 +486,7 @@ public class BlockTotemPart extends BlockBaseStructure {
         }
 
         private static void placeInvisibleBlock(Level world, BlockPos mainPos, BlockPos sidePos, Variant variant, Direction facing) {
-            world.setBlock(sidePos, AWStructureBlocks.TOTEM_PART.defaultBlockState().setValue(VISIBLE, false).setValue(FACING, facing), 3);
+            world.setBlock(sidePos, AWStructureBlocks.TOTEM_PART.defaultBlockState().setValue(VISIBLE, false).setValue(FACING, facing).setValue(VARIANT, variant), 3);
             setupTileData(world, mainPos, sidePos, variant);
         }
 
@@ -472,7 +498,7 @@ public class BlockTotemPart extends BlockBaseStructure {
         }
 
         private static void placeSideBlock(Level world, BlockPos mainPos, BlockPos sidePos, Direction sideFacing, Variant variant) {
-            world.setBlock(sidePos, AWStructureBlocks.TOTEM_PART.defaultBlockState().setValue(FACING, sideFacing), 3);
+            world.setBlock(sidePos, AWStructureBlocks.TOTEM_PART.defaultBlockState().setValue(FACING, sideFacing).setValue(VARIANT, variant), 3);
             setupTileData(world, mainPos, sidePos, variant);
         }
 
