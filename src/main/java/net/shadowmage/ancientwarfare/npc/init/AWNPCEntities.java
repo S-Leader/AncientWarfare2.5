@@ -20,7 +20,6 @@ import net.shadowmage.ancientwarfare.npc.entity.faction.*;
 import net.shadowmage.ancientwarfare.npc.entity.vehicle.NpcSiegeEngineer;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 public class AWNPCEntities {
     private AWNPCEntities() {
@@ -34,8 +33,6 @@ public class AWNPCEntities {
     private static final String MINER_SUBTYPE = "miner";
     private static final String SPELLCASTER_SUBTYPE = "spellcaster";
     private static int nextID = 0;
-    private static NpcFactionDeclaration wizreg;
-
     /*
      * Npc base type -> NpcDeclaration<br>
      * Used to retrieve declaration for creating entities<br>
@@ -130,20 +127,12 @@ public class AWNPCEntities {
     private static void registerSpellcasterFactionNpc() {
         NpcFactionDeclaration reg;
 
-        /* optional dependency for EBWizardry spell casters
-         * References to the EBWizardry specific class can only be here, to avoid class loading if the mod is no present.
-         * Any reference outside of the lambdas will crash the game if EBWizardry is not present */
-        Supplier<Runnable> registerWizardrySpellcaster = () -> () -> {
-            wizreg = new NpcFactionDeclaration(NpcFactionSpellcasterWizardry.class, AWEntityRegistry.NPC_FACTION_SPELLCASTER, SPELLCASTER_SUBTYPE);
-            addNpcRegistration(wizreg);
-        };
-
         if (ModList.get().isLoaded("ebwizardry")) {
-            registerWizardrySpellcaster.get().run();
+            reg = new NpcFactionDeclaration(NpcFactionSpellcasterWizardry.class, AWEntityRegistry.NPC_FACTION_SPELLCASTER, SPELLCASTER_SUBTYPE);
         } else {
             reg = new NpcFactionDeclaration(NpcFactionSpellcaster.class, AWEntityRegistry.NPC_FACTION_SPELLCASTER, SPELLCASTER_SUBTYPE);
-            addNpcRegistration(reg);
         }
+        addNpcRegistration(reg);
     }
 
     /*

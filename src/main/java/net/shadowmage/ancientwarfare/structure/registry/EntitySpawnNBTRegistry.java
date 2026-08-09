@@ -54,19 +54,35 @@ public class EntitySpawnNBTRegistry {
 
         @Override
         public void parse(JsonObject json) {
-            entityNBT.putAll(JsonHelper.mapFromJson(json, "entity_nbt",
-                    entry -> getClass(entry.getKey()),
-                    entry -> JsonHelper.setFromJson(entry.getValue(), element -> JsonUtils.getString(element, ""))));
+            Map<Class, Set<String>> parsed = new HashMap<>();
+
+            JsonHelper.mapFromJson(json, "entity_nbt",
+                    entry -> entry.getKey(),
+                    entry -> JsonHelper.setFromJson(entry.getValue(), element -> JsonUtils.getString(element, "")
+                    )
+            ).forEach((className, tags) -> {
+                Class<?> clazz = getClass(className);
+
+                if (clazz != null) {
+                    parsed.put(clazz, tags);
+                }
+            });
+
+            entityNBT.putAll(parsed);
         }
 
-        private Class getClass(String className) {
+        private Class<?> getClass(String className) {
             if ("net.minecraft.entity.passive.EntityRabbit".equals(className)) {
                 return Rabbit.class;
             }
             try {
-                return Class.forName(className);
-            } catch (ClassNotFoundException e) {
-                throw new MissingResourceException("Unable to find class for class name: " + className, Class.class.toString(), className);
+                return Class.forName(
+                        className,
+                        false,
+                        EntitySpawnNBTRegistry.class.getClassLoader()
+                );
+            } catch (ClassNotFoundException | LinkageError ignore) {
+                return null;
             }
         }
     }
