@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.automation.tile.torque;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -17,7 +18,10 @@ import javax.annotation.Nullable;
 public abstract class TileTorqueSidedCell extends TileTorqueBase {
 
     private static final String CLIENT_ENERGY_TAG = "clientEnergy";
+    private static final String CONNECTION_MASK_TAG = "connectionMask";
     private boolean[] connections = null;
+    private int persistedConnectionMask;
+    private int connectionRefreshTicks;
     final SidedTorqueCell[] storage = new SidedTorqueCell[DIRECTION_LENGTH];
 
     /*
@@ -52,6 +56,9 @@ public abstract class TileTorqueSidedCell extends TileTorqueBase {
     @Override
     public void update() {
         if (!world.isClientSide) {
+            if (connectionRefreshTicks > 0 && --connectionRefreshTicks == 0) {
+                rebuildConnections(true);
+            }
             serverNetworkUpdate();
             torqueIn = getTotalTorque() - prevEnergy;
             balanceStorage();
@@ -155,39 +162,94 @@ public abstract class TileTorqueSidedCell extends TileTorqueBase {
 
     public boolean[] getConnections() {
         if (connections == null) {
-            buildConnections();
+            rebuildConnections(false);
         }
         return connections;
     }
 
     @Override
-    public void onNeighborTileChanged() {
-        super.onNeighborTileChanged();
-        connections = null;
+    public void onLoad() {
+        super.onLoad();
+        /*
+         * Keep the persisted mask available for rendering while neighboring block
+         * entities are still attaching, then validate it a couple of server ticks
+         * later.  Rebuilding immediately during chunk load is what caused valid
+         * connections to be cached as all-false after relogging.
+         */
+        connections = decodeConnectionMask(persistedConnectionMask);
+        connectionRefreshTicks = 2;
     }
 
-    private void buildConnections() {
-        boolean[] updatedConnections = new boolean[DIRECTION_LENGTH];
-        ITorqueTile[] cache = getTorqueCache();
-        Direction dir;
-        for (int i = 0; i < cache.length; i++) {
-            dir = Direction.values()[i];
-            if (cache[i] != null) {
-                updatedConnections[i] = (cache[i].canInputTorque(dir.getOpposite()) && canOutputTorque(dir)) || (cache[i].canOutputTorque(dir.getOpposite()) && canInputTorque(dir));
-            }
+    @Override
+    public void onNeighborTileChanged() {
+        super.onNeighborTileChanged();
+    }
+
+    @Override
+    protected void onNeighborCacheInvalidated() {
+        connections = null;
+        if (world != null && !world.isClientSide) {
+            connectionRefreshTicks = 1;
         }
-        if (ModList.get().isLoaded("redstoneflux")) {
-            BlockEntity[] tes = getRFCache();
-            for (int i = 0; i < tes.length; i++) {
-                if (cache[i] != null) {
-                    continue;
-                }//already examined that side..
-                if (tes[i] != null) {
-                    updatedConnections[i] = true;
+    }
+
+    private void rebuildConnections(boolean synchronize) {
+        boolean[] updatedConnections = decodeConnectionMask(persistedConnectionMask);
+        ITorqueTile[] cache = getTorqueCache();
+        BlockEntity[] rfTiles = ModList.get().isLoaded("redstoneflux") ? getRFCache() : null;
+
+        for (Direction dir : Direction.values()) {
+            int i = dir.ordinal();
+            BlockPos neighborPos = pos.relative(dir);
+
+            /*
+             * Do not destroy a saved connection merely because the neighboring
+             * chunk/BE has not finished loading yet.  That side will be validated
+             * by the delayed refresh or the next neighbor event.
+             */
+            if (world == null || !world.isLoaded(neighborPos)) {
+                continue;
+            }
+
+            boolean connected = false;
+            if (cache[i] != null) {
+                connected = (cache[i].canInputTorque(dir.getOpposite()) && canOutputTorque(dir))
+                        || (cache[i].canOutputTorque(dir.getOpposite()) && canInputTorque(dir));
+            } else if (rfTiles != null && rfTiles[i] != null) {
+                connected = true;
+            }
+            updatedConnections[i] = connected;
+        }
+
+        int newMask = encodeConnectionMask(updatedConnections);
+        boolean changed = newMask != persistedConnectionMask;
+        persistedConnectionMask = newMask;
+        connections = updatedConnections;
+
+        if (synchronize && world != null && !world.isClientSide && changed) {
+            setChanged();
+            net.shadowmage.ancientwarfare.core.util.BlockTools.notifyBlockUpdate(this);
+        }
+    }
+
+    private static int encodeConnectionMask(boolean[] values) {
+        int mask = 0;
+        if (values != null) {
+            for (int i = 0; i < Math.min(DIRECTION_LENGTH, values.length); i++) {
+                if (values[i]) {
+                    mask |= 1 << i;
                 }
             }
         }
-        this.connections = updatedConnections;
+        return mask;
+    }
+
+    private static boolean[] decodeConnectionMask(int mask) {
+        boolean[] values = new boolean[DIRECTION_LENGTH];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = (mask & (1 << i)) != 0;
+        }
+        return values;
     }
 
     @Override
@@ -237,13 +299,26 @@ public abstract class TileTorqueSidedCell extends TileTorqueBase {
     protected void writeUpdateNBT(CompoundTag tag) {
         super.writeUpdateNBT(tag);
         tag.putInt(CLIENT_ENERGY_TAG, clientDestEnergyState);
+        tag.putInt(CONNECTION_MASK_TAG, connections == null
+                ? persistedConnectionMask : encodeConnectionMask(connections));
     }
 
     @Override
     protected void handleUpdateNBT(CompoundTag tag) {
         super.handleUpdateNBT(tag);
         clientDestEnergyState = tag.getInt(CLIENT_ENERGY_TAG);
-        connections = null; //clear connections on update
+        if (tag.contains(CONNECTION_MASK_TAG)) {
+            persistedConnectionMask = tag.getInt(CONNECTION_MASK_TAG) & 0x3F;
+            connections = decodeConnectionMask(persistedConnectionMask);
+        } else {
+            connections = null;
+        }
+        if (world != null && world.isClientSide) {
+            // Base orientation sync may have already requested a rebuild before the
+            // connection mask was decoded.  Request one final render update with the
+            // complete state.
+            net.shadowmage.ancientwarfare.core.util.BlockTools.notifyBlockUpdate(this);
+        }
     }
 
     @Override
@@ -251,9 +326,15 @@ public abstract class TileTorqueSidedCell extends TileTorqueBase {
         super.readFromNBT(tag);
         ListTag list = tag.getList("energyList", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < storage.length; i++) {
-            storage[i].readFromNBT(list.getCompound(i));
+            if (i < list.size()) {
+                storage[i].readFromNBT(list.getCompound(i));
+            }
         }
         clientDestEnergyState = tag.getInt(CLIENT_ENERGY_TAG);
+        persistedConnectionMask = tag.contains(CONNECTION_MASK_TAG)
+                ? tag.getInt(CONNECTION_MASK_TAG) & 0x3F : 0;
+        connections = decodeConnectionMask(persistedConnectionMask);
+        connectionRefreshTicks = 2;
     }
 
     @Override
@@ -265,6 +346,8 @@ public abstract class TileTorqueSidedCell extends TileTorqueBase {
         }
         tag.put("energyList", list);
         tag.putInt(CLIENT_ENERGY_TAG, clientDestEnergyState);
+        tag.putInt(CONNECTION_MASK_TAG, connections == null
+                ? persistedConnectionMask : encodeConnectionMask(connections));
 
         return tag;
     }

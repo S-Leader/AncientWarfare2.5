@@ -55,8 +55,11 @@ public class TorqueTransportSidedRenderer extends TorqueTieredRenderer<TileTorqu
     protected LegacyModelState handleAdditionalProperties(LegacyModelState state, TileTorqueSidedCell cell) {
         state = super.handleAdditionalProperties(state, cell);
 
+        boolean[] connections = cell.getConnections();
         for (Direction facing : Direction.values()) {
-            state = state.setValue(BlockTorqueTransportSided.CONNECTIONS[facing.ordinal()], false);
+            int index = facing.ordinal();
+            state = state.setValue(BlockTorqueTransportSided.CONNECTIONS[index],
+                    index < connections.length && connections[index]);
         }
 
         return state;

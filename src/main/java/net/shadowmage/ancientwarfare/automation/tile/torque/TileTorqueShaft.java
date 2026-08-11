@@ -4,10 +4,12 @@ import net.minecraft.core.Direction;
 import net.shadowmage.ancientwarfare.automation.config.AWAutomationStatics;
 import net.shadowmage.ancientwarfare.core.interfaces.ITorque.ITorqueTile;
 import net.shadowmage.ancientwarfare.core.interfaces.ITorque.TorqueCell;
-import net.shadowmage.ancientwarfare.core.util.BlockTools;
 import net.shadowmage.ancientwarfare.core.util.Trig;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Set;
 
 public abstract class TileTorqueShaft extends TileTorqueSingleCell {
 
@@ -32,19 +34,29 @@ public abstract class TileTorqueShaft extends TileTorqueSingleCell {
             TileTorqueShaft n = next();
             double totalPower = torqueCell.getEnergy();
             double num = 1;
-            while (n != null) {
+
+            /*
+             * A corrupt/stale legacy neighbor link must never turn a newly placed
+             * shaft into an infinite traversal.  Identity tracking also makes this
+             * safe while adjacent chunks are unloading/reloading.
+             */
+            Set<TileTorqueShaft> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+            visited.add(this);
+            while (n != null && visited.add(n)) {
                 totalPower += n.torqueCell.getEnergy();
                 last = n;
                 num++;
                 n = n.next;
             }
+
             double avg = totalPower / num;
-            double perc = avg / torqueCell.getMaxEnergy();
+            double maxEnergy = torqueCell.getMaxEnergy();
+            double perc = maxEnergy > 0D ? avg / maxEnergy : 0D;
             double torqueOut = last.torqueOut;
+            double maxOutput = last.torqueCell.getMaxOutput();
 
             int percent = (int) (perc * 100.d);
-            int percent2 = (int) ((torqueOut / last.torqueCell.getMaxOutput()) * 100.d);
-            //    AWLog.logDebug("shaft net synch, p1, p2: "+percent+" :: "+percent2 + " avg: "+avg+" avgper: "+perc+" lo: "+last.torqueOut);
+            int percent2 = maxOutput > 0D ? (int) ((torqueOut / maxOutput) * 100.d) : 0;
             percent = Math.max(percent, percent2);
             if (percent != clientDestEnergyState) {
                 clientDestEnergyState = percent;
@@ -62,7 +74,9 @@ public abstract class TileTorqueShaft extends TileTorqueSingleCell {
                 rotation %= Trig.PI * 2;
             }
             TileTorqueShaft n = next;
-            while (n != null) {
+            Set<TileTorqueShaft> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+            visited.add(this);
+            while (n != null && visited.add(n)) {
                 n.rotation = rotation;
                 n.lastRotationDiff = lastRotationDiff;
                 n = n.next;
@@ -94,12 +108,8 @@ public abstract class TileTorqueShaft extends TileTorqueSingleCell {
     public TileTorqueShaft prev() {
         if (prevNeighborInvalid) {
             prevNeighborInvalid = false;
-            ITorqueTile input = getTorqueCache()[orientation.getOpposite().ordinal()];
-            if (input instanceof TileTorqueShaft && input.getClass() == this.getClass() && input.canOutputTorque(orientation)) {
-                if (prev == null) {
-                    BlockTools.notifyBlockUpdate(this);
-                }
-                prev = (TileTorqueShaft) input;
+            prev = findPreviousShaft();
+            if (prev != null) {
                 prev.next = this;
             }
         }
@@ -110,13 +120,50 @@ public abstract class TileTorqueShaft extends TileTorqueSingleCell {
     public TileTorqueShaft next() {
         if (nextNeighborInvalid) {
             nextNeighborInvalid = false;
-            ITorqueTile output = getTorqueCache()[orientation.ordinal()];
-            if (output instanceof TileTorqueShaft && output.getClass() == this.getClass() && output.canInputTorque(orientation.getOpposite())) {
-                next = (TileTorqueShaft) output;
+            next = findNextShaft();
+            if (next != null) {
                 next.prev = this;
             }
         }
         return next;
+    }
+
+    /**
+     * Renderer-safe connection tests.  These deliberately do not mutate prev/next
+     * links and never emit block updates.  The old renderer called prev(), which
+     * could call sendBlockUpdated while the chunk renderer was already resolving
+     * the just-placed shaft model.
+     */
+    public boolean hasPreviousShaft() {
+        return findPreviousShaft() != null;
+    }
+
+    public boolean hasNextShaft() {
+        return findNextShaft() != null;
+    }
+
+    @Nullable
+    private TileTorqueShaft findPreviousShaft() {
+        ITorqueTile input = getTorqueCache()[orientation.getOpposite().ordinal()];
+        if (input instanceof TileTorqueShaft shaft
+                && !shaft.isRemoved()
+                && shaft.getClass() == this.getClass()
+                && shaft.canOutputTorque(orientation)) {
+            return shaft;
+        }
+        return null;
+    }
+
+    @Nullable
+    private TileTorqueShaft findNextShaft() {
+        ITorqueTile output = getTorqueCache()[orientation.ordinal()];
+        if (output instanceof TileTorqueShaft shaft
+                && !shaft.isRemoved()
+                && shaft.getClass() == this.getClass()
+                && shaft.canInputTorque(orientation.getOpposite())) {
+            return shaft;
+        }
+        return null;
     }
 
     @Override

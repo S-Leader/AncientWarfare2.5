@@ -76,9 +76,8 @@ public class TorqueShaftRenderer extends TorqueTieredRenderer<TileTorqueShaft> {
     @Override
     protected LegacyModelState handleAdditionalProperties(LegacyModelState state, TileTorqueShaft tileEntity) {
         state = super.handleAdditionalProperties(state, tileEntity);
-        TileTorqueShaft prev = tileEntity.prev();
-        state = state.setValue(BlockTorqueTransportShaft.HAS_NEXT, false);
-        state = state.setValue(BlockTorqueTransportShaft.HAS_PREVIOUS, prev != null);
+        state = state.setValue(BlockTorqueTransportShaft.HAS_NEXT, tileEntity.hasNextShaft());
+        state = state.setValue(BlockTorqueTransportShaft.HAS_PREVIOUS, tileEntity.hasPreviousShaft());
         state = state.setValue(AutomationProperties.USE_INPUT, false);
         state = state.setValue(AutomationProperties.INPUT_ROTATION, 0f);
         return state;

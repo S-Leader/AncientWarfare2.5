@@ -34,9 +34,18 @@ public class ItemBlockTorqueTile extends ItemBlockBase {
     @Override
     protected void onBlockPlaced(BlockPlaceContext context, BlockState placedState) {
         Player player = context.getPlayer();
-        if (player == null) {
+        if (player == null || context.getLevel().isClientSide) {
             return;
         }
+
+        /*
+         * BlockItem placement runs on both logical sides.  Torque facing is block-entity
+         * state and must only be mutated by the server.  Calling setChanged()/block
+         * updates from the client while the just-placed shaft is still being inserted
+         * into the render/chunk graph can re-enter the dynamic shaft renderer and crash
+         * immediately on placement.  The server update packet supplies the facing to
+         * the client after placement.
+         */
         if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof TileTorqueBase tile) {
             if (tile instanceof IOwnable ownable) {
                 ownable.setOwner(player);

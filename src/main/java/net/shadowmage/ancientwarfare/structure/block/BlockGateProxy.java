@@ -9,6 +9,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -25,16 +26,22 @@ import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
 import net.shadowmage.ancientwarfare.structure.tile.TEGateProxy;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public final class BlockGateProxy extends BlockBaseStructure implements IClientRegister {
-    private static final AABB Z_AXIS_AABB = new AABB(8D / 16D, 0, 0, 8D / 16D, 1, 1);
-    private static final AABB X_AXIS_AABB = new AABB(0, 0, 8D / 16D, 1, 1, 8D / 16D);
+    // 1.12 tolerated a zero-thickness AABB here.  Shapes.create() in modern
+    // Minecraft treats that as an empty shape, so the gate stopped colliding.
+    // Keep the visual centre plane but give it a real 2/16-block thickness.
+    private static final AABB Z_AXIS_AABB = new AABB(7D / 16D, 0, 0, 9D / 16D, 1, 1);
+    private static final AABB X_AXIS_AABB = new AABB(0, 0, 7D / 16D, 1, 1, 9D / 16D);
     private static final AABB ZERO_AABB = new AABB(0, 0, 0, 0, 0, 0);
     private static final AABB NO_AABB = new AABB(0, 0, 0, 0, 0, 0);
     private static final AABB FULL_BLOCK_AABB = new AABB(0, 0, 0, 1, 1, 1);
 
     public BlockGateProxy() {
-        super(LegacyMaterial.ROCK, "gate_proxy");
+        // Collision/open state comes from TEGateProxy, therefore BlockState's
+        // normal cached shape is invalid for this block.
+        super(LegacyMaterial.ROCK.properties().dynamicShape(), "gate_proxy");
         setResistance(6000000);
         AncientWarfareStructure.proxy.addClientRegister(this);
     }
@@ -72,7 +79,17 @@ public final class BlockGateProxy extends BlockBaseStructure implements IClientR
     }
 
     private AABB getCorrectAxisAABB(BlockGetter world, BlockPos pos) {
-        return (world.getBlockState(pos.relative(Direction.WEST)).getBlock() == this || world.getBlockState(pos.relative(Direction.EAST)).getBlock() == this)
+        // Prefer the gate itself when the owner has already been resolved.
+        // This is also correct for a one-block-wide gate where there is no
+        // neighbouring proxy from which the axis can be inferred.
+        Optional<net.shadowmage.ancientwarfare.structure.entity.EntityGate> gate =
+                WorldTools.getTile(world, pos, TEGateProxy.class).flatMap(TEGateProxy::getGate);
+        if (gate.isPresent() && gate.get().pos1 != null && gate.get().pos2 != null) {
+            return gate.get().pos1.getX() != gate.get().pos2.getX() ? X_AXIS_AABB : Z_AXIS_AABB;
+        }
+
+        return (world.getBlockState(pos.relative(Direction.WEST)).getBlock() == this
+                || world.getBlockState(pos.relative(Direction.EAST)).getBlock() == this)
                 ? X_AXIS_AABB : Z_AXIS_AABB;
     }
 
@@ -89,7 +106,7 @@ public final class BlockGateProxy extends BlockBaseStructure implements IClientR
     //Actually "can go through", for mob pathing
     @Override
     public boolean isPassable(BlockGetter world, BlockPos pos) {
-        if (WorldTools.getTile(world, pos, TEGateProxy.class).map(TEGateProxy::isGateClosed).orElse(false)) {
+        if (WorldTools.getTile(world, pos, TEGateProxy.class).map(TEGateProxy::isGateClosed).orElse(true)) {
             return false;
         }
 
@@ -100,6 +117,13 @@ public final class BlockGateProxy extends BlockBaseStructure implements IClientR
             return world.getBlockState(pos.relative(Direction.SOUTH)).getBlock() == this;
         }
         return true;
+    }
+
+    @Override
+    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
+        // Bridge the legacy isPassable() gate logic into the path finder used by
+        // 1.20 mobs.  A closed proxy is an actual obstacle; an open one is not.
+        return isPassable(world, pos);
     }
 
     @Override

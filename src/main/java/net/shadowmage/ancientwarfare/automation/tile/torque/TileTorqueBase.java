@@ -271,30 +271,31 @@ public abstract class TileTorqueBase extends TileUpdatable implements ITorqueTil
 
     @Override
     public final void setPrimaryFacing(Direction d) {
-        if (d == null) {
-            return;
-        }
-
-        if (this.orientation == d) {
+        if (d == null || this.orientation == d) {
             return;
         }
 
         this.orientation = d;
+        this.invalidateTorqueCache();
 
         /*
-         * The facing is stored in this block entity rather than in the block state.
-         * sendBlockUpdated()/notifyBlockUpdate only synchronizes the new value to
-         * clients; it does NOT mark the containing chunk dirty for disk saving.
-         * Without setChanged(), rotating a torque junction appears to work until
-         * its chunk unloads, at which point the old orientation is loaded again.
+         * Facing is authoritative server-side block-entity data.  The client may
+         * receive this method through legacy placement/compatibility paths, but it
+         * must never mark chunks dirty or emit block updates while a freshly placed
+         * torque tile is still being inserted into the client chunk/render graph.
          */
-        setChanged();
-
-        if (this.world != null) {
+        if (this.world != null && !this.world.isClientSide) {
+            setChanged();
             this.world.updateNeighbourForOutputSignal(pos, getBlockState().getBlock());
+            BlockTools.notifyBlockUpdate(this);
         }
-        this.invalidateTorqueCache();
-        BlockTools.notifyBlockUpdate(this);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        // Never carry a neighbor cache across chunk/block-entity attachment.
+        invalidateTorqueCache();
     }
 
     @Override

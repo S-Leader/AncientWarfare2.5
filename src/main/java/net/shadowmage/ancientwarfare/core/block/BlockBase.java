@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -40,7 +41,16 @@ public abstract class BlockBase extends Block implements EntityBlock {
     private final ResourceLocation legacyRegistryName;
 
     public BlockBase(LegacyMaterial material, String modID, String regName) {
-        super(material.properties());
+        this(material.properties(), modID, regName);
+    }
+
+    /**
+     * Modern-properties constructor for the few legacy blocks whose shape is
+     * block-entity dependent.  In particular gate proxies must opt into
+     * dynamicShape(), otherwise 1.20 caches the first collision shape it sees.
+     */
+    public BlockBase(BlockBehaviour.Properties properties, String modID, String regName) {
+        super(properties);
         legacyRegistryName = new ResourceLocation(modID, regName);
     }
 
