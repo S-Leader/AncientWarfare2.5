@@ -15,7 +15,6 @@
         }
     },
     "result": {
-        "item": "ancientwarfarestructure:gate_spawner",
-        "data": 12
+        "item": "ancientwarfarestructure:gate_drawbridge"
     }
 }

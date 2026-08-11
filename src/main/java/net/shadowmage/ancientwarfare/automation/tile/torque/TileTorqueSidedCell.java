@@ -162,7 +162,17 @@ public abstract class TileTorqueSidedCell extends TileTorqueBase {
 
     public boolean[] getConnections() {
         if (connections == null) {
-            rebuildConnections(false);
+            /*
+             * Connection topology is server-authoritative.  Recomputing it on the
+             * client during a chunk-model rebuild races the neighbour's facing/BE
+             * update packet and is why a freshly connected junction stayed visually
+             * disconnected until F3+A or a chunk reload.
+             */
+            if (world != null && world.isClientSide) {
+                connections = decodeConnectionMask(persistedConnectionMask);
+            } else {
+                rebuildConnections(false);
+            }
         }
         return connections;
     }
@@ -178,6 +188,7 @@ public abstract class TileTorqueSidedCell extends TileTorqueBase {
          */
         connections = decodeConnectionMask(persistedConnectionMask);
         connectionRefreshTicks = 2;
+        requestModelDataUpdate();
     }
 
     @Override
@@ -187,9 +198,15 @@ public abstract class TileTorqueSidedCell extends TileTorqueBase {
 
     @Override
     protected void onNeighborCacheInvalidated() {
-        connections = null;
-        if (world != null && !world.isClientSide) {
-            connectionRefreshTicks = 1;
+        if (world != null && world.isClientSide) {
+            // Keep rendering the last server-confirmed topology until a new mask
+            // arrives; never replace it with a client-side guess.
+            connections = decodeConnectionMask(persistedConnectionMask);
+        } else {
+            connections = null;
+            if (world != null) {
+                connectionRefreshTicks = 1;
+            }
         }
     }
 
@@ -228,7 +245,7 @@ public abstract class TileTorqueSidedCell extends TileTorqueBase {
 
         if (synchronize && world != null && !world.isClientSide && changed) {
             setChanged();
-            net.shadowmage.ancientwarfare.core.util.BlockTools.notifyBlockUpdate(this);
+            requestVisualModelRefresh();
         }
     }
 
@@ -314,10 +331,9 @@ public abstract class TileTorqueSidedCell extends TileTorqueBase {
             connections = null;
         }
         if (world != null && world.isClientSide) {
-            // Base orientation sync may have already requested a rebuild before the
-            // connection mask was decoded.  Request one final render update with the
-            // complete state.
-            net.shadowmage.ancientwarfare.core.util.BlockTools.notifyBlockUpdate(this);
+            // Base orientation sync runs before this subclass decodes the mask.
+            // Invalidate ModelData one final time with the complete connection state.
+            requestVisualModelRefresh();
         }
     }
 

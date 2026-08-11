@@ -25,7 +25,9 @@ public final class AWStructureTab {
                     .displayItems((parameters, output) -> ForgeRegistries.ITEMS.getValues().stream()
                             .filter(item -> {
                                 var id = ForgeRegistries.ITEMS.getKey(item);
-                                return id != null && AncientWarfareStructure.MOD_ID.equals(id.getNamespace());
+                                return id != null && AncientWarfareStructure.MOD_ID.equals(id.getNamespace())
+                                        && !"gate_spawner".equals(id.getPath())
+                                        && !"gate_proxy".equals(id.getPath());
                             })
                             .flatMap(item -> LegacyCreativeTabContents.stacksFor(item).stream())
                             .forEach(output::accept))

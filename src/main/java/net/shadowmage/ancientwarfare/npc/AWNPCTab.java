@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.shadowmage.ancientwarfare.npc.init.AWNPCBlocks.TOWN_HALL;
-import static net.shadowmage.ancientwarfare.npc.init.AWNPCItems.BARD_INSTRUMENT;
+import static net.shadowmage.ancientwarfare.npc.init.AWNPCItems.BARD_INSTRUMENT_LUTE;
 import static net.shadowmage.ancientwarfare.npc.init.AWNPCItems.NPC_SPAWNER;
 
 /**
@@ -36,13 +36,14 @@ public final class AWNPCTab {
                         ForgeRegistries.ITEMS.getValues().stream()
                                 .filter(item -> {
                                     var id = ForgeRegistries.ITEMS.getKey(item);
-                                    return id != null && AncientWarfareNPC.MOD_ID.equals(id.getNamespace());
+                                    return id != null && AncientWarfareNPC.MOD_ID.equals(id.getNamespace())
+                                            && !"bard_instrument".equals(id.getPath());
                                 })
                                 .flatMap(item -> LegacyCreativeTabContents.stacksFor(item).stream())
                                 .forEach(stacks::add);
                         stacks.sort(new SortItemsFirstComparator(
                                 TOWN_HALL, ItemOrders.class, ItemCommandBaton.class,
-                                BARD_INSTRUMENT, NPC_SPAWNER));
+                                BARD_INSTRUMENT_LUTE, NPC_SPAWNER));
                         stacks.forEach(output::accept);
                     })
                     .build());

@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.entity.LivingEntity;
 import net.shadowmage.ancientwarfare.core.compat.client.LegacyBlockEntityRenderer;
 import net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks;
 import net.shadowmage.ancientwarfare.structure.tile.TileStake;
@@ -42,16 +42,48 @@ public class StakeRenderer extends LegacyBlockEntityRenderer<TileStake> {
             } else {
                 e.clearFire();
             }
-            e.setYBodyRot(facing.toYRot());
-            e.setYHeadRot(facing.toYRot());
+
+            /*
+             * The display entity is never added to the level and therefore never
+             * ticks. Passing the real render partial tick to a normal living-entity
+             * renderer makes ageInTicks/rotation interpolation repeatedly run from
+             * 0 -> 1 and then snap back to 0 every game tick. That is the visible
+             * 20 Hz "twitch" on stake victims. Freeze both ends of every yaw/pitch
+             * interpolation and render the synthetic entity at partialTick 0.
+             */
+            float yaw = facing.toYRot();
+            e.setYRot(yaw);
+            e.yRotO = yaw;
+            e.setXRot(0.0F);
+            e.xRotO = 0.0F;
+            e.tickCount = 0;
+            if (e instanceof LivingEntity living) {
+                living.setYBodyRot(yaw);
+                living.yBodyRotO = yaw;
+                living.setYHeadRot(yaw);
+                living.yHeadRotO = yaw;
+            }
+
             BlockPos pos = te.getPos();
-            Vec3 cam = mc.gameRenderer.getMainCamera().getPosition();
-            PoseStack poseStack = new PoseStack();
-            MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
+            PoseStack poseStack = getActivePoseStack();
+            MultiBufferSource buffer = getActiveBufferSource();
             int packedLight = LevelRenderer.getLightColor(te.getWorld(), pos);
-            rendermanager.render(e, pos.getX() - cam.x + x + 0.5 + facing.getStepX() * 0.3, pos.getY() - cam.y + y + 0.6,
-                    pos.getZ() - cam.z + z + 0.5 + facing.getStepZ() * 0.3, facing.toYRot(), 1.0F, poseStack, buffer, packedLight);
-            buffer.endBatch();
+
+            /*
+             * Modern BER PoseStacks are already translated to the block-local
+             * origin. The old port subtracted camera/world coordinates a second
+             * time and rendered the displayed entity far away from the stake.
+             * EntityRenderDispatcher applies the local x/y/z translation itself.
+             * Reuse the world renderer's buffer instead of opening/endBatch-ing a
+             * second global buffer in the middle of block-entity rendering.
+             */
+            poseStack.pushPose();
+            rendermanager.render(e,
+                    x + 0.5 + facing.getStepX() * 0.3,
+                    y + 0.6,
+                    z + 0.5 + facing.getStepZ() * 0.3,
+                    facing.toYRot(), 0.0F, poseStack, buffer, packedLight);
+            poseStack.popPose();
         });
     }
 }

@@ -48,12 +48,12 @@ public final class RenderGateDouble extends RenderGateBasic {
         float move;
         boolean render = false;
         if (x < width * 0.5f) {
-            move = -gate.edgePosition - gate.openingSpeed * (1 - frame);
+            move = -gate.getRenderEdgePosition(frame);
             if (x + move > -0.5f) {
                 render = true;
             }
         } else {
-            move = gate.edgePosition + gate.openingSpeed * (1 - frame);
+            move = gate.getRenderEdgePosition(frame);
             if (x + move <= width - 0.475f) {
                 render = true;
             }

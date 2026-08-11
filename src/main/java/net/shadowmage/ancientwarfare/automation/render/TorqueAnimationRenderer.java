@@ -1,14 +1,11 @@
 package net.shadowmage.ancientwarfare.automation.render;
 
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.Direction;
 import net.shadowmage.ancientwarfare.automation.render.property.AutomationProperties;
 import net.shadowmage.ancientwarfare.automation.tile.torque.TileTorqueBase;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelProperty;
 import net.shadowmage.ancientwarfare.core.render.model.LegacyModelState;
 import net.shadowmage.ancientwarfare.core.render.property.CoreProperties;
 
-import java.util.Optional;
 
 public class TorqueAnimationRenderer<T extends TileTorqueBase> extends BaseAnimationRenderer<T> {
 
@@ -20,17 +17,17 @@ public class TorqueAnimationRenderer<T extends TileTorqueBase> extends BaseAnima
     protected LegacyModelState handleState(T te, float partialTicks, LegacyModelState state) {
         Direction facing = te.getPrimaryFacing();
         state = state.setValue(CoreProperties.UNLISTED_FACING, facing);
-        ImmutableMap<LegacyModelProperty<?>, Optional<?>> properties = state.getUnlistedProperties();
-        float[] rotations = new float[6];
+        /*
+         * Forge 1.12 IExtendedBlockState pre-populated every unlisted property, so
+         * the old renderer could use containsKey(ROTATIONS[i]) as a capability
+         * test. LegacyModelState.of(BlockState) intentionally starts empty in the
+         * 1.20 port, therefore that check made every animated torque angle fall
+         * through to 0 every frame. Every torque renderer registers all six
+         * ROTATIONS properties, so populate them unconditionally from the tile.
+         */
         for (Direction f : Direction.values()) {
-            if (properties.containsKey(AutomationProperties.ROTATIONS[f.get3DDataValue()])) {
-                float rotation = te.getClientOutputRotation(f, partialTicks);
-                rotations[f.get3DDataValue()] = rotation;
-                state = state.setValue(AutomationProperties.ROTATIONS[f.get3DDataValue()], rotation);
-
-            } else {
-                state = state.setValue(AutomationProperties.ROTATIONS[f.get3DDataValue()], 0f);
-            }
+            float rotation = te.getClientOutputRotation(f, partialTicks);
+            state = state.setValue(AutomationProperties.ROTATIONS[f.get3DDataValue()], rotation);
         }
         state = state.setValue(AutomationProperties.DYNAMIC, true);
         state = updateAdditionalProperties(state, te);

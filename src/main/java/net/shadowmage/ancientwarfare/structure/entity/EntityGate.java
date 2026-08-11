@@ -6,6 +6,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
@@ -48,6 +51,10 @@ import java.util.Optional;
 // no reason to override equals because the default implementation comparing entityId is enough
 public class EntityGate extends Entity implements IEntityAdditionalSpawnData, IEntityPacketHandler {
     private static final String HEALTH_TAG = "health";
+    private static final EntityDataAccessor<Byte> DATA_GATE_STATUS =
+            SynchedEntityData.defineId(EntityGate.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Float> DATA_EDGE_POSITION =
+            SynchedEntityData.defineId(EntityGate.class, EntityDataSerializers.FLOAT);
     public BlockPos pos1;
     public BlockPos pos2;
 
@@ -112,7 +119,8 @@ public class EntityGate extends Entity implements IEntityAdditionalSpawnData, IE
 
     @Override
     protected void defineSynchedData() {
-        //NOOP
+        entityData.define(DATA_GATE_STATUS, (byte) 0);
+        entityData.define(DATA_EDGE_POSITION, 0.0F);
     }
 
     @Override
@@ -143,6 +151,9 @@ public class EntityGate extends Entity implements IEntityAdditionalSpawnData, IE
     private void setOpeningStatus(byte op) {
         gateStatus = op;
         if (!level().isClientSide) {
+            entityData.set(DATA_GATE_STATUS, op);
+            // Retain the old entity event for compatibility with already-spawned
+            // clients, but SynchedEntityData is now the authoritative animation state.
             level().broadcastEntityEvent(this, op);
         }
         if (op == -1) {
@@ -168,13 +179,23 @@ public class EntityGate extends Entity implements IEntityAdditionalSpawnData, IE
     @OnlyIn(Dist.CLIENT)
     public void handleEntityEvent(byte par1) {
         if (par1 == -1 || par1 == 0 || par1 == 1) {
-            setOpeningStatus(par1);
+            // Compatibility event only: never run gate world-mutation callbacks on
+            // the client. The server owns proxy placement/removal, while synced
+            // entity data owns the render animation state.
+            gateStatus = par1;
         }
         super.handleEntityEvent(par1);
     }
 
     public boolean isClosed() {
         return gateStatus == 0 && edgePosition == 0;
+    }
+
+    public float getRenderEdgePosition(float partialTicks) {
+        // openingSpeed is previousEdge - currentEdge, preserving the original
+        // 1.12 interpolation formula while allowing edgePosition to come from
+        // SynchedEntityData on the client.
+        return edgePosition + openingSpeed * (1.0F - partialTicks);
     }
 
     public byte getOpeningStatus() {
@@ -254,6 +275,45 @@ public class EntityGate extends Entity implements IEntityAdditionalSpawnData, IE
     public void tick() {
         super.tick();
         float prevEdge = edgePosition;
+
+        if (level().isClientSide) {
+            // GateProxyRenderer renders a client copy of EntityGate. Entity events
+            // alone are not a reliable animation transport after chunk/entity
+            // tracking changes, so consume the authoritative synced state.
+            gateStatus = entityData.get(DATA_GATE_STATUS);
+            edgePosition = entityData.get(DATA_EDGE_POSITION);
+        } else {
+            if (gateStatus == 1) {
+                edgePosition += gateType.getMoveSpeed();
+                if (soundTicks == 15) {
+                    playGateMoveSound(pos1, gateType);
+                }
+                soundTicks++;
+                if (edgePosition >= edgeMax) {
+                    edgePosition = edgeMax;
+                    setOpeningStatus((byte) 0);
+                    soundTicks = 15;
+                    gateType.onGateFinishOpen(this);
+                }
+            } else if (gateStatus == -1) {
+                edgePosition -= gateType.getMoveSpeed();
+                if (soundTicks == 15) {
+                    playGateMoveSound(pos1, gateType);
+                }
+                soundTicks++;
+                if (edgePosition <= 0) {
+                    edgePosition = 0;
+                    setOpeningStatus((byte) 0);
+                    soundTicks = 15;
+                    gateType.onGateFinishClose(this);
+                }
+            }
+            if (Float.compare(entityData.get(DATA_EDGE_POSITION), edgePosition) != 0) {
+                entityData.set(DATA_EDGE_POSITION, edgePosition);
+            }
+        }
+
+        openingSpeed = prevEdge - edgePosition;
         setPos(getX(), getY(), getZ());
         if (hurtInvulTicks > 0) {
             hurtInvulTicks--;
@@ -263,32 +323,6 @@ public class EntityGate extends Entity implements IEntityAdditionalSpawnData, IE
         if (hurtAnimationTicks > 0) {
             hurtAnimationTicks--;
         }
-        if (gateStatus == 1) {
-            edgePosition += gateType.getMoveSpeed();
-            if (soundTicks == 15) {
-                playGateMoveSound(pos1, gateType);
-            }
-            soundTicks++;
-            if (edgePosition >= edgeMax) {
-                edgePosition = edgeMax;
-                gateStatus = 0;
-                soundTicks = 15;
-                gateType.onGateFinishOpen(this);
-            }
-        } else if (gateStatus == -1) {
-            edgePosition -= gateType.getMoveSpeed();
-            if (soundTicks == 15) {
-                playGateMoveSound(pos1, gateType);
-            }
-            soundTicks++;
-            if (edgePosition <= 0) {
-                edgePosition = 0;
-                gateStatus = 0;
-                soundTicks = 15;
-                gateType.onGateFinishClose(this);
-            }
-        }
-        openingSpeed = prevEdge - edgePosition;
 
         if (!hasSetWorldEntityRadius) {
             hasSetWorldEntityRadius = true;
@@ -448,8 +482,14 @@ public class EntityGate extends Entity implements IEntityAdditionalSpawnData, IE
         owner = Owner.deserializeFromNBT(tag);
         edgePosition = tag.getFloat("edge");
         edgeMax = tag.getFloat("edgeMax");
+        if (!level().isClientSide) {
+            entityData.set(DATA_EDGE_POSITION, edgePosition);
+        }
         setHealth(tag.getInt(HEALTH_TAG));
         gateStatus = tag.getByte("status");
+        if (!level().isClientSide) {
+            entityData.set(DATA_GATE_STATUS, gateStatus);
+        }
         gateOrientation = Direction.from3DDataValue(tag.getByte("orient"));
         wasPoweredA = tag.getBoolean("power");
         wasPoweredB = tag.getBoolean("power2");
@@ -499,8 +539,10 @@ public class EntityGate extends Entity implements IEntityAdditionalSpawnData, IE
         setPositions(BlockPos.of(data.readLong()), BlockPos.of(data.readLong()));
         gateType = Gate.getGateByID(data.readInt());
         edgePosition = data.readFloat();
+        entityData.set(DATA_EDGE_POSITION, edgePosition);
         edgeMax = data.readFloat();
         gateStatus = data.readByte();
+        entityData.set(DATA_GATE_STATUS, gateStatus);
         gateOrientation = Direction.from3DDataValue(data.readByte());
         health = data.readInt();
         gateType.updateRenderBoundingBox(this);

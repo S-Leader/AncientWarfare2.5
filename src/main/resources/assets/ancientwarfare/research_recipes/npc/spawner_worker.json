@@ -10,7 +10,7 @@
             "item": "minecraft:wooden_pickaxe"
         },
         "F": {
-            "item": "#FOODBUNDLE"
+            "item": "ancientwarfarenpc:food_bundle"
         },
         "G": {
             "item": "#INGOTGOLD"

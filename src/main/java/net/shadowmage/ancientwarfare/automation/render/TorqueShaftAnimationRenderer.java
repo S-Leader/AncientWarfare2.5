@@ -17,8 +17,8 @@ public class TorqueShaftAnimationRenderer extends TorqueAnimationRenderer<TileTo
     @Override
     protected LegacyModelState handleState(TileTorqueShaft shaft, float partialTicks, LegacyModelState state) {
         state = super.handleState(shaft, partialTicks, state);
-        state = state.setValue(BlockTorqueTransportShaft.HAS_NEXT, shaft.next() != null);
-        state = state.setValue(BlockTorqueTransportShaft.HAS_PREVIOUS, shaft.prev() != null);
+        state = state.setValue(BlockTorqueTransportShaft.HAS_NEXT, shaft.hasNextShaft());
+        state = state.setValue(BlockTorqueTransportShaft.HAS_PREVIOUS, shaft.hasPreviousShaft());
 
         Direction facing = state.getValue(CoreProperties.UNLISTED_FACING);
 

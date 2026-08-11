@@ -36,7 +36,13 @@ public class AWNPCItems {
     public static Item COMBAT_ORDER;
     public static Item ROUTING_ORDER;
     public static Item TRADE_ORDER;
+    /** Legacy metadata item kept only so old saves/templates can deserialize. */
+    @Deprecated
     public static Item BARD_INSTRUMENT;
+    public static ItemBardInstrument BARD_INSTRUMENT_LUTE;
+    public static ItemBardInstrument BARD_INSTRUMENT_FLUTE;
+    public static ItemBardInstrument BARD_INSTRUMENT_HARP;
+    public static ItemBardInstrument BARD_INSTRUMENT_DRUM;
     public static Item COIN;
 
     @SubscribeEvent
@@ -49,6 +55,14 @@ public class AWNPCItems {
             item(registry, "diamond_command_baton", new ItemCommandBaton("diamond_command_baton", Tiers.DIAMOND));
 
             BARD_INSTRUMENT = item(registry, "bard_instrument", new ItemBardInstrument("bard_instrument"));
+            BARD_INSTRUMENT_LUTE = item(registry, "bard_instrument_lute",
+                    new ItemBardInstrument("bard_instrument_lute", ItemBardInstrument.Instrument.LUTE));
+            BARD_INSTRUMENT_FLUTE = item(registry, "bard_instrument_flute",
+                    new ItemBardInstrument("bard_instrument_flute", ItemBardInstrument.Instrument.FLUTE));
+            BARD_INSTRUMENT_HARP = item(registry, "bard_instrument_harp",
+                    new ItemBardInstrument("bard_instrument_harp", ItemBardInstrument.Instrument.HARP));
+            BARD_INSTRUMENT_DRUM = item(registry, "bard_instrument_drum",
+                    new ItemBardInstrument("bard_instrument_drum", ItemBardInstrument.Instrument.DRUM));
 
             WOODEN_SHIELD = item(registry, "wooden_shield", new ItemShield("wooden_shield", Tiers.WOOD, 336));
             item(registry, "stone_shield", new ItemShield("stone_shield", Tiers.STONE, 506));

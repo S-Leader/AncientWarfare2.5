@@ -255,6 +255,43 @@ public abstract class TileTorqueBase extends TileUpdatable implements ITorqueTil
 
     public void onNeighborTileChanged() {
         invalidateTorqueCache();
+        requestVisualModelRefresh();
+    }
+
+    /**
+     * A large part of the torque shell/connection model is still baked as a
+     * chunk model. In 1.20 Forge, sendBlockUpdated alone does not invalidate the
+     * BlockEntity ModelData snapshot used by that baked model. Always invalidate
+     * ModelData together with the block render update when topology/facing changes.
+     */
+    protected final void requestVisualModelRefresh() {
+        if (world == null || isRemoved()) {
+            return;
+        }
+        requestModelDataUpdate();
+        BlockTools.notifyBlockUpdate(this);
+    }
+
+    /**
+     * Topology is shared by both ends of a torque connection.  A facing update
+     * packet for a newly placed shaft/junction may arrive after an adjacent chunk
+     * model was already baked, so explicitly invalidate adjacent AW torque tiles
+     * whenever this endpoint changes orientation.
+     */
+    private void notifyAdjacentTorqueTopologyChanged() {
+        if (world == null) {
+            return;
+        }
+        for (Direction direction : Direction.values()) {
+            BlockPos neighborPos = pos.relative(direction);
+            if (!world.isLoaded(neighborPos)) {
+                continue;
+            }
+            BlockEntity neighbor = world.getBlockEntity(neighborPos);
+            if (neighbor instanceof TileTorqueBase torque && torque != this && !torque.isRemoved()) {
+                torque.onNeighborTileChanged();
+            }
+        }
     }
 
     private void invalidateTorqueCache() {
@@ -287,7 +324,8 @@ public abstract class TileTorqueBase extends TileUpdatable implements ITorqueTil
         if (this.world != null && !this.world.isClientSide) {
             setChanged();
             this.world.updateNeighbourForOutputSignal(pos, getBlockState().getBlock());
-            BlockTools.notifyBlockUpdate(this);
+            requestVisualModelRefresh();
+            notifyAdjacentTorqueTopologyChanged();
         }
     }
 
@@ -296,6 +334,17 @@ public abstract class TileTorqueBase extends TileUpdatable implements ITorqueTil
         super.onLoad();
         // Never carry a neighbor cache across chunk/block-entity attachment.
         invalidateTorqueCache();
+        requestModelDataUpdate();
+
+        /*
+         * Vanilla neighbor callbacks are not guaranteed when two block entities
+         * are merely re-attached during chunk loading. Tell already-loaded torque
+         * neighbors that this endpoint now exists; if they load after us, their
+         * own onLoad performs the reciprocal notification.
+         */
+        if (world != null && !world.isClientSide) {
+            notifyAdjacentTorqueTopologyChanged();
+        }
     }
 
     @Override
@@ -441,6 +490,7 @@ public abstract class TileTorqueBase extends TileUpdatable implements ITorqueTil
     @Override
     protected void handleUpdateNBT(CompoundTag tag) {
         super.handleUpdateNBT(tag);
+        Direction oldOrientation = orientation;
         if (tag.contains(ORIENTATION_TAG)) {
             int ordinal = tag.getInt(ORIENTATION_TAG);
             Direction[] directions = Direction.values();
@@ -448,6 +498,15 @@ public abstract class TileTorqueBase extends TileUpdatable implements ITorqueTil
                 orientation = directions[ordinal];
             }
         }
-        BlockTools.notifyBlockUpdate(this);
+        if (oldOrientation != orientation) {
+            // Client neighbour caches may have been built while this freshly
+            // placed tile still had its default NORTH facing.  Drop them as soon
+            // as the authoritative facing packet arrives.
+            invalidateTorqueCache();
+        }
+        requestVisualModelRefresh();
+        if (world != null && world.isClientSide) {
+            notifyAdjacentTorqueTopologyChanged();
+        }
     }
 }

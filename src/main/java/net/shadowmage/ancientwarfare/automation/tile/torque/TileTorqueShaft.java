@@ -1,6 +1,7 @@
 package net.shadowmage.ancientwarfare.automation.tile.torque;
 
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.shadowmage.ancientwarfare.automation.config.AWAutomationStatics;
 import net.shadowmage.ancientwarfare.core.interfaces.ITorque.ITorqueTile;
 import net.shadowmage.ancientwarfare.core.interfaces.ITorque.TorqueCell;
@@ -13,10 +14,22 @@ import java.util.Set;
 
 public abstract class TileTorqueShaft extends TileTorqueSingleCell {
 
+    private static final String SHAFT_LINK_MASK_TAG = "shaftLinkMask";
+    private static final int LINK_PREVIOUS = 1;
+    private static final int LINK_NEXT = 2;
+
     private TileTorqueShaft prev, next;
 
     private boolean prevNeighborInvalid = true;
     private boolean nextNeighborInvalid = true;
+
+    /*
+     * Visual topology is server-authoritative.  Querying adjacent client block
+     * entities during a chunk rebuild is racy because the newly placed shaft's
+     * orientation packet can arrive after the neighbour model was baked.
+     */
+    private int visualLinkMask;
+    private int visualLinkRefreshTicks;
 
     public TileTorqueShaft() {
         double max = getMaxTransfer();
@@ -26,6 +39,14 @@ public abstract class TileTorqueShaft extends TileTorqueSingleCell {
     protected abstract double getEfficiency();
 
     protected abstract double getMaxTransfer();
+
+    @Override
+    public void update() {
+        super.update();
+        if (!world.isClientSide && visualLinkRefreshTicks > 0 && --visualLinkRefreshTicks == 0) {
+            refreshVisualLinks(true);
+        }
+    }
 
     @Override
     protected void serverNetworkSynch() {
@@ -87,6 +108,9 @@ public abstract class TileTorqueShaft extends TileTorqueSingleCell {
     protected void onNeighborCacheInvalidated() {
         invalidateNeighborCache();
         invalidateLocalCache();
+        if (world != null && !world.isClientSide) {
+            visualLinkRefreshTicks = 1;
+        }
     }
 
     private void invalidateLocalCache() {
@@ -135,11 +159,42 @@ public abstract class TileTorqueShaft extends TileTorqueSingleCell {
      * the just-placed shaft model.
      */
     public boolean hasPreviousShaft() {
-        return findPreviousShaft() != null;
+        return (visualLinkMask & LINK_PREVIOUS) != 0;
     }
 
     public boolean hasNextShaft() {
-        return findNextShaft() != null;
+        return (visualLinkMask & LINK_NEXT) != 0;
+    }
+
+    private void refreshVisualLinks(boolean synchronize) {
+        int newMask = 0;
+        if (findPreviousShaft() != null) {
+            newMask |= LINK_PREVIOUS;
+        }
+        if (findNextShaft() != null) {
+            newMask |= LINK_NEXT;
+        }
+
+        if (newMask == visualLinkMask) {
+            return;
+        }
+
+        visualLinkMask = newMask;
+        if (synchronize && world != null && !world.isClientSide) {
+            setChanged();
+            requestVisualModelRefresh();
+        }
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (world != null && !world.isClientSide) {
+            // Wait until adjacent BEs and their saved orientations are attached.
+            visualLinkRefreshTicks = 2;
+        } else {
+            requestModelDataUpdate();
+        }
     }
 
     @Nullable
@@ -169,6 +224,40 @@ public abstract class TileTorqueShaft extends TileTorqueSingleCell {
     @Override
     public float getClientOutputRotation(Direction from, float delta) {
         return getRenderRotation(rotation, lastRotationDiff, delta);
+    }
+
+    @Override
+    protected void writeUpdateNBT(CompoundTag tag) {
+        super.writeUpdateNBT(tag);
+        tag.putInt(SHAFT_LINK_MASK_TAG, visualLinkMask);
+    }
+
+    @Override
+    protected void handleUpdateNBT(CompoundTag tag) {
+        super.handleUpdateNBT(tag);
+        if (tag.contains(SHAFT_LINK_MASK_TAG)) {
+            int oldMask = visualLinkMask;
+            visualLinkMask = tag.getInt(SHAFT_LINK_MASK_TAG) & (LINK_PREVIOUS | LINK_NEXT);
+            if (oldMask != visualLinkMask && world != null && world.isClientSide) {
+                requestVisualModelRefresh();
+            }
+        }
+    }
+
+    @Override
+    public void readFromNBT(CompoundTag tag) {
+        super.readFromNBT(tag);
+        visualLinkMask = tag.contains(SHAFT_LINK_MASK_TAG)
+                ? tag.getInt(SHAFT_LINK_MASK_TAG) & (LINK_PREVIOUS | LINK_NEXT)
+                : 0;
+        visualLinkRefreshTicks = 2;
+    }
+
+    @Override
+    public CompoundTag writeToNBT(CompoundTag tag) {
+        super.writeToNBT(tag);
+        tag.putInt(SHAFT_LINK_MASK_TAG, visualLinkMask);
+        return tag;
     }
 
 }

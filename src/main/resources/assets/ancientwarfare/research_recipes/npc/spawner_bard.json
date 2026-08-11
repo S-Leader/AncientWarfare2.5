@@ -7,11 +7,10 @@
     ],
     "key": {
         "B": {
-            "item": "ancientwarfarenpc:bard_instrument",
-            "data": 0
+            "item": "ancientwarfarenpc:bard_instrument_lute"
         },
         "F": {
-            "item": "#FOODBUNDLE"
+            "item": "ancientwarfarenpc:food_bundle"
         },
         "G": {
             "item": "#INGOTGOLD"

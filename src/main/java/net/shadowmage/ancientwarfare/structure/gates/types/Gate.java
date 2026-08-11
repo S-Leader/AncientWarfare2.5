@@ -13,7 +13,6 @@ import net.minecraft.world.phys.AABB;
 import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
 import net.shadowmage.ancientwarfare.core.owner.Owner;
 import net.shadowmage.ancientwarfare.core.util.BlockTools;
-import net.shadowmage.ancientwarfare.core.util.LegacyItemStack;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
 import net.shadowmage.ancientwarfare.structure.config.AWStructureStatics;
@@ -92,8 +91,6 @@ public class Gate implements IGateType {
     protected float moveSpeed = 0.5f * 0.05f;
     /// 1/2 block / second
 
-    private final ItemStack displayStack;
-
     private ResourceLocation textureLocation;
     private ResourceLocation textureLocationHurt;
 
@@ -106,7 +103,6 @@ public class Gate implements IGateType {
         if (id >= 0 && id < gateTypes.length && gateTypes[id] == null) {
             gateTypes[id] = this;
         }
-        displayStack = LegacyItemStack.of(AWStructureItems.GATE_SPAWNER, 1, id);
         this.textureLocation = new ResourceLocation("ancientwarfare:textures/model/structure/gate/gate" + textureLocation);
         textureLocationHurt = new ResourceLocation("ancientwarfare:textures/model/structure/gate/gate_wood_1_damaged_2.png");
         this.moveSound = moveSound;
@@ -152,12 +148,12 @@ public class Gate implements IGateType {
 
     @Override
     public ItemStack getConstructingItem() {
-        return LegacyItemStack.of(AWStructureItems.GATE_SPAWNER, 1, globalID);
+        return new ItemStack(AWStructureItems.getGateSpawnerItem(globalID));
     }
 
     @Override
     public ItemStack getDisplayStack() {
-        return displayStack;
+        return new ItemStack(AWStructureItems.getGateSpawnerItem(globalID));
     }
 
     @Override

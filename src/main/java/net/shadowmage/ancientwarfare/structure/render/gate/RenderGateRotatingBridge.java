@@ -48,8 +48,8 @@ public final class RenderGateRotatingBridge extends Render {
 
         boolean wideOnXAxis = min.getX() != max.getX();
 
-        float rx = wideOnXAxis ? g.edgePosition + g.openingSpeed * (1 - f1) : 0;
-        float rz = wideOnXAxis ? 0 : g.edgePosition + g.openingSpeed * (1 - f1);
+        float rx = wideOnXAxis ? g.getRenderEdgePosition(f1) : 0;
+        float rz = wideOnXAxis ? 0 : g.getRenderEdgePosition(f1);
         boolean invert = g.gateOrientation == Direction.SOUTH || g.gateOrientation == Direction.EAST;
         if (invert) {
             rx *= -1;

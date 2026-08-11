@@ -102,7 +102,7 @@ public class RenderGateBasic extends Render {
     protected void postRender(EntityGate gate, int x, float width, int y, float height, boolean wideOnXAxis, float axisRotation, float frame) {
         if (y + gate.edgePosition <= height - 0.475f) {
             GlStateManager.pushMatrix();
-            GlStateManager.translate(0, -gate.edgePosition - gate.openingSpeed * (1 - frame), 0);
+            GlStateManager.translate(0, -gate.getRenderEdgePosition(frame), 0);
             model.setModelRotation(axisRotation);
             if (gate.getGateType().getModelType() == 0) {
                 model.renderSolidWall();

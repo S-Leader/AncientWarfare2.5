@@ -34,11 +34,29 @@ import java.util.Optional;
 
 public class ItemGateSpawner extends ItemBaseStructure implements IItemKeyInterface, IBoxRenderer {
     private static final String AW_GATE_INFO_TAG = "AWGateInfo";
+    private final int fixedGateId;
 
+    /** Compatibility-only metadata container for old inventories/templates. */
+    @Deprecated
     public ItemGateSpawner(String name) {
-        super(name);
-        setMaxStackSize(1);
+        this(name, -1);
         setHasSubtypes(true);
+    }
+
+    /** Modern 1.20 gate placer: one registry id represents exactly one gate type. */
+    public ItemGateSpawner(String name, int fixedGateId) {
+        super(name);
+        this.fixedGateId = fixedGateId;
+        setMaxStackSize(1);
+    }
+
+    private int getGateId(ItemStack stack) {
+        return fixedGateId >= 0 ? fixedGateId : stack.getDamageValue();
+    }
+
+    private Gate getGate(ItemStack stack) {
+        Gate gate = Gate.getGateByID(getGateId(stack));
+        return gate != null ? gate : Gate.getGateByID(0);
     }
 
     @Override
@@ -61,19 +79,21 @@ public class ItemGateSpawner extends ItemBaseStructure implements IItemKeyInterf
     }
 
     public void getSubItems(CreativeModeTab tab, NonNullList<ItemStack> items) {
-        Gate g;
+        if (fixedGateId >= 0) {
+            items.add(new ItemStack(this));
+            return;
+        }
+        // Keep old metadata variants addressable for save/template compatibility.
         for (int i = 0; i < 16; i++) {
-            g = Gate.getGateByID(i);
-            if (g == null) {
-                continue;
+            if (Gate.getGateByID(i) != null) {
+                items.add(net.shadowmage.ancientwarfare.core.util.LegacyItemStack.of(this, 1, i));
             }
-            items.add(g.getDisplayStack());
         }
     }
 
     @Override
     public String getDescriptionId(ItemStack par1ItemStack) {
-        return "item." + Gate.getGateByID(par1ItemStack.getDamageValue()).getDisplayName();
+        return "item." + getGate(par1ItemStack).getDisplayName();
     }
 
     @Override
@@ -114,7 +134,7 @@ public class ItemGateSpawner extends ItemBaseStructure implements IItemKeyInterf
                 player.sendSystemMessage(Component.translatable("guistrings.gate.exists"));
                 return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
             }
-            Optional<EntityGate> entity = Gate.constructGate(world, pos1, pos2, Gate.getGateByID(stack.getDamageValue()), player.getDirection(), new Owner(player));
+            Optional<EntityGate> entity = Gate.constructGate(world, pos1, pos2, getGate(stack), player.getDirection(), new Owner(player));
             if (entity.isPresent()) {
                 world.addFreshEntity(entity.get());
                 if (!player.getAbilities().instabuild) {
@@ -167,7 +187,7 @@ public class ItemGateSpawner extends ItemBaseStructure implements IItemKeyInterf
         }
         if (!tag.contains("pos2")) {
             if (tag.contains("pos1")) {
-                Gate g = Gate.getGateByID(stack.getDamageValue());
+                Gate g = getGate(stack);
                 if (g.arePointsValidPair(BlockPos.of(tag.getLong("pos1")), hit)) {
                     tag.putLong("pos2", hit.asLong());
                     player.sendSystemMessage(Component.translatable("guistrings.gate.set_pos_two"));
@@ -229,27 +249,34 @@ public class ItemGateSpawner extends ItemBaseStructure implements IItemKeyInterf
         ModelResourceLocation woodRotating = new ModelResourceLocation(basePath, "variant=gate_wood_rotating");
         ModelResourceLocation woodSingle = new ModelResourceLocation(basePath, "variant=gate_wood_single");
 
-        LegacyModelLoader.setCustomMeshDefinition(this, stack -> {
-            switch (Gate.getGateByID(stack.getDamageValue()).getVariant()) {
-                case IRON_BASIC:
-                    return ironBasic;
-                case IRON_DOUBLE:
-                    return ironDouble;
-                case IRON_SINGLE:
-                    return ironSingle;
-                case WOOD_BASIC:
-                    return woodBasic;
-                case WOOD_DOUBLE:
-                    return woodDouble;
-                case WOOD_ROTATING:
-                    return woodRotating;
-                case WOOD_SINGLE:
-                    return woodSingle;
-                default:
-                    return woodBasic;
-            }
-        });
+        if (fixedGateId >= 0) {
+            ModelResourceLocation model = modelForVariant(getGate(new ItemStack(this)).getVariant(),
+                    ironBasic, ironDouble, ironSingle, woodBasic, woodDouble, woodRotating, woodSingle);
+            LegacyModelLoader.setCustomModelResourceLocation(this, 0, model);
+            LegacyModelLoader.registerItemVariants(this, model);
+            return;
+        }
 
+        LegacyModelLoader.setCustomMeshDefinition(this, stack -> modelForVariant(getGate(stack).getVariant(),
+                ironBasic, ironDouble, ironSingle, woodBasic, woodDouble, woodRotating, woodSingle));
         LegacyModelLoader.registerItemVariants(this, ironBasic, ironDouble, ironSingle, woodBasic, woodDouble, woodRotating, woodSingle);
+    }
+    private static ModelResourceLocation modelForVariant(Gate.Variant variant,
+                                                         ModelResourceLocation ironBasic,
+                                                         ModelResourceLocation ironDouble,
+                                                         ModelResourceLocation ironSingle,
+                                                         ModelResourceLocation woodBasic,
+                                                         ModelResourceLocation woodDouble,
+                                                         ModelResourceLocation woodRotating,
+                                                         ModelResourceLocation woodSingle) {
+        return switch (variant) {
+            case IRON_BASIC -> ironBasic;
+            case IRON_DOUBLE -> ironDouble;
+            case IRON_SINGLE -> ironSingle;
+            case WOOD_DOUBLE -> woodDouble;
+            case WOOD_ROTATING -> woodRotating;
+            case WOOD_SINGLE -> woodSingle;
+            case WOOD_BASIC -> woodBasic;
+        };
     }
 }

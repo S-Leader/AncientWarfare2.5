@@ -62,7 +62,7 @@ public class TileStake extends TileUpdatable {
 
     public void resetEntityName() {
         entityStatueInfo.resetEntityName();
-        markDirty();
+        syncVisualState();
     }
 
     public ResourceLocation getEntityName() {
@@ -71,17 +71,26 @@ public class TileStake extends TileUpdatable {
 
     public void setEntityName(ResourceLocation entityName) {
         entityStatueInfo.setEntityName(entityName);
-        markDirty();
+        syncVisualState();
     }
 
     public void setEntityOnFire(boolean entityOnFire) {
         entityStatueInfo.setEntityOnFire(entityOnFire);
-        markDirty();
+        syncVisualState();
     }
 
     public void setBurns(boolean burns) {
         this.burns = burns;
+        syncVisualState();
+    }
+
+    private void syncVisualState() {
         markDirty();
+        requestModelDataUpdate();
+        if (world != null) {
+            BlockTools.notifyBlockUpdate(this);
+            world.getLightEngine().checkBlock(pos);
+        }
     }
 
     @Override

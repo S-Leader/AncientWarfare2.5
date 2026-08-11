@@ -11122,8 +11122,7 @@
                     ],
                     "output": [
                         {
-                            "name": "ancientwarfarenpc:bard_instrument",
-                            "data": 3
+                            "name": "ancientwarfarenpc:bard_instrument_drum"
                         }
                     ],
                     "refill_frequency": 168000,
@@ -11965,8 +11964,7 @@
                     ],
                     "output": [
                         {
-                            "name": "ancientwarfarenpc:bard_instrument",
-                            "data": 1
+                            "name": "ancientwarfarenpc:bard_instrument_flute"
                         }
                     ],
                     "refill_frequency": 168000,
@@ -17903,8 +17901,7 @@
                     ],
                     "output": [
                         {
-                            "name": "ancientwarfarenpc:bard_instrument",
-                            "data": 3
+                            "name": "ancientwarfarenpc:bard_instrument_drum"
                         }
                     ],
                     "refill_frequency": 168000,
@@ -18066,8 +18063,7 @@
                     ],
                     "output": [
                         {
-                            "name": "ancientwarfarenpc:bard_instrument",
-                            "data": 1
+                            "name": "ancientwarfarenpc:bard_instrument_flute"
                         }
                     ],
                     "refill_frequency": 168000,

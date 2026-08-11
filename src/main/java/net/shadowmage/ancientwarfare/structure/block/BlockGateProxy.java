@@ -13,6 +13,9 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
@@ -41,8 +44,10 @@ public final class BlockGateProxy extends BlockBaseStructure implements IClientR
     public BlockGateProxy() {
         // Collision/open state comes from TEGateProxy, therefore BlockState's
         // normal cached shape is invalid for this block.
-        super(LegacyMaterial.ROCK.properties().dynamicShape(), "gate_proxy");
-        setResistance(6000000);
+        super(LegacyMaterial.ROCK.properties()
+                .strength(-1.0F, 3600000.0F)
+                .noOcclusion()
+                .dynamicShape(), "gate_proxy");
         AncientWarfareStructure.proxy.addClientRegister(this);
     }
 
@@ -69,6 +74,16 @@ public final class BlockGateProxy extends BlockBaseStructure implements IClientR
     @Override
     public boolean isOpaqueCube(BlockState state) {
         return false;
+    }
+
+    /**
+     * Proxy blocks are an implementation detail of EntityGate. They must collide
+     * while the gate is closed, but must never win the player's block ray trace:
+     * otherwise survival players mine the proxy instead of damaging EntityGate.
+     */
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        return Shapes.empty();
     }
 
     @Nullable

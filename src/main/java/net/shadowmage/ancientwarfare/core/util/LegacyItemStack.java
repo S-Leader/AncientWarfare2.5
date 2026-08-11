@@ -66,6 +66,29 @@ public final class LegacyItemStack {
             };
             legacyMeta = 0;
         }
+        if ("ancientwarfarenpc:bard_instrument".equals(legacyItemName) && legacyMeta >= 0) {
+            legacyItemName = switch (legacyMeta) {
+                case 0 -> "ancientwarfarenpc:bard_instrument_lute";
+                case 1 -> "ancientwarfarenpc:bard_instrument_flute";
+                case 2 -> "ancientwarfarenpc:bard_instrument_harp";
+                case 3 -> "ancientwarfarenpc:bard_instrument_drum";
+                default -> legacyItemName;
+            };
+            legacyMeta = 0;
+        }
+        if ("ancientwarfarestructure:gate_spawner".equals(legacyItemName) && legacyMeta >= 0) {
+            legacyItemName = switch (legacyMeta) {
+                case 0 -> "ancientwarfarestructure:gate_vertical_wooden";
+                case 1 -> "ancientwarfarestructure:gate_vertical_iron";
+                case 4 -> "ancientwarfarestructure:gate_single_wood";
+                case 5 -> "ancientwarfarestructure:gate_single_iron";
+                case 8 -> "ancientwarfarestructure:gate_double_wood";
+                case 9 -> "ancientwarfarestructure:gate_double_iron";
+                case 12 -> "ancientwarfarestructure:gate_drawbridge";
+                default -> legacyItemName;
+            };
+            legacyMeta = 0;
+        }
         if ("ancientwarfarevehicle:spawner".equals(legacyItemName)) {
             legacyItemName = switch (legacyMeta) {
                 case 0 -> "ancientwarfarevehicle:catapult_stand";

@@ -6267,7 +6267,7 @@ rule:
 plugin=vanillaSign
 number=350
 data:
-JSON:{signContents0:"The frothing§r§r",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"east"}},signContents2:"nuggets of wealth§r§r",signContents1:"beast is fed§r§r",signContents3:"",rotation:0}
+JSON:{signContents0:"The frothingï¿½rï¿½r",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"east"}},signContents2:"nuggets of wealthï¿½rï¿½r",signContents1:"beast is fedï¿½rï¿½r",signContents3:"",rotation:0}
 :enddata
 :endrule
 
@@ -7467,7 +7467,7 @@ rule:
 plugin=vanillaSign
 number=500
 data:
-JSON:{signContents0:"HELP WANTED:§r",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"east"}},signContents2:"",signContents1:"TAVERN BOUNCER§r",signContents3:"",rotation:0}
+JSON:{signContents0:"HELP WANTED:ï¿½r",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"east"}},signContents2:"",signContents1:"TAVERN BOUNCERï¿½r",signContents3:"",rotation:0}
 :enddata
 :endrule
 
@@ -8091,7 +8091,7 @@ rule:
 plugin=vanillaSign
 number=578
 data:
-JSON:{signContents0:"WANTED:§r",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"north"}},signContents2:"(cider smuggler)§r",signContents1:"Frank Sigmar§r",signContents3:"5K denier or§r",rotation:0}
+JSON:{signContents0:"WANTED:ï¿½r",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"north"}},signContents2:"(cider smuggler)ï¿½r",signContents1:"Frank Sigmarï¿½r",signContents3:"5K denier orï¿½r",rotation:0}
 :enddata
 :endrule
 
@@ -8755,7 +8755,7 @@ rule:
 plugin=vanillaSign
 number=661
 data:
-JSON:{signContents0:"",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"west"}},signContents2:"",signContents1:"Infirmary§r",signContents3:"",rotation:0}
+JSON:{signContents0:"",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"west"}},signContents2:"",signContents1:"Infirmaryï¿½r",signContents3:"",rotation:0}
 :enddata
 :endrule
 
@@ -8763,7 +8763,7 @@ rule:
 plugin=vanillaSign
 number=662
 data:
-JSON:{signContents0:"",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"east"}},signContents2:"",signContents1:"LIBRARY§r§r",signContents3:"",rotation:0}
+JSON:{signContents0:"",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"east"}},signContents2:"",signContents1:"LIBRARYï¿½rï¿½r",signContents3:"",rotation:0}
 :enddata
 :endrule
 
@@ -10691,7 +10691,7 @@ rule:
 plugin=blockTile
 number=903
 data:
-JSON:{blockState:{blockName:"ancientwarfarestructure:advanced_spawner",properties:{transparent:"true"}},teData:{id:"ancientwarfarestructure:advanced_spawner_tile",spawnerSettings:{minDelay:10,spawnDelay:6,lightSensitive:0b,spawnGroups:[{settingsList:[{remainingSpawnCount:1,hostile:1b,customTag:{ArmorDropChances:[0.085f,0.085f,0.085f,0.085f],hasCustomEquipment:0b,ArmorItems:[{},{},{},{}],skinSettings:{npcTypeName:"custom",skinTypeSelected:"default"},HandDropChances:[0.085f,0.085f],factionName:"nogg",HandItems:[{id:"ancientwarfarenpc:bard_instrument",Count:1b,Damage:0s},{}]},maxToSpawn:1,entityId:"ancientwarfarenpc:faction.bard",minToSpawn:1}],groupWeight:1}],playerRange:16,respondToRedstone:0b,inventory:{Size:9,Items:[]},spawnRange:0,transparent:1b,maxDelay:10,xpToDrop:0,mobRange:0,debugMode:0b,maxNearbyMonsters:0}}}
+JSON:{blockState:{blockName:"ancientwarfarestructure:advanced_spawner",properties:{transparent:"true"}},teData:{id:"ancientwarfarestructure:advanced_spawner_tile",spawnerSettings:{minDelay:10,spawnDelay:6,lightSensitive:0b,spawnGroups:[{settingsList:[{remainingSpawnCount:1,hostile:1b,customTag:{ArmorDropChances:[0.085f,0.085f,0.085f,0.085f],hasCustomEquipment:0b,ArmorItems:[{},{},{},{}],skinSettings:{npcTypeName:"custom",skinTypeSelected:"default"},HandDropChances:[0.085f,0.085f],factionName:"nogg",HandItems:[{id:"ancientwarfarenpc:bard_instrument_lute",Count:1b,Damage:0s},{}]},maxToSpawn:1,entityId:"ancientwarfarenpc:faction.bard",minToSpawn:1}],groupWeight:1}],playerRange:16,respondToRedstone:0b,inventory:{Size:9,Items:[]},spawnRange:0,transparent:1b,maxDelay:10,xpToDrop:0,mobRange:0,debugMode:0b,maxNearbyMonsters:0}}}
 :enddata
 :endrule
 

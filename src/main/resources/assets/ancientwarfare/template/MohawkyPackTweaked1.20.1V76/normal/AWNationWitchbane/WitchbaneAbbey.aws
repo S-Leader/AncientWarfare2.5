@@ -2531,7 +2531,7 @@ rule:
 plugin=vanillaSign
 number=96
 data:
-JSON:{signContents0:"Witchbane§r",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"south"}},signContents2:"",signContents1:"Abbey§r",signContents3:"",rotation:0}
+JSON:{signContents0:"Witchbaneï¿½r",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"south"}},signContents2:"",signContents1:"Abbeyï¿½r",signContents3:"",rotation:0}
 :enddata
 :endrule
 
@@ -2539,7 +2539,7 @@ rule:
 plugin=vanillaSign
 number=97
 data:
-JSON:{signContents0:"Witchbane§r",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"south"}},signContents2:"",signContents1:"Abbey§r",signContents3:"",rotation:0}
+JSON:{signContents0:"Witchbaneï¿½r",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"south"}},signContents2:"",signContents1:"Abbeyï¿½r",signContents3:"",rotation:0}
 :enddata
 :endrule
 
@@ -3275,7 +3275,7 @@ rule:
 plugin=vanillaSign
 number=189
 data:
-JSON:{signContents0:"Alms§r",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"north"}},signContents2:"Poor§r",signContents1:"for the§r",signContents3:"",rotation:0}
+JSON:{signContents0:"Almsï¿½r",blockState:{blockName:"minecraft:wall_sign",properties:{facing:"north"}},signContents2:"Poorï¿½r",signContents1:"for theï¿½r",signContents3:"",rotation:0}
 :enddata
 :endrule
 
@@ -3419,7 +3419,7 @@ rule:
 plugin=blockTile
 number=207
 data:
-JSON:{blockState:{blockName:"ancientwarfarestructure:advanced_spawner",properties:{transparent:"true"}},teData:{id:"ancientwarfarestructure:advanced_spawner_tile",spawnerSettings:{minDelay:10,spawnDelay:9,lightSensitive:0b,spawnGroups:[{settingsList:[{remainingSpawnCount:1,hostile:1b,customTag:{ArmorDropChances:[1.0f,1.0f,1.0f,1.0f],ArmorItems:[{},{},{},{}],HandDropChances:[1.0f,1.0f],factionName:"witchbane",HandItems:[{id:"ancientwarfarenpc:bard_instrument",Count:1b,Damage:0s},{}]},maxToSpawn:1,entityId:"ancientwarfarenpc:faction.bard",minToSpawn:1}],groupWeight:1}],playerRange:16,respondToRedstone:0b,inventory:{Size:9,Items:[]},spawnRange:0,transparent:1b,maxDelay:10,xpToDrop:0,mobRange:0,debugMode:0b,maxNearbyMonsters:0}}}
+JSON:{blockState:{blockName:"ancientwarfarestructure:advanced_spawner",properties:{transparent:"true"}},teData:{id:"ancientwarfarestructure:advanced_spawner_tile",spawnerSettings:{minDelay:10,spawnDelay:9,lightSensitive:0b,spawnGroups:[{settingsList:[{remainingSpawnCount:1,hostile:1b,customTag:{ArmorDropChances:[1.0f,1.0f,1.0f,1.0f],ArmorItems:[{},{},{},{}],HandDropChances:[1.0f,1.0f],factionName:"witchbane",HandItems:[{id:"ancientwarfarenpc:bard_instrument_lute",Count:1b,Damage:0s},{}]},maxToSpawn:1,entityId:"ancientwarfarenpc:faction.bard",minToSpawn:1}],groupWeight:1}],playerRange:16,respondToRedstone:0b,inventory:{Size:9,Items:[]},spawnRange:0,transparent:1b,maxDelay:10,xpToDrop:0,mobRange:0,debugMode:0b,maxNearbyMonsters:0}}}
 :enddata
 :endrule
 
@@ -3443,7 +3443,7 @@ rule:
 plugin=blockTile
 number=210
 data:
-JSON:{blockState:{blockName:"ancientwarfarestructure:advanced_spawner",properties:{transparent:"true"}},teData:{id:"ancientwarfarestructure:advanced_spawner_tile",spawnerSettings:{minDelay:10,spawnDelay:10,lightSensitive:0b,spawnGroups:[{settingsList:[{remainingSpawnCount:1,hostile:1b,customTag:{ArmorDropChances:[1.0f,1.0f,1.0f,1.0f],ArmorItems:[{},{},{},{}],HandDropChances:[1.0f,1.0f],factionName:"witchbane",HandItems:[{id:"ancientwarfarenpc:bard_instrument",Count:1b,Damage:0s},{}]},maxToSpawn:1,entityId:"ancientwarfarenpc:faction.bard",minToSpawn:1}],groupWeight:1}],playerRange:16,respondToRedstone:0b,inventory:{Size:9,Items:[]},spawnRange:0,transparent:1b,maxDelay:10,xpToDrop:0,mobRange:0,debugMode:0b,maxNearbyMonsters:0}}}
+JSON:{blockState:{blockName:"ancientwarfarestructure:advanced_spawner",properties:{transparent:"true"}},teData:{id:"ancientwarfarestructure:advanced_spawner_tile",spawnerSettings:{minDelay:10,spawnDelay:10,lightSensitive:0b,spawnGroups:[{settingsList:[{remainingSpawnCount:1,hostile:1b,customTag:{ArmorDropChances:[1.0f,1.0f,1.0f,1.0f],ArmorItems:[{},{},{},{}],HandDropChances:[1.0f,1.0f],factionName:"witchbane",HandItems:[{id:"ancientwarfarenpc:bard_instrument_lute",Count:1b,Damage:0s},{}]},maxToSpawn:1,entityId:"ancientwarfarenpc:faction.bard",minToSpawn:1}],groupWeight:1}],playerRange:16,respondToRedstone:0b,inventory:{Size:9,Items:[]},spawnRange:0,transparent:1b,maxDelay:10,xpToDrop:0,mobRange:0,debugMode:0b,maxNearbyMonsters:0}}}
 :enddata
 :endrule
 

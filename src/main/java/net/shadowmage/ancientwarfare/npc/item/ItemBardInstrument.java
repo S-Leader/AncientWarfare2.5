@@ -17,41 +17,97 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.util.LegacyItemStack;
 import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 
+/**
+ * Bard instrument item. 1.20 recipes must distinguish the instruments by
+ * registry id rather than legacy Damage/NBT, otherwise vanilla/JEI ingredient
+ * matching treats every variant as the same item.
+ *
+ * <p>The no-argument legacy form is retained under bard_instrument so old
+ * worlds/templates can still deserialize their 1.12 metadata stacks. New
+ * recipes and creative inventory use the fixed-instrument registrations.</p>
+ */
 public class ItemBardInstrument extends ItemBaseNPC {
 
-    private final String[] instrumentNames = new String[]{"lute", "flute", "harp", "drum"};
+    public enum Instrument {
+        LUTE(0, "lute"),
+        FLUTE(1, "flute"),
+        HARP(2, "harp"),
+        DRUM(3, "drum");
 
+        private final int legacyMeta;
+        private final String name;
+
+        Instrument(int legacyMeta, String name) {
+            this.legacyMeta = legacyMeta;
+            this.name = name;
+        }
+
+        public int legacyMeta() {
+            return legacyMeta;
+        }
+
+        public String serializedName() {
+            return name;
+        }
+
+        public static Instrument byLegacyMeta(int meta) {
+            for (Instrument instrument : values()) {
+                if (instrument.legacyMeta == meta) {
+                    return instrument;
+                }
+            }
+            return LUTE;
+        }
+    }
+
+    private final Instrument fixedInstrument;
+
+    /** Compatibility-only metadata container for old saves/templates. */
+    @Deprecated
     public ItemBardInstrument(String regName) {
         super(regName);
+        fixedInstrument = null;
         setHasSubtypes(true);
     }
 
+    public ItemBardInstrument(String regName, Instrument instrument) {
+        super(regName);
+        fixedInstrument = instrument;
+    }
+
+    private Instrument getInstrument(ItemStack stack) {
+        return fixedInstrument != null ? fixedInstrument : Instrument.byLegacyMeta(stack.getDamageValue());
+    }
+
     public void getSubItems(CreativeModeTab tab, NonNullList<ItemStack> items) {
-        for (int i = 0; i < instrumentNames.length; i++) {
-            items.add(LegacyItemStack.of(this, 1, i));
+        if (fixedInstrument != null) {
+            items.add(new ItemStack(this));
+            return;
+        }
+        // Legacy item is hidden from the normal creative tab, but exposing its
+        // variants here keeps old custom model mappings/data migration valid.
+        for (Instrument instrument : Instrument.values()) {
+            items.add(LegacyItemStack.of(this, 1, instrument.legacyMeta()));
         }
     }
 
     @Override
-    public String getDescriptionId(ItemStack par1ItemStack) {
-        return super.getDescriptionId(par1ItemStack) + "." + instrumentNames[par1ItemStack.getDamageValue()];
+    public String getDescriptionId(ItemStack stack) {
+        return "item.ancientwarfarenpc.bard_instrument." + getInstrument(stack).serializedName();
     }
 
     @Override
     public InteractionResultHolder<ItemStack> onItemRightClick(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide) {
-            int meta = stack.getDamageValue();
-            SoundEvent s;
-            s = SoundEvents.NOTE_BLOCK_BASEDRUM.value();
-            if (meta == 0) {
-                s = SoundEvents.NOTE_BLOCK_BASS.value();
-            } else if (meta == 1) {
-                s = SoundEvents.NOTE_BLOCK_FLUTE.value();
-            } else if (meta == 2) {
-                s = SoundEvents.NOTE_BLOCK_HARP.value();
-            }
-            world.playSound(null, player.getX() + 0.5, player.getY() + 0.5, player.getZ() + 0.5, s, SoundSource.PLAYERS, 2.0F, 1.0F);
+            SoundEvent sound = switch (getInstrument(stack)) {
+                case LUTE -> SoundEvents.NOTE_BLOCK_BASS.value();
+                case FLUTE -> SoundEvents.NOTE_BLOCK_FLUTE.value();
+                case HARP -> SoundEvents.NOTE_BLOCK_HARP.value();
+                case DRUM -> SoundEvents.NOTE_BLOCK_BASEDRUM.value();
+            };
+            world.playSound(null, player.getX() + 0.5, player.getY() + 0.5, player.getZ() + 0.5,
+                    sound, SoundSource.PLAYERS, 2.0F, 1.0F);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
     }
@@ -64,6 +120,12 @@ public class ItemBardInstrument extends ItemBaseNPC {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        ModelLoaderHelper.registerItem(this, "npc", false, meta -> "variant=" + instrumentNames[meta]);
+        if (fixedInstrument != null) {
+            ModelLoaderHelper.registerItem(this, 0, "ancientwarfare:npc/bard_instrument",
+                    "variant=" + fixedInstrument.serializedName());
+            return;
+        }
+        ModelLoaderHelper.registerItem(this, "npc", false,
+                meta -> "variant=" + Instrument.byLegacyMeta(meta).serializedName());
     }
 }

@@ -63,6 +63,13 @@ public class ClientProxyStructure extends CommonProxyStructure {
             ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_LECTERN, RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_SUN, RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.LOOT_BASKET, RenderType.cutout());
+            // Legacy getBlockLayer() is no longer consulted by the 1.20 chunk renderer.
+            // These models contain alpha-cut fire/metal planes and must explicitly use cutout.
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.FIRE_PIT, RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.BRAZIER_FLAME, RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.BRAZIER_EMBER, RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.STAKE, RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ADVANCED_SPAWNER, RenderType.cutout());
         });
     }
 

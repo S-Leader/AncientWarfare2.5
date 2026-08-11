@@ -164,7 +164,7 @@
           "generic.attackDamage": 0
         },
         "equipment": {
-          "mainhand": "ancientwarfarenpc:bard_instrument"
+          "mainhand": "ancientwarfarenpc:bard_instrument_lute"
         },
         "can_break_doors": false,
         "loot_table": "minecraft:empty"

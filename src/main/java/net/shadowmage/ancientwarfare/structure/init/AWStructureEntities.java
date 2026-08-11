@@ -18,7 +18,7 @@ public final class AWStructureEntities {
 
     public static synchronized void register(IEventBus modBus) {
         if (!prepared) {
-            AWEntityRegistry.registerEntity(new Declaration(EntityGate.class, AWEntityRegistry.AW_GATES, 0, 4.0F, 4.0F, 250, 3));
+            AWEntityRegistry.registerEntity(new Declaration(EntityGate.class, AWEntityRegistry.AW_GATES, 0, 4.0F, 4.0F, 250, 1));
             AWEntityRegistry.registerEntity(new Declaration(EntitySeat.class, AWEntityRegistry.SEAT, 1, 0.01F, 0.01F, 20, 10));
             prepared = true;
         }
