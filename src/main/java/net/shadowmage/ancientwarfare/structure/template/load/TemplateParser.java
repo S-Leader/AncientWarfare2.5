@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.structure.template.load;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.shadowmage.ancientwarfare.core.util.CompatUtils;
 import net.shadowmage.ancientwarfare.core.util.StringTools;
@@ -184,7 +185,86 @@ public class TemplateParser {
             }
         }
 
+        normalizeLegacyEntityPositions(name, size, parsedEntities);
+
         return Optional.of(resultBuilder.build(constructTemplate(name, modDependencies, version, size, offset, templateData, parsedRules, parsedEntities, validation)));
+    }
+
+    /**
+     * Minecraft 1.12 and 1.20.1 both store BlockPos in a long, but the bit layout
+     * changed. AW 1.12 structure packs therefore look syntactically valid to the
+     * 1.20 parser while decoding entity Z/Y coordinates into nonsense values.
+     *
+     * <p>Do not blindly convert every v2.11 template: this port also exports v2.11
+     * files using the modern packing. Instead, use the template bounds as an
+     * unambiguous discriminator. If a modern-decoded position is outside the
+     * template while the 1.12-decoded value is inside it, the rule is legacy. If
+     * one such rule proves the whole template is legacy and no rule proves the
+     * opposite, convert all in-bounds legacy candidates so y=0 entities (which can
+     * otherwise be ambiguous) are fixed as well.
+     */
+    private void normalizeLegacyEntityPositions(String templateName, Vec3i size,
+                                                Map<Integer, TemplateRuleEntityBase> entityRules) {
+        if (entityRules.isEmpty() || size.getX() <= 0 || size.getY() <= 0 || size.getZ() <= 0) {
+            return;
+        }
+
+        int legacyEvidence = 0;
+        int modernEvidence = 0;
+        Map<TemplateRuleEntityBase, BlockPos> legacyPositions = new IdentityHashMap<>();
+
+        for (TemplateRuleEntityBase rule : entityRules.values()) {
+            BlockPos modern = rule.getPosition();
+            long packed = modern.asLong();
+            BlockPos legacy = decodeLegacy112BlockPos(packed);
+            legacyPositions.put(rule, legacy);
+
+            boolean modernInside = isInsideTemplate(modern, size);
+            boolean legacyInside = isInsideTemplate(legacy, size);
+
+            if (!modernInside && legacyInside) {
+                legacyEvidence++;
+            } else if (modernInside && !legacyInside) {
+                modernEvidence++;
+            }
+        }
+
+        boolean wholeTemplateIsLegacy = legacyEvidence > 0 && modernEvidence == 0;
+        int converted = 0;
+
+        for (TemplateRuleEntityBase rule : entityRules.values()) {
+            BlockPos modern = rule.getPosition();
+            BlockPos legacy = legacyPositions.get(rule);
+            boolean modernInside = isInsideTemplate(modern, size);
+            boolean legacyInside = isInsideTemplate(legacy, size);
+
+            if (legacyInside && (wholeTemplateIsLegacy || !modernInside)) {
+                if (!legacy.equals(modern)) {
+                    rule.setPosition(legacy);
+                    converted++;
+                }
+            }
+        }
+
+        if (converted > 0) {
+            AncientWarfareStructure.LOG.info(
+                    "Converted {} legacy 1.12 entity position(s) in structure template '{}' to the 1.20.1 BlockPos layout",
+                    converted, templateName);
+        }
+    }
+
+    /** 1.12 BlockPos.toLong(): X[63..38], Y[37..26], Z[25..0]. */
+    private static BlockPos decodeLegacy112BlockPos(long packed) {
+        int x = (int) (packed >> 38);
+        int y = (int) ((packed >> 26) & 0xFFFL);
+        int z = (int) (packed << 38 >> 38);
+        return new BlockPos(x, y, z);
+    }
+
+    private static boolean isInsideTemplate(BlockPos pos, Vec3i size) {
+        return pos.getX() >= 0 && pos.getX() < size.getX()
+                && pos.getY() >= 0 && pos.getY() < size.getY()
+                && pos.getZ() >= 0 && pos.getZ() < size.getZ();
     }
 
     private StructureTemplate constructTemplate(String name, String[] modDependencies, Version version, Vec3i size, Vec3i offset, short[] templateData, Map<Integer, TemplateRuleBlock> rules, Map<Integer, TemplateRuleEntityBase> entityRules, StructureValidator validation) {

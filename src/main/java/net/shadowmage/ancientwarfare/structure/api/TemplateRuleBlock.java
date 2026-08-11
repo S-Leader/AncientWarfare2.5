@@ -1,8 +1,13 @@
 package net.shadowmage.ancientwarfare.structure.api;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -19,9 +24,9 @@ import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelData;
 import net.shadowmage.ancientwarfare.core.util.BlockTools;
 import net.shadowmage.ancientwarfare.core.util.NBTHelper;
-import net.shadowmage.ancientwarfare.core.util.RenderTools;
 import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
 import net.shadowmage.ancientwarfare.structure.registry.StructureBlockRegistry;
 
@@ -108,13 +113,49 @@ public abstract class TemplateRuleBlock extends TemplateRule {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void renderRule(int turns, BlockPos pos, BlockGetter blockAccess, BufferBuilder bufferBuilder) {
+    public void renderRule(int turns, BlockPos pos, BlockGetter blockAccess, MultiBufferSource bufferSource) {
+        // Compatibility overload for external callers. The structure preview itself
+        // uses the overload that receives the active level-render PoseStack.
         PoseStack poseStack = new PoseStack();
+        renderRule(turns, pos, blockAccess, poseStack, bufferSource);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void renderRule(int turns, BlockPos pos, BlockGetter blockAccess, PoseStack poseStack,
+                           MultiBufferSource bufferSource) {
+        BlockState previewState = getState(turns);
+        if (previewState.isAir()) {
+            return;
+        }
+
+        PreviewBlockAndTintGetter previewLevel = new PreviewBlockAndTintGetter(blockAccess);
+        var dispatcher = Minecraft.getInstance().getBlockRenderer();
+        BakedModel model = dispatcher.getBlockModel(previewState);
+        long seed = previewState.getSeed(pos);
+        RandomSource random = RandomSource.create(seed);
+        ModelData modelData = model.getModelData(previewLevel, pos, previewState, ModelData.EMPTY);
+
         poseStack.pushPose();
-        poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-        Minecraft.getInstance().getBlockRenderer()
-                .renderBatched(getState(turns), pos, new PreviewBlockAndTintGetter(blockAccess), poseStack, bufferBuilder, true, RandomSource.create());
-        poseStack.popPose();
+        try {
+            /*
+             * Vanilla's chunk builder translates the PoseStack to the block before
+             * calling renderBatched. Do the same here. The parent PoseStack already
+             * contains the camera translation supplied by RenderLevelStageEvent.
+             * This is the important part the previous port was missing.
+             */
+            poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
+
+            for (RenderType renderType : model.getRenderTypes(previewState, random, modelData)) {
+                // Models may consume RandomSource while selecting quads. Reset it for
+                // every layer so multi-layer models get deterministic matching quads.
+                random.setSeed(seed);
+                VertexConsumer vertexConsumer = bufferSource.getBuffer(renderType);
+                dispatcher.renderBatched(previewState, pos, previewLevel, poseStack, vertexConsumer,
+                        true, random, modelData, renderType);
+            }
+        } finally {
+            poseStack.popPose();
+        }
     }
 
     /**
@@ -163,7 +204,11 @@ public abstract class TemplateRuleBlock extends TemplateRule {
 
         @Override
         public LevelLightEngine getLightEngine() {
-            return Minecraft.getInstance().level.getLightEngine();
+            Level level = Minecraft.getInstance().level;
+            if (level == null) {
+                throw new IllegalStateException("Cannot render a structure preview without a client level");
+            }
+            return level.getLightEngine();
         }
 
         @Override
@@ -189,6 +234,31 @@ public abstract class TemplateRuleBlock extends TemplateRule {
 
     @OnlyIn(Dist.CLIENT)
     public void renderRuleDynamic(int turns, BlockPos pos) {
-        RenderTools.renderTESR(getTileEntity(turns), pos);
+        PoseStack poseStack = new PoseStack();
+        MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+        renderRuleDynamic(turns, pos, poseStack, bufferSource);
+        bufferSource.endBatch();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void renderRuleDynamic(int turns, BlockPos pos, PoseStack poseStack, MultiBufferSource bufferSource) {
+        BlockEntity blockEntity = getTileEntity(turns);
+        if (blockEntity == null) {
+            return;
+        }
+        var renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(blockEntity);
+        if (renderer == null) {
+            return;
+        }
+
+        poseStack.pushPose();
+        try {
+            poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
+            renderer.render(blockEntity, 0.0F, poseStack, bufferSource,
+                    LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        } finally {
+            poseStack.popPose();
+        }
     }
 }

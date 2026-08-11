@@ -4,6 +4,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.shadowmage.ancientwarfare.npc.AncientWarfareNPC;
 import net.shadowmage.ancientwarfare.npc.ai.NpcAIRideHorse;
 import net.shadowmage.ancientwarfare.npc.entity.NpcBase;
 import net.shadowmage.ancientwarfare.npc.entity.faction.IHorseMountedNpc;
@@ -42,9 +43,22 @@ public class NpcAIFactionRideHorse<T extends NpcBase & IHorseMountedNpc> extends
             h.setTamed(true);
         }
 
+        if (!npc.level().addFreshEntity(horse)) {
+            AncientWarfareNPC.LOG.error("Unable to add faction NPC mount {} to world at {}",
+                    horse.getType(), npc.blockPosition());
+            horse.discard();
+            this.horse = null;
+            return;
+        }
+
         this.horse = horse;
-        npc.level().addFreshEntity(horse);
-        npc.startRiding(horse);
+        if (!npc.startRiding(horse)) {
+            AncientWarfareNPC.LOG.error("Faction NPC {} could not mount spawned entity {} at {}",
+                    npc.getType(), horse.getType(), npc.blockPosition());
+            horse.discard();
+            this.horse = null;
+            return;
+        }
         onMountHorse();
     }
 }

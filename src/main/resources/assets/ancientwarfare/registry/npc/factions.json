@@ -71,7 +71,7 @@
             "name": "empire",
             "color": "800080",
             "standing_settings": {
-                "player_default_standing": -9999,
+                "player_default_standing": -1000,
                 "standing_can_change": true,
                 "standing_changes": {
                     "kill": -10,
@@ -139,7 +139,7 @@
             "name": "norska",
             "color": "9999FF",
             "standing_settings": {
-                "player_default_standing": -9999,
+                "player_default_standing": -1000,
                 "standing_can_change": true,
                 "standing_changes": {
                     "kill": -100,
@@ -196,7 +196,7 @@
             "name": "sarkonid",
             "color": "b20000",
             "standing_settings": {
-                "player_default_standing": -9999,
+                "player_default_standing": -1000,
                 "standing_can_change": true,
                 "standing_changes": {
                     "kill": -100,

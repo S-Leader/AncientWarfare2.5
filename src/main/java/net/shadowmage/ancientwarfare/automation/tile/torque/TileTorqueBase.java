@@ -271,8 +271,28 @@ public abstract class TileTorqueBase extends TileUpdatable implements ITorqueTil
 
     @Override
     public final void setPrimaryFacing(Direction d) {
+        if (d == null) {
+            return;
+        }
+
+        if (this.orientation == d) {
+            return;
+        }
+
         this.orientation = d;
-        this.world.updateNeighbourForOutputSignal(pos, getBlockState().getBlock());
+
+        /*
+         * The facing is stored in this block entity rather than in the block state.
+         * sendBlockUpdated()/notifyBlockUpdate only synchronizes the new value to
+         * clients; it does NOT mark the containing chunk dirty for disk saving.
+         * Without setChanged(), rotating a torque junction appears to work until
+         * its chunk unloads, at which point the old orientation is loaded again.
+         */
+        setChanged();
+
+        if (this.world != null) {
+            this.world.updateNeighbourForOutputSignal(pos, getBlockState().getBlock());
+        }
         this.invalidateTorqueCache();
         BlockTools.notifyBlockUpdate(this);
     }
@@ -394,7 +414,13 @@ public abstract class TileTorqueBase extends TileUpdatable implements ITorqueTil
     @Override
     public void readFromNBT(CompoundTag tag) {
         super.readFromNBT(tag);
-        orientation = Direction.values()[tag.getInt(ORIENTATION_TAG)];
+        if (tag.contains(ORIENTATION_TAG)) {
+            int ordinal = tag.getInt(ORIENTATION_TAG);
+            Direction[] directions = Direction.values();
+            if (ordinal >= 0 && ordinal < directions.length) {
+                orientation = directions[ordinal];
+            }
+        }
     }
 
     @Override
@@ -414,7 +440,13 @@ public abstract class TileTorqueBase extends TileUpdatable implements ITorqueTil
     @Override
     protected void handleUpdateNBT(CompoundTag tag) {
         super.handleUpdateNBT(tag);
-        orientation = Direction.values()[tag.getInt(ORIENTATION_TAG)];
+        if (tag.contains(ORIENTATION_TAG)) {
+            int ordinal = tag.getInt(ORIENTATION_TAG);
+            Direction[] directions = Direction.values();
+            if (ordinal >= 0 && ordinal < directions.length) {
+                orientation = directions[ordinal];
+            }
+        }
         BlockTools.notifyBlockUpdate(this);
     }
 }

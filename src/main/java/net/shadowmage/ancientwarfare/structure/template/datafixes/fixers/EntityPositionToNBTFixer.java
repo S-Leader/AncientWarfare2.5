@@ -21,7 +21,9 @@ public class EntityPositionToNBTFixer extends RuleDataFixerBase {
             "vanillaHangingEntity",
             "vanillaLogicEntity",
             "AWNpc",
-            "awGate");
+            "awGate",
+            "AWVehicle",
+            "entity");
 
     private BlockPos position; // a little hacky to use this field between lines fixed but the lines are processed in order so it shouldn't break
 
@@ -60,7 +62,11 @@ public class EntityPositionToNBTFixer extends RuleDataFixerBase {
                 AncientWarfareStructure.LOG.error("Error getting nbt from json string: ", e);
                 return new FixResult.NotModified<>(data);
             }
+            if (position == null) {
+                return new FixResult.NotModified<>(data);
+            }
             tag.putLong("position", position.asLong());
+            position = null;
             return new FixResult.Modified<>(JSON_PREFIX + tag.toString(), "EntityPositionToNBTFixer");
         }
         return new FixResult.NotModified<>(data);

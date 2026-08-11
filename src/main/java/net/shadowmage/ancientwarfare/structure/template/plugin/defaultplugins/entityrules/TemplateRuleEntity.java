@@ -66,10 +66,19 @@ public class TemplateRuleEntity<T extends Entity> extends TemplateRuleEntityBase
 
     @Override
     public void handlePlacement(Level world, int turns, BlockPos pos, IStructureBuilder builder) {
-        createEntity(world, turns, pos).ifPresent(world::addFreshEntity);
+        try {
+            createEntity(world, turns, pos).ifPresent(entity -> {
+                if (!world.addFreshEntity(entity)) {
+                    AncientWarfareStructure.LOG.warn("Entity {} from structure rule could not be added at {}", registryName, pos);
+                }
+            });
+        } catch (RuntimeException | LinkageError exception) {
+            AncientWarfareStructure.LOG.error("Unable to place structure entity {} at {}; skipping this entity",
+                    registryName, pos, exception);
+        }
     }
 
-    private Optional<T> createEntity(Level world, int turns, BlockPos pos) {
+    protected Optional<T> createEntity(Level world, int turns, BlockPos pos) {
         EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(registryName);
         //noinspection unchecked
         T e = entityType == null ? null : (T) entityType.create(world);
@@ -78,6 +87,9 @@ public class TemplateRuleEntity<T extends Entity> extends TemplateRuleEntityBase
             return Optional.empty();
         }
         CompoundTag entityNBT = ComponentItemFixer.fixRecursively(getEntityNBT(pos, turns).copy());
+        entityNBT.remove("UUID");
+        entityNBT.remove("UUIDMost");
+        entityNBT.remove("UUIDLeast");
         removeNonExistentAttributes(e, entityNBT);
 
         e.load(entityNBT);

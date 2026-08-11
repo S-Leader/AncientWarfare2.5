@@ -1,11 +1,11 @@
 package net.shadowmage.ancientwarfare.structure.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -15,14 +15,13 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.shadowmage.ancientwarfare.core.compat.client.GlStateManager;
 import net.shadowmage.ancientwarfare.core.util.BlockTools;
 import net.shadowmage.ancientwarfare.structure.api.TemplateRuleBlock;
 import net.shadowmage.ancientwarfare.structure.template.StructureTemplate;
 import net.shadowmage.ancientwarfare.structure.template.build.StructureBB;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -30,14 +29,45 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 
-import static net.shadowmage.ancientwarfare.core.util.RenderTools.*;
-
 /**
- * Client-side structure preview renderer ported to the 1.20.1 buffer API.
+ * Client-side structure preview renderer.
+ *
+ * <p>The 1.12 renderer mixed an OpenGL model-view translation with vertices emitted
+ * through the old BufferBuilder. That cannot be carried over literally to 1.20.1:
+ * block models now receive their transform from a PoseStack. Keeping the camera
+ * translation on the legacy GL stack while giving every block a fresh PoseStack
+ * produces world-space vertices that are later interpreted as camera-space vertices,
+ * which is the giant smeared polygon seen in the preview.</p>
  */
 @OnlyIn(Dist.CLIENT)
 public final class PreviewRenderer {
+    private static final int PREVIEW_BUFFER_SIZE = 2 * 1024 * 1024;
+
+    /*
+     * IBoxRenderer is a common-side interface and must not reference client-only
+     * Camera/PoseStack classes in its method descriptor. StructureBoundingBoxRenderer
+     * supplies the active level-render context here just for the duration of the
+     * item preview callback instead.
+     */
+    @Nullable
+    private static PoseStack activePoseStack;
+    @Nullable
+    private static Camera activeCamera;
+
     private PreviewRenderer() {
+    }
+
+    public static void withLevelRenderContext(PoseStack poseStack, Camera camera, Runnable renderer) {
+        PoseStack previousPoseStack = activePoseStack;
+        Camera previousCamera = activeCamera;
+        activePoseStack = poseStack;
+        activeCamera = camera;
+        try {
+            renderer.run();
+        } finally {
+            activePoseStack = previousPoseStack;
+            activeCamera = previousCamera;
+        }
     }
 
     /**
@@ -49,58 +79,74 @@ public final class PreviewRenderer {
 
     public static void renderTemplatePreview(Player player, InteractionHand hand, ItemStack stack, float delta,
                                              StructureTemplate structure, StructureBB bb, int turns) {
-        Minecraft.getInstance().getTextureManager().bindForSetup(TextureAtlas.LOCATION_BLOCKS);
-        GlStateManager.pushMatrix();
-        if (Minecraft.useAmbientOcclusion()) {
-            GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        } else {
-            GlStateManager.shadeModel(GL11.GL_FLAT);
-        }
+        Minecraft minecraft = Minecraft.getInstance();
+        Camera camera = activeCamera != null ? activeCamera : minecraft.gameRenderer.getMainCamera();
+        PoseStack poseStack = activePoseStack != null ? activePoseStack : new PoseStack();
+        Vec3 cameraPos = camera.getPosition();
 
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder buffer = tessellator.getBuilder();
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
+        /*
+         * Use a private BufferSource. Reusing Tesselator.getInstance().getBuilder()
+         * can collide with another level-render batch that is still open when this
+         * AFTER_ENTITIES callback runs.
+         */
+        MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(new BufferBuilder(PREVIEW_BUFFER_SIZE));
         Map<BlockPos, TemplateRuleBlock> dynamicRenderRules = new HashMap<>();
-        renderPreview(structure, bb, turns, buffer, dynamicRenderRules);
 
-        GlStateManager.translate(-getRenderOffsetX(player, delta) + 0.005F,
-                -getRenderOffsetY(player, delta) + 0.005F,
-                -getRenderOffsetZ(player, delta) + 0.005F);
-        tessellator.end();
-        renderDynamicRules(turns, dynamicRenderRules);
-        GlStateManager.popMatrix();
+        poseStack.pushPose();
+        try {
+            // RenderLevelStageEvent gives us the level render PoseStack. Put template
+            // world coordinates into the same camera-relative coordinate system used
+            // by vanilla's entity/block-entity renderers.
+            poseStack.translate(-cameraPos.x + 0.005D, -cameraPos.y + 0.005D, -cameraPos.z + 0.005D);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
+            renderPreview(structure, bb, turns, poseStack, buffers, dynamicRenderRules);
+            buffers.endBatch();
+
+            renderDynamicRules(turns, dynamicRenderRules, poseStack, buffers);
+            buffers.endBatch();
+        } finally {
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            poseStack.popPose();
+        }
     }
 
-    private static void renderDynamicRules(int turns, Map<BlockPos, TemplateRuleBlock> dynamicRenderRules) {
+    private static void renderDynamicRules(int turns, Map<BlockPos, TemplateRuleBlock> dynamicRenderRules,
+                                           PoseStack poseStack, MultiBufferSource bufferSource) {
         Iterator<Map.Entry<BlockPos, TemplateRuleBlock>> iterator = dynamicRenderRules.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<BlockPos, TemplateRuleBlock> entry = iterator.next();
             try {
-                entry.getValue().renderRuleDynamic(turns, entry.getKey());
-            } catch (Exception ignored) {
+                entry.getValue().renderRuleDynamic(turns, entry.getKey(), poseStack, bufferSource);
+            } catch (RuntimeException | LinkageError exception) {
+                // One broken third-party BER must not destroy the whole preview frame.
                 iterator.remove();
             }
         }
     }
 
-    private static void renderPreview(StructureTemplate structure, StructureBB bb, int turns, BufferBuilder buffer,
+    private static void renderPreview(StructureTemplate structure, StructureBB bb, int turns, PoseStack poseStack,
+                                      MultiBufferSource bufferSource,
                                       Map<BlockPos, TemplateRuleBlock> dynamicRenderRules) {
         TemplateBlockAccess blockAccess = new TemplateBlockAccess(structure, bb, turns);
-        //1.20 renderBatched emits every render layer in one call, so the 1.12 three-pass loop would triple the geometry.
         for (int y = 0; y < structure.getSize().getY(); y++) {
             for (int x = 0; x < structure.getSize().getX(); x++) {
                 for (int z = 0; z < structure.getSize().getZ(); z++) {
-                    renderPreviewAt(structure, bb, turns, buffer, dynamicRenderRules, blockAccess, new BlockPos(x, y, z));
+                    renderPreviewAt(structure, bb, turns, poseStack, bufferSource,
+                            dynamicRenderRules, blockAccess, new BlockPos(x, y, z));
                 }
             }
         }
     }
 
-    private static void renderPreviewAt(StructureTemplate structure, StructureBB bb, int turns, BufferBuilder buffer,
-                                        Map<BlockPos, TemplateRuleBlock> dynamicRenderRules, TemplateBlockAccess blockAccess, BlockPos pos) {
-        BlockPos translateTo = BlockTools.rotateInArea(pos, structure.getSize().getX(), structure.getSize().getZ(), turns).offset(bb.min);
+    private static void renderPreviewAt(StructureTemplate structure, StructureBB bb, int turns, PoseStack poseStack,
+                                        MultiBufferSource bufferSource,
+                                        Map<BlockPos, TemplateRuleBlock> dynamicRenderRules,
+                                        TemplateBlockAccess blockAccess, BlockPos pos) {
+        BlockPos translateTo = BlockTools.rotateInArea(pos, structure.getSize().getX(), structure.getSize().getZ(), turns)
+                .offset(bb.min);
         structure.getRuleAt(pos).ifPresent(rule -> {
-            rule.renderRule(turns, translateTo, blockAccess, buffer);
+            rule.renderRule(turns, translateTo, blockAccess, poseStack, bufferSource);
             if (rule.isDynamicallyRendered(turns)) {
                 dynamicRenderRules.put(translateTo, rule);
             }

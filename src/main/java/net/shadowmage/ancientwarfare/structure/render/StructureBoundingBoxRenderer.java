@@ -24,15 +24,23 @@ public class StructureBoundingBoxRenderer {
         if (player == null) {
             return;
         }
-        for (InteractionHand hand : InteractionHand.values()) {
-            ItemStack stack = player.getItemInHand(hand);
-            if (stack.isEmpty()) {
-                continue;
+
+        /*
+         * Keep client-only Camera/PoseStack types out of IBoxRenderer's common
+         * interface while still giving structure preview rendering the exact
+         * matrices from this RenderLevelStageEvent.
+         */
+        PreviewRenderer.withLevelRenderContext(evt.getPoseStack(), evt.getCamera(), () -> {
+            for (InteractionHand hand : InteractionHand.values()) {
+                ItemStack stack = player.getItemInHand(hand);
+                if (stack.isEmpty()) {
+                    continue;
+                }
+                Item item = stack.getItem();
+                if (item instanceof IBoxRenderer renderer) {
+                    renderer.renderBox(player, hand, stack, evt.getPartialTick());
+                }
             }
-            Item item = stack.getItem();
-            if (item instanceof IBoxRenderer) {
-                ((IBoxRenderer) item).renderBox(player, hand, stack, evt.getPartialTick());
-            }
-        }
+        });
     }
 }
