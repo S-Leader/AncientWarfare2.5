@@ -75,6 +75,7 @@ public final class WorldGenTickHandler {
         newTownStructureGenTickets.clear();
         townStructuresToGen.clear();
         PersistentTownGenerationManager.INSTANCE.resetTransientState();
+        PersistentIslandGenerationManager.INSTANCE.resetTransientState();
     }
 
     /**
@@ -154,6 +155,7 @@ public final class WorldGenTickHandler {
             runSafely("standalone structure selection", this::genChunks);
             runSafely("standalone structure construction", this::genStructures);
             runSafely("town structure construction", this::genTownStructures);
+            runSafely("persistent island construction", PersistentIslandGenerationManager.INSTANCE::tickAllLevels);
             runSafely("persistent town construction", PersistentTownGenerationManager.INSTANCE::tickAllLevels);
             runSafely("town selection", this::genTowns);
         }

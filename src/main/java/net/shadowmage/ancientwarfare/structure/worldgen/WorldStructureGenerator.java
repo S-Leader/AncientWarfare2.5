@@ -18,6 +18,7 @@ import net.shadowmage.ancientwarfare.structure.template.StructureTemplate;
 import net.shadowmage.ancientwarfare.structure.template.WorldGenStructureManager;
 import net.shadowmage.ancientwarfare.structure.template.build.StructureBB;
 import net.shadowmage.ancientwarfare.structure.template.build.StructureBuilderWorldGen;
+import net.shadowmage.ancientwarfare.structure.template.build.validation.StructureValidationType;
 import net.shadowmage.ancientwarfare.structure.worldgen.stats.PlacementRejectionReason;
 import net.shadowmage.ancientwarfare.structure.worldgen.stats.WorldGenStatistics;
 
@@ -269,6 +270,11 @@ public class WorldStructureGenerator {
         }
         if (template.getValidationSettings().validatePlacement(world, pos.getX(), pos.getY(), pos.getZ(), face, template, bb)) {
             AncientWarfareStructure.LOG.debug("Validation took: {} ms", System.currentTimeMillis() - t1);
+            if (template.getValidationSettings().validationType == StructureValidationType.ISLAND
+                    && world instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                return PersistentIslandGenerationManager.INSTANCE.queue(
+                        serverLevel, pos, face, template, map, territory, generationStart);
+            }
             generateStructureAt(world, pos, face, template, map, territory, generationStart);
             return true;
         }
