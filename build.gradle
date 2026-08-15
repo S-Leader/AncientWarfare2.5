@@ -165,7 +165,7 @@ dependencies {
 
     implementation fg.deobf("curse.maven:jei-238222:6075247")
     implementation fg.deobf("curse.maven:codechicken-lib-1-8-242818:5753868")
-    implementation fg.deobf("curse.maven:electroblobs-wizardry-redux-1405790:8205805")
+    implementation fg.deobf("curse.maven:electroblobs-wizardry-redux-1405790:8629140")
     implementation fg.deobf("curse.maven:ftb-teams-forge-404468:7499810")
     // Runtime-only prerequisites of FTB Teams in the dev environment.
     runtimeOnly fg.deobf("dev.architectury:architectury-forge:9.1.13")

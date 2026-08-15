@@ -129,7 +129,7 @@ public class EntityAIAttackSpellImproved<T extends Mob & ISpellCaster> extends G
         boolean end = distanceSq > maxAttackDistance || !targetIsVisible;
         if (!end) {
             try {
-                end = WizardryEventBus.getInstance().fire(new SpellCastEvent.Tick(SpellCastEvent.Source.NPC, spell, attacker, attacker.getModifiers(), currentTick))
+                end = WizardryEventBus.getInstance().fire(new SpellCastEvent.Tick(SpellCastEvent.Sources.NPC, spell, context))
                         || !spell.cast(context);
             } catch (RuntimeException ex) {
                 AncientWarfareNPC.LOG.error("Wizardry Redux continuous spell {} failed for AW NPC {}",
@@ -148,7 +148,7 @@ public class EntityAIAttackSpellImproved<T extends Mob & ISpellCaster> extends G
         }
 
         if (currentTick == 1) {
-            WizardryEventBus.getInstance().fire(new SpellCastEvent.Post(SpellCastEvent.Source.NPC, spell, attacker, attacker.getModifiers()));
+            WizardryEventBus.getInstance().fire(new SpellCastEvent.Post(SpellCastEvent.Sources.NPC, spell, context));
         }
     }
 
@@ -183,7 +183,7 @@ public class EntityAIAttackSpellImproved<T extends Mob & ISpellCaster> extends G
 
     private boolean attemptCastSpell(Spell spell, EntityCastContext context) {
         try {
-            if (WizardryEventBus.getInstance().fire(new SpellCastEvent.Pre(SpellCastEvent.Source.NPC, spell, context.caster(), context.modifiers()))) {
+            if (WizardryEventBus.getInstance().fire(new SpellCastEvent.Pre(SpellCastEvent.Sources.NPC, spell, context))) {
                 return false;
             }
             if (!spell.cast(context)) {
@@ -191,7 +191,7 @@ public class EntityAIAttackSpellImproved<T extends Mob & ISpellCaster> extends G
             }
 
             if (spell.isInstantCast()) {
-                WizardryEventBus.getInstance().fire(new SpellCastEvent.Post(SpellCastEvent.Source.NPC, spell, context.caster(), context.modifiers()));
+                WizardryEventBus.getInstance().fire(new SpellCastEvent.Post(SpellCastEvent.Sources.NPC, spell, context));
                 cooldown = baseCooldown + spell.getCooldown();
 
                 if (spell.requiresPacket()) {
