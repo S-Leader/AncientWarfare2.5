@@ -142,7 +142,7 @@ public final class PersistentIslandGenerationManager {
         for (int index = task.progress; index < end; index++) {
             int x = bb.min.getX() + index % width;
             int z = bb.min.getZ() + index / width;
-            if (!ensureLoaded(level, x, z)) {
+            if (!ensureBlockLoaded(level, x, z)) {
                 return;
             }
             underfillColumn(level, x, z, bb.min.getY());
@@ -214,7 +214,7 @@ public final class PersistentIslandGenerationManager {
         int pass = task.progress / chunkCount;
         int chunkIndex = task.progress % chunkCount;
         ChunkPos chunk = new ChunkPos(minChunkX + chunkIndex % chunkWidth, minChunkZ + chunkIndex / chunkWidth);
-        if (!ensureLoaded(level, chunk.x, chunk.z)) {
+        if (!ensureChunkLoaded(level, chunk.x, chunk.z)) {
             return;
         }
 
@@ -242,7 +242,7 @@ public final class PersistentIslandGenerationManager {
         for (int index = task.progress; index < end; index++) {
             int x = bb.min.getX() + (index % width) * 4;
             int z = bb.min.getZ() + (index / width) * 4;
-            if (!ensureLoaded(level, x, z)) {
+            if (!ensureBlockLoaded(level, x, z)) {
                 return;
             }
             int y = Math.max(level.getMinBuildHeight() + 1,
@@ -282,11 +282,13 @@ public final class PersistentIslandGenerationManager {
                 template.name, origin.getX(), origin.getY(), origin.getZ());
     }
 
-    private boolean ensureLoaded(ServerLevel level, int blockX, int blockZ) {
-        return ensureLoaded(level, SectionPos.blockToSectionCoord(blockX), SectionPos.blockToSectionCoord(blockZ));
+    private boolean ensureBlockLoaded(ServerLevel level, int blockX, int blockZ) {
+        return ensureChunkLoaded(level,
+                SectionPos.blockToSectionCoord(blockX),
+                SectionPos.blockToSectionCoord(blockZ));
     }
 
-    private boolean ensureLoaded(ServerLevel level, int chunkX, int chunkZ) {
+    private boolean ensureChunkLoaded(ServerLevel level, int chunkX, int chunkZ) {
         if (!level.hasChunk(chunkX, chunkZ)) {
             // Exactly one current slice is synchronously requested. The old path
             // loaded every chunk under a 300+ block island in the same tick.
