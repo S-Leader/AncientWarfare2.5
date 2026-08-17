@@ -56,10 +56,6 @@ public class BlockStructureBuilder extends BlockBaseStructure {
         return true;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileStructureBuilder();
-    }
 
     @Override
     public boolean onBlockActivated(Level world, BlockPos pos, BlockState state, Player player, InteractionHand hand, Direction facing, float hitX, float hitY, float hitZ) {

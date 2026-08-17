@@ -1,6 +1,8 @@
 package net.shadowmage.ancientwarfare.automation.tile.worksite;
 
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -64,8 +66,8 @@ public class WorkSiteAnimalFarm extends TileWorksiteBoundedInventory {
     private static final Set<Integer> entityCulledIds = new HashSet<>();
     private static final List<ItemEntity> capturedCullDrops = new ArrayList<>();
 
-    public WorkSiteAnimalFarm() {
-        super();
+    public WorkSiteAnimalFarm(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
         shouldCountResources = true;
 
         foodInventory = new ItemStackHandler(FOOD_INVENTORY_SIZE) {

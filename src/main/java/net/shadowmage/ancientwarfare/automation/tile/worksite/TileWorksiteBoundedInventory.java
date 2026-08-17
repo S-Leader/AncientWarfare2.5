@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.automation.tile.worksite;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import com.google.common.collect.Maps;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -37,7 +39,9 @@ public abstract class TileWorksiteBoundedInventory extends TileWorksiteBounded {
     private final Map<RelativeSide, IItemHandler> sideInventories = Maps.newHashMap();
     private final Map<RelativeSide, RelativeSide> inventorySideMappings = Maps.newHashMap();
 
-    public TileWorksiteBoundedInventory() {
+    public TileWorksiteBoundedInventory(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
         initSideMappings();
         mainInventory = new ItemStackHandler(MAIN_INVENTORY_SIZE);
         setSideInventory(RelativeSide.TOP, mainInventory, RelativeSide.BOTTOM);

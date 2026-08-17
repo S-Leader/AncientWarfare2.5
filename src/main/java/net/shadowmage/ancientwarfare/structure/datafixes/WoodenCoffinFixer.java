@@ -28,7 +28,7 @@ public class WoodenCoffinFixer extends TileRuleDataFixer implements ILegacyDataF
         for (MissingMappingsEvent.Mapping<Block> entry :
                 event.getMappings(ForgeRegistries.Keys.BLOCKS, "ancientwarfarestructure")) {
             if (entry.getKey().getPath().equals("coffin")) {
-                entry.remap(AWStructureBlocks.WOODEN_COFFIN);
+                entry.remap(AWStructureBlocks.WOODEN_COFFIN.get());
             }
         }
         for (MissingMappingsEvent.Mapping<Item> entry :
@@ -70,7 +70,7 @@ public class WoodenCoffinFixer extends TileRuleDataFixer implements ILegacyDataF
             CompoundTag blockStateTag = tag.getCompound("blockState");
             if (blockStateTag.getString("blockName").equals(OLD_COFFIN_REG_NAME)) {
                 //noinspection ConstantConditions
-                blockStateTag.putString("blockName", ForgeRegistries.BLOCKS.getKey(AWStructureBlocks.WOODEN_COFFIN).toString());
+                blockStateTag.putString("blockName", ForgeRegistries.BLOCKS.getKey(AWStructureBlocks.WOODEN_COFFIN.get()).toString());
             }
         }
         return super.fixJSONData(data, tag);

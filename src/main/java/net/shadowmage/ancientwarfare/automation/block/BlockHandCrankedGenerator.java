@@ -26,10 +26,6 @@ public class BlockHandCrankedGenerator extends BlockTorqueBase implements Legacy
         return HandCrankedGeneratorRenderer.INSTANCE.handleState(LegacyModelState.of(state), world, pos);
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileHandCrankedGenerator();
-    }
 
     @Override
     public RotationType getRotationType() {

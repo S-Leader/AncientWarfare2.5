@@ -55,18 +55,6 @@ public class BlockTorqueJunction extends BlockTorqueTransportSided implements Le
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        switch (getTier(state)) {
-            case LIGHT:
-                return new TileConduitLight();
-            case MEDIUM:
-                return new TileConduitMedium();
-            case HEAVY:
-                return new TileConduitHeavy();
-        }
-        return new TileConduitLight();
-    }
 
     @Override
     @OnlyIn(Dist.CLIENT)

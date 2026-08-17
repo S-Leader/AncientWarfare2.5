@@ -61,11 +61,11 @@ public class WoodenCoffinRenderer extends RenderLootInfo<TileWoodenCoffin> imple
     public void render(TileWoodenCoffin te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         if (te == null || te.isRemoved() || te.getLevel() == null
                 || te.getLevel().getBlockEntity(te.getPos()) != te
-                || !te.getLevel().getBlockState(te.getPos()).is(AWStructureBlocks.WOODEN_COFFIN)) {
+                || !te.getLevel().getBlockState(te.getPos()).is(AWStructureBlocks.WOODEN_COFFIN.get())) {
             return;
         }
         BlockState state = te.getBlockState();
-        if (!state.is(AWStructureBlocks.WOODEN_COFFIN)
+        if (!state.is(AWStructureBlocks.WOODEN_COFFIN.get())
                 || !state.hasProperty(BlockMulti.INVISIBLE)
                 || Boolean.TRUE.equals(state.getValue(BlockMulti.INVISIBLE))) {
             return;

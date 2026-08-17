@@ -24,7 +24,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.shadowmage.ancientwarfare.core.compat.client.ClientRegistry;
-import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
 import net.shadowmage.ancientwarfare.core.network.NetworkHandler;
 import net.shadowmage.ancientwarfare.core.proxy.IClientRegister;
 import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
@@ -32,6 +31,8 @@ import net.shadowmage.ancientwarfare.structure.client.AWStructureBlockColors;
 import net.shadowmage.ancientwarfare.structure.client.AWStructureItemColors;
 import net.shadowmage.ancientwarfare.structure.gui.GuiGateControl;
 import net.shadowmage.ancientwarfare.structure.gui.GuiGateControlCreative;
+import net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks;
+import net.shadowmage.ancientwarfare.structure.init.AWStructureEntities;
 import net.shadowmage.ancientwarfare.structure.render.*;
 import net.shadowmage.ancientwarfare.structure.render.statue.StatueRenderer;
 import net.shadowmage.ancientwarfare.structure.tile.*;
@@ -57,51 +58,53 @@ public class ClientProxyStructure extends CommonProxyStructure {
 
     private void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_CANDLE, RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_LONG_CLOTH, RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_SHORT_CLOTH, RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_LECTERN, RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_SUN, RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.LOOT_BASKET, RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_CANDLE.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_LONG_CLOTH.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_SHORT_CLOTH.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_LECTERN.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_SUN.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.LOOT_BASKET.get(), RenderType.cutout());
             // Legacy getBlockLayer() is no longer consulted by the 1.20 chunk renderer.
             // These models contain alpha-cut fire/metal planes and must explicitly use cutout.
-            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.FIRE_PIT, RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.BRAZIER_FLAME, RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.BRAZIER_EMBER, RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.STAKE, RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ADVANCED_SPAWNER, RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.FIRE_PIT.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.BRAZIER_FLAME.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.BRAZIER_EMBER.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.STAKE.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ADVANCED_SPAWNER.get(), RenderType.cutout());
         });
     }
 
     private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(entityType(AWEntityRegistry.AW_GATES), RenderGateInvisible::new);
-        event.registerEntityRenderer(entityType(AWEntityRegistry.SEAT), RenderSeatInvisible::new);
+        event.registerEntityRenderer(AWStructureEntities.GATE.get(), RenderGateInvisible::new);
+        event.registerEntityRenderer(AWStructureEntities.SEAT.get(), RenderSeatInvisible::new);
     }
 
     private void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        ClientRegistry.registerBlockEntityRenderer(event, TileStoneCoffin.class, ignored -> new StoneCoffinRenderer());
-        ClientRegistry.registerBlockEntityRenderer(event, TileWoodenCoffin.class, ignored -> new WoodenCoffinRenderer());
+        ClientRegistry.registerBlockEntityRenderer(event, AWStructureBlocks.STONE_COFFIN_TILE,
+                ignored -> new StoneCoffinRenderer());
+        ClientRegistry.registerBlockEntityRenderer(event, AWStructureBlocks.WOODEN_COFFIN_TILE,
+                ignored -> new WoodenCoffinRenderer());
         BlockEntityRendererProvider<TileFlag> flagRendererProvider = ignored -> new ProtectionFlagRenderer();
-        ClientRegistry.registerBlockEntityRenderer(event, TileDecorativeFlag.class, flagRendererProvider);
-        ClientRegistry.registerBlockEntityRenderer(event, TileProtectionFlag.class, flagRendererProvider);
-        ClientRegistry.registerBlockEntityRenderer(event, TileAdvancedSpawner.class, ignored -> new RenderAdvancedSpawner());
-        ClientRegistry.registerBlockEntityRenderer(event, TileAdvancedLootChest.class, ignored -> new RenderAdvancedLootChest());
-        ClientRegistry.registerBlockEntityRenderer(event, TileStructureScanner.class, ignored -> new StructureScannerRenderer());
-        ClientRegistry.registerBlockEntityRenderer(event, TEGateProxy.class, ignored -> new GateProxyRenderer());
-        ClientRegistry.registerBlockEntityRenderer(event, TileStructureBuilder.class, ignored -> new RenderStructureBuilder());
-        ClientRegistry.registerBlockEntityRenderer(event, TileStake.class, ignored -> new StakeRenderer());
-        ClientRegistry.registerBlockEntityRenderer(event, TileGravestone.class, ignored -> new RenderLootInfo<>());
-        ClientRegistry.registerBlockEntityRenderer(event, TileUrn.class, ignored -> new RenderLootInfo<>());
-        ClientRegistry.registerBlockEntityRenderer(event, TileStatue.class, ignored -> new StatueRenderer());
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T extends Entity> EntityType<T> entityType(String name) {
-        EntityType<?> type = AWEntityRegistry.getType(new ResourceLocation(AncientWarfareStructure.MOD_ID, name));
-        if (type == null) {
-            throw new IllegalStateException("Missing registered structure entity type: " + name);
-        }
-        return (EntityType<T>) type;
+        ClientRegistry.registerBlockEntityRenderer(event, AWStructureBlocks.DECORATIVE_FLAG_TILE, flagRendererProvider);
+        ClientRegistry.registerBlockEntityRenderer(event, AWStructureBlocks.PROTECTION_FLAG_TILE, flagRendererProvider);
+        ClientRegistry.registerBlockEntityRenderer(event, AWStructureBlocks.ADVANCED_SPAWNER_TILE,
+                ignored -> new RenderAdvancedSpawner());
+        ClientRegistry.registerBlockEntityRenderer(event, AWStructureBlocks.ADVANCED_LOOT_CHEST_TILE,
+                ignored -> new RenderAdvancedLootChest());
+        ClientRegistry.registerBlockEntityRenderer(event, AWStructureBlocks.STRUCTURE_SCANNER_BLOCK_TILE,
+                ignored -> new StructureScannerRenderer());
+        ClientRegistry.registerBlockEntityRenderer(event, AWStructureBlocks.GATE_PROXY_TILE,
+                ignored -> new GateProxyRenderer());
+        ClientRegistry.registerBlockEntityRenderer(event, AWStructureBlocks.STRUCTURE_BUILDER_TICKED_TILE,
+                ignored -> new RenderStructureBuilder());
+        ClientRegistry.registerBlockEntityRenderer(event, AWStructureBlocks.STAKE_TILE,
+                ignored -> new StakeRenderer());
+        ClientRegistry.registerBlockEntityRenderer(event, AWStructureBlocks.GRAVESTONE_TILE,
+                ignored -> new RenderLootInfo<>());
+        ClientRegistry.registerBlockEntityRenderer(event, AWStructureBlocks.URN_TILE,
+                ignored -> new RenderLootInfo<>());
+        ClientRegistry.registerBlockEntityRenderer(event, AWStructureBlocks.STATUE_TILE,
+                ignored -> new StatueRenderer());
     }
 
     public void registerModels(ModelEvent.RegisterAdditional event) {
@@ -118,9 +121,6 @@ public class ClientProxyStructure extends CommonProxyStructure {
     @Override
     public void preInit() {
         super.preInit();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_GATE_CONTROL, GuiGateControl.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_GATE_CONTROL_CREATIVE, GuiGateControlCreative.class);
         MinecraftForge.EVENT_BUS.register(new StructureBoundingBoxRenderer());
         MinecraftForge.EVENT_BUS.register(new BlockHighlightRenderer());
         MinecraftForge.EVENT_BUS.register(new StructureEntryBBRenderer());

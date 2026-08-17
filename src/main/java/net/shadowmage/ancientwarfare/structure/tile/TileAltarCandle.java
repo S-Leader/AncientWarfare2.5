@@ -1,11 +1,18 @@
 package net.shadowmage.ancientwarfare.structure.tile;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.world.item.ItemStack;
 
 public class TileAltarCandle extends TileColored {
+    public TileAltarCandle(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
     private static final String FLAME_COLOR_TAG = "flameColor";
     private static final String FLAME_SMOKE_TAG = "flameSmoke";
 

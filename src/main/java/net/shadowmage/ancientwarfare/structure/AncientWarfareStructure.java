@@ -30,6 +30,8 @@ import net.shadowmage.ancientwarfare.structure.datafixes.LootSettingsPotionRegis
 import net.shadowmage.ancientwarfare.structure.datafixes.TileLootFixer;
 import net.shadowmage.ancientwarfare.structure.datafixes.WoodenCoffinFixer;
 import net.shadowmage.ancientwarfare.structure.event.OneShotEntityDespawnListener;
+import net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks;
+import net.shadowmage.ancientwarfare.structure.init.AWStructureItems;
 import net.shadowmage.ancientwarfare.structure.init.AWStructureEntities;
 import net.shadowmage.ancientwarfare.structure.init.AWStructureSounds;
 import net.shadowmage.ancientwarfare.structure.network.*;
@@ -73,6 +75,8 @@ public final class AncientWarfareStructure {
 
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         AWStructureTab.register(modBus);
+        AWStructureBlocks.register(modBus);
+        AWStructureItems.register(modBus);
         AWStructureEntities.register(modBus);
         AWStructureSounds.register(modBus);
         modBus.addListener(this::commonSetup);
@@ -88,7 +92,7 @@ public final class AncientWarfareStructure {
         }
 
         registerPackets();
-        registerLegacyScreens();
+        registerNativeMenus();
         registerDataParsers();
         proxy.preInit();
         TemplateLoader.INSTANCE.initializeAndExportDefaults();
@@ -102,7 +106,7 @@ public final class AncientWarfareStructure {
         PacketBase.registerPacketType(NetworkHandler.PACKET_SHOW_BBS, PacketShowBoundingBoxes.class, PacketShowBoundingBoxes::new);
     }
 
-    private void registerLegacyScreens() {
+    private void registerNativeMenus() {
         NetworkHandler.registerContainer(NetworkHandler.GUI_SCANNER, ContainerStructureScanner.class);
         NetworkHandler.registerContainer(NetworkHandler.GUI_BUILDER, ContainerStructureSelection.class);
         NetworkHandler.registerContainer(NetworkHandler.GUI_TOWN_BUILDER, ContainerTownSelection.class);

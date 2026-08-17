@@ -1,5 +1,8 @@
 package net.shadowmage.ancientwarfare.structure.tile;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.AABB;
@@ -10,7 +13,9 @@ public class TileStatue extends TileUpdatable implements BlockRotationHandler.IR
     private EntityStatueInfo entityStatueInfo = new EntityStatueInfo();
     private Direction facing;
 
-    public TileStatue() {
+    public TileStatue(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
         entityStatueInfo.setRenderType(EntityStatueInfo.RenderType.MODEL);
     }
 

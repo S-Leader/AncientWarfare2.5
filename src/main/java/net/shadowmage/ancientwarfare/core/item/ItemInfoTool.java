@@ -138,7 +138,6 @@ public class ItemInfoTool extends ItemBaseCore {
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-        NetworkHandler.registerGui(NetworkHandler.GUI_INFO_TOOL, GuiInfoTool.class);
     }
 
     enum Mode {

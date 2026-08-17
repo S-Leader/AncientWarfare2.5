@@ -32,13 +32,15 @@ import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
 import net.shadowmage.ancientwarfare.core.interfaces.ITickable;
 import net.shadowmage.ancientwarfare.core.render.model.LegacyModelState;
 import net.shadowmage.ancientwarfare.core.tile.IBlockBreakHandler;
-import net.shadowmage.ancientwarfare.core.tile.LegacyBlockEntityRegistry;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public abstract class BlockBase extends Block implements EntityBlock {
     private final ResourceLocation legacyRegistryName;
+    @Nullable
+    private Supplier<? extends BlockEntityType<?>> blockEntityType;
 
     public BlockBase(LegacyMaterial material, String modID, String regName) {
         this(material.properties(), modID, regName);
@@ -76,25 +78,28 @@ public abstract class BlockBase extends Block implements EntityBlock {
     }
 
     /**
-     * Legacy construction hooks are bridged through EntityBlock for 1.20.1.
+     * Modern BlockEntityType binding. Registry classes provide the RegistryObject directly
+     * when the block is created; there is no global block-to-type lookup or construction
+     * ThreadLocal.
      */
-    public boolean hasTileEntity(BlockState state) {
-        return false;
+    @SuppressWarnings("unchecked")
+    public <T extends BlockBase> T setBlockEntityType(Supplier<? extends BlockEntityType<?>> type) {
+        this.blockEntityType = type;
+        return (T) this;
     }
 
-    @Nullable
-    public BlockEntity createTileEntity(@Nullable Level level, BlockState state) {
-        return null;
+    public boolean hasTileEntity(BlockState state) {
+        return blockEntityType != null;
     }
 
     @Override
     @Nullable
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        BlockEntityType<?> registeredType = LegacyBlockEntityRegistry.getType(state.getBlock());
-        if (registeredType != null) {
-            return registeredType.create(pos, state);
+        if (blockEntityType == null) {
+            return null;
         }
-        return hasTileEntity(state) ? createTileEntity(null, state) : null;
+        BlockEntityType<?> type = blockEntityType.get();
+        return type == null ? null : type.create(pos, state);
     }
 
     @Override

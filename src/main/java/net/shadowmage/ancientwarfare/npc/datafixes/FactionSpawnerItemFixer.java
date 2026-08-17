@@ -9,7 +9,7 @@ import net.shadowmage.ancientwarfare.npc.init.AWNPCItems;
 
 import java.util.Map;
 
-import static net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry.*;
+import static net.shadowmage.ancientwarfare.npc.init.AWNPCEntities.*;
 
 public class FactionSpawnerItemFixer implements ILegacyDataFixer {
     private Map<String, Tuple<String, String>> factionItemFixes = new ImmutableMap.Builder<String, Tuple<String, String>>()
@@ -129,7 +129,7 @@ public class FactionSpawnerItemFixer implements ILegacyDataFixer {
         String id = compound.getString("id");
 
         //noinspection ConstantConditions
-        if (id.equals(RegistryTools.getRegistryName(AWNPCItems.NPC_SPAWNER).toString())) {
+        if (id.equals(RegistryTools.getRegistryName(AWNPCItems.NPC_SPAWNER.get()).toString())) {
             CompoundTag tag = compound.getCompound("tag");
             String npcType = tag.getString("npcType");
             if (factionItemFixes.containsKey(npcType)) {

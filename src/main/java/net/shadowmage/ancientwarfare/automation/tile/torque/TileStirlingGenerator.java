@@ -1,6 +1,8 @@
 package net.shadowmage.ancientwarfare.automation.tile.torque;
 
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -37,7 +39,9 @@ public class TileStirlingGenerator extends TileTorqueSingleCell implements IBloc
     private int burnTime = 0;
     private int burnTimeBase = 0;
 
-    public TileStirlingGenerator() {
+    public TileStirlingGenerator(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
         torqueCell = new TorqueCell(0, 4, 1600, AWAutomationStatics.med_efficiency_factor);
     }
 

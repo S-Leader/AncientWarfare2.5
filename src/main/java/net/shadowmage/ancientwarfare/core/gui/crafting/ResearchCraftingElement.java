@@ -22,7 +22,7 @@ public class ResearchCraftingElement extends Composite {
         super(gui, topLeftX, topLeftY, ELEMENT_WIDTH, ELEMENT_HEIGHT);
         this.container = container;
 
-        ItemSlot bookSlotIcon = new ItemSlot(8, 8, new ItemStack(AWCoreItems.RESEARCH_BOOK), gui);
+        ItemSlot bookSlotIcon = new ItemSlot(8, 8, new ItemStack(AWCoreItems.RESEARCH_BOOK.get()), gui);
         bookSlotIcon.setRenderTooltip(false).setHighlightOnMouseOver(false).setRenderSlotBackground(false).setRenderItemQuantity(false);
         addGuiElement(bookSlotIcon);
 

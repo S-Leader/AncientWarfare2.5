@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.automation.tile.torque;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -41,7 +43,9 @@ public abstract class TileTorqueSidedCell extends TileTorqueBase {
     private double rotation;
     private double lastRotationDiff;
 
-    public TileTorqueSidedCell() {
+    public TileTorqueSidedCell(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
         double max = getMaxTransfer();
         double eff = getEfficiency();
         for (int i = 0; i < storage.length; i++) {

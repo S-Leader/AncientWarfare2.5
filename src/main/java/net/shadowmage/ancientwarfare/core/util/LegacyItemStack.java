@@ -66,6 +66,21 @@ public final class LegacyItemStack {
             };
             legacyMeta = 0;
         }
+        if ("ancientwarfarenpc:npc_spawner".equals(legacyItemName) && itemTag != null
+                && !itemTag.contains("faction")
+                && itemTag.getString("npcSubtype").isEmpty()) {
+            legacyItemName = switch (itemTag.getString("npcType")) {
+                case "worker" -> "ancientwarfarenpc:npc_spawner_worker";
+                case "combat" -> "ancientwarfarenpc:npc_spawner_combat";
+                case "courier" -> "ancientwarfarenpc:npc_spawner_courier";
+                case "trader" -> "ancientwarfarenpc:npc_spawner_trader";
+                case "priest" -> "ancientwarfarenpc:npc_spawner_priest";
+                case "bard" -> "ancientwarfarenpc:npc_spawner_bard";
+                case "siege_engineer" -> "ancientwarfarenpc:npc_spawner_siege_engineer";
+                default -> legacyItemName;
+            };
+            legacyMeta = 0;
+        }
         if ("ancientwarfarenpc:bard_instrument".equals(legacyItemName) && legacyMeta >= 0) {
             legacyItemName = switch (legacyMeta) {
                 case 0 -> "ancientwarfarenpc:bard_instrument_lute";

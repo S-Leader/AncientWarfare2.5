@@ -27,10 +27,6 @@ public class BlockWarehouseCraftingStation extends BlockBaseAutomation {
         return true;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileWarehouseCraftingStation();
-    }
 
     @Override
     public boolean onBlockActivated(Level world, BlockPos pos, BlockState state, Player player, InteractionHand hand, Direction facing, float hitX, float hitY, float hitZ) {
@@ -41,7 +37,5 @@ public class BlockWarehouseCraftingStation extends BlockBaseAutomation {
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_WAREHOUSE_CRAFTING, GuiWarehouseCraftingStation.class);
     }
 }

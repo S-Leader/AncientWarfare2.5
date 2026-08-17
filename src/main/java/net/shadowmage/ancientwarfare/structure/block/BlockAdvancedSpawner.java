@@ -111,10 +111,6 @@ public class BlockAdvancedSpawner extends BlockBaseStructure {
         return true;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileAdvancedSpawner();
-    }
 
     @Override
     public float getDestroyProgress(BlockState state, Player player, BlockGetter world, BlockPos pos) {
@@ -158,11 +154,5 @@ public class BlockAdvancedSpawner extends BlockBaseStructure {
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_SPAWNER_ADVANCED, GuiSpawnerAdvanced.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_SPAWNER_ADVANCED_BLOCK, GuiSpawnerAdvanced.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_SPAWNER_ADVANCED_INVENTORY, GuiSpawnerAdvancedInventory.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_SPAWNER_ADVANCED_BLOCK_INVENTORY, GuiSpawnerAdvancedInventory.class);
-
     }
 }

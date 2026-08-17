@@ -9,7 +9,7 @@ import net.shadowmage.ancientwarfare.npc.AncientWarfareNPC;
 import java.util.Map;
 import java.util.Set;
 
-import static net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry.*;
+import static net.shadowmage.ancientwarfare.npc.init.AWNPCEntities.*;
 
 public class FactionExpansionEntityFixer implements ILegacyDataFixer {
     private static final String FACTION_NAME_TAG = "factionName";

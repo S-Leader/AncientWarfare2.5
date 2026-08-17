@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.npc.entity.faction;
 
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -36,15 +37,11 @@ public abstract class NpcFactionMounted extends NpcFaction implements IHorseMoun
         horseLives = false;
     }
 
-    public NpcFactionMounted(Level world) {
-        super(world);
+    public NpcFactionMounted(EntityType<? extends PathfinderMob> type, Level world) {
+        super(type, world);
         tasks.addTask(0, horseAI);
     }
 
-    public NpcFactionMounted(Level world, String factionName) {
-        super(world, factionName);
-        tasks.addTask(0, horseAI);
-    }
 
     @Override
     public void checkDespawn() {
@@ -136,8 +133,8 @@ public abstract class NpcFactionMounted extends NpcFaction implements IHorseMoun
             AncientWarfareNPC.LOG.error("Error instantiating configured mount entity for class: {}", clazz.getName(), e);
         }
 
-        Mob fallback = EntityType.HORSE.create(world);
-        return fallback != null ? fallback : new Horse(EntityType.HORSE, world);
+        Entity fallback = EntityType.HORSE.create(world);
+        return fallback instanceof Mob ? (Mob) fallback : new Horse(EntityType.HORSE, world);
     }
 
     @Override

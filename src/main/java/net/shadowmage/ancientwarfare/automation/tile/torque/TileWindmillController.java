@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.automation.tile.torque;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.shadowmage.ancientwarfare.automation.config.AWAutomationStatics;
@@ -11,7 +13,9 @@ import javax.annotation.Nullable;
 
 public class TileWindmillController extends TileTorqueSingleCell {
 
-    public TileWindmillController() {
+    public TileWindmillController(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
         double max = AWAutomationStatics.low_transfer_max;
         torqueCell = new TorqueCell(max, max, max, AWAutomationStatics.low_efficiency_factor);
     }

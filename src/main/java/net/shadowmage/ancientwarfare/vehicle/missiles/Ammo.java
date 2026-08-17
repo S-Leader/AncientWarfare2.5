@@ -11,11 +11,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
 import net.shadowmage.ancientwarfare.core.owner.Owner;
 import net.shadowmage.ancientwarfare.core.util.BlockTools;
 import net.shadowmage.ancientwarfare.npc.entity.NpcBase;
 import net.shadowmage.ancientwarfare.vehicle.AncientWarfareVehicles;
+import net.shadowmage.ancientwarfare.vehicle.init.AWVehicleEntities;
 import net.shadowmage.ancientwarfare.vehicle.config.AWVehicleStatics;
 import net.shadowmage.ancientwarfare.vehicle.entity.VehicleBase;
 
@@ -338,9 +338,7 @@ public abstract class Ammo implements IAmmo {
 
     @Nullable
     private MissileBase getMissileByType(IAmmo type, Level world, float x, float y, float z, float yaw, float pitch, float velocity, Entity shooter) {
-        MissileBase missile = AWEntityRegistry.createEntity(
-                new ResourceLocation(AncientWarfareVehicles.MOD_ID, AWEntityRegistry.MISSILE),
-                world, MissileBase.class);
+        MissileBase missile = AWVehicleEntities.MISSILE.get().create(world);
         if (missile == null) {
             return null;
         }

@@ -667,7 +667,7 @@ public class SpawnerSettings {
                 int b2 = entitySpawnSettings.remainingSpawnCount;
                 int a = (a1 << 16) | (grpIndex & 0x0000ffff);
                 int b = (index << 16) | (b2 & 0x0000ffff);
-                world.blockEvent(spawnPos, AWStructureBlocks.ADVANCED_SPAWNER, a, b);
+                world.blockEvent(spawnPos, AWStructureBlocks.ADVANCED_SPAWNER.get(), a, b);
                 index++;
             }
         }

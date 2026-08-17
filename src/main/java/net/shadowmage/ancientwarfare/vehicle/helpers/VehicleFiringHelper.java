@@ -27,12 +27,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
 import net.shadowmage.ancientwarfare.core.network.NetworkHandler;
 import net.shadowmage.ancientwarfare.core.util.MathUtils;
 import net.shadowmage.ancientwarfare.core.util.Trig;
 import net.shadowmage.ancientwarfare.npc.entity.vehicle.ITarget;
 import net.shadowmage.ancientwarfare.vehicle.AncientWarfareVehicles;
+import net.shadowmage.ancientwarfare.vehicle.init.AWVehicleEntities;
 import net.shadowmage.ancientwarfare.vehicle.config.AWVehicleStatics;
 import net.shadowmage.ancientwarfare.vehicle.entity.VehicleBase;
 import net.shadowmage.ancientwarfare.vehicle.entity.VehicleMovementType;
@@ -172,9 +172,7 @@ public class VehicleFiringHelper implements INBTSerializable<CompoundTag> {
     MissileBase getMissile2(float x, float y, float z, float yaw, float pitch, float velocity) {
         IAmmo ammo = vehicle.ammoHelper.getCurrentAmmoType().orElse(null);
         if (ammo != null) {
-            MissileBase missile = AWEntityRegistry.createEntity(
-                    new ResourceLocation(AncientWarfareVehicles.MOD_ID, AWEntityRegistry.MISSILE),
-                    vehicle.level(), MissileBase.class);
+            MissileBase missile = AWVehicleEntities.MISSILE.get().create(vehicle.level());
             if (missile == null) {
                 return null;
             }

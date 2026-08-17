@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.automation.tile.torque;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -15,7 +17,9 @@ public abstract class TileFlywheelController extends TileTorqueSingleCell {
 
     private final TorqueCell inputCell;
 
-    public TileFlywheelController() {
+    public TileFlywheelController(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
         double max = getMaxTransfer();
         double eff = getEfficiency();
         inputCell = new TorqueCell(max, max, max, eff);

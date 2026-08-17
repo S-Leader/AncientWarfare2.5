@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.npc.entity.faction;
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -11,15 +13,11 @@ import net.shadowmage.ancientwarfare.npc.ai.faction.NpcAIFactionHurt;
 public class NpcFactionSoldier extends NpcFaction {
     private NpcAIAttackMeleeLongRange meleeAI = new NpcAIAttackMeleeLongRange(this);
 
-    public NpcFactionSoldier(Level world) {
-        super(world);
+    public NpcFactionSoldier(EntityType<? extends PathfinderMob> type, Level world) {
+        super(type, world);
         addAI();
     }
 
-    public NpcFactionSoldier(Level world, String factionName) {
-        super(world, factionName);
-        addAI();
-    }
 
     private void addAI() {
         tasks.addTask(0, new FloatGoal(this));

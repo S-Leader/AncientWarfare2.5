@@ -8,10 +8,10 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 import net.shadowmage.ancientwarfare.vehicle.AncientWarfareVehicles;
 
 import javax.annotation.Nullable;
@@ -24,19 +24,16 @@ import javax.annotation.Nullable;
  * RecipeManager#getAllRecipesFor(RecipeType.SMELTING) must be safely castable to the
  * vanilla smelting class by compatibility mods.
  */
-@Mod.EventBusSubscriber(modid = AncientWarfareVehicles.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class SmeltingRecipeRegistry {
-    public static RecipeSerializer<MultiOutputSmeltingRecipe> SERIALIZER;
+    private static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS =
+            DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, AncientWarfareVehicles.MOD_ID);
+    public static final RegistryObject<RecipeSerializer<MultiOutputSmeltingRecipe>> SERIALIZER =
+            SERIALIZERS.register("multi_output_smelting", Serializer::new);
 
     private SmeltingRecipeRegistry() {
     }
-
-    @SubscribeEvent
-    public static void register(RegisterEvent event) {
-        event.register(ForgeRegistries.Keys.RECIPE_SERIALIZERS, helper -> {
-            SERIALIZER = new Serializer();
-            helper.register(new ResourceLocation(AncientWarfareVehicles.MOD_ID, "multi_output_smelting"), SERIALIZER);
-        });
+    public static void register(IEventBus modBus) {
+        SERIALIZERS.register(modBus);
     }
 
     public static final class MultiOutputSmeltingRecipe extends SmeltingRecipe {
@@ -47,7 +44,7 @@ public final class SmeltingRecipeRegistry {
 
         @Override
         public RecipeSerializer<?> getSerializer() {
-            return SERIALIZER;
+            return SERIALIZER.get();
         }
     }
 

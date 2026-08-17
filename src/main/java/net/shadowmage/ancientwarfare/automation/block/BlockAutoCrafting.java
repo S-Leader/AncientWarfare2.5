@@ -63,10 +63,6 @@ public class BlockAutoCrafting extends BlockWorksiteBase {
         return true;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileAutoCrafting();
-    }
 
     @Override
     public boolean isOpaqueCube(BlockState state) {
@@ -87,7 +83,5 @@ public class BlockAutoCrafting extends BlockWorksiteBase {
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_WORKSITE_AUTO_CRAFT, GuiWorksiteAutoCrafting.class);
     }
 }

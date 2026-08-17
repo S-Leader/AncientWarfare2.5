@@ -20,7 +20,6 @@ import net.minecraft.world.phys.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
 import net.shadowmage.ancientwarfare.core.util.Trig;
 import net.shadowmage.ancientwarfare.vehicle.entity.IMissileHitCallback;
 import net.shadowmage.ancientwarfare.vehicle.registry.AmmoRegistry;
@@ -40,10 +39,6 @@ public class MissileBase extends Entity implements IEntityAdditionalSpawnData {
     private float accelerationX;
     private float accelerationY;
     private float accelerationZ;
-
-    public MissileBase(Level level) {
-        super((EntityType<?>) AWEntityRegistry.currentConstructionType(), level);
-    }
 
     public MissileBase(EntityType<?> type, Level level) {
         super(type, level);

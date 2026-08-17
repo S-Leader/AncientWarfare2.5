@@ -14,16 +14,10 @@ public class BlockChunkLoaderDeluxe extends BlockChunkLoaderSimple {
         super(regName);
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileChunkLoaderDeluxe();
-    }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_CHUNK_LOADER_DELUXE, GuiChunkLoaderDeluxe.class);
     }
 }

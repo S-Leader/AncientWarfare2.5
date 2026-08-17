@@ -112,18 +112,21 @@ public class RenderNpcBase<T extends NpcBase> extends HumanoidMobRenderer<T, Mod
     }
 
     @Override
-    protected boolean shouldShowName(T par1EntityLivingBase) {
-        //disable vanilla nameplate rendering, custom label rendering handled through custom rendering
-        return false;
+    protected boolean shouldShowName(T npc) {
+        // Do not suppress Minecraft's normal entity-name rendering. The old port
+        // returned false unconditionally, so even NpcBase#getTypeName() could never
+        // display dynamic names such as "Empire Archer" through the normal path.
+        // The optional AW nameplate/health overlay below remains independent.
+        return super.shouldShowName(npc);
     }
 
     private String getNameForRender(NpcBase npc, boolean hostile) {
-        String customName = npc.hasCustomName() ? npc.getCustomName().getString() : npc.getName().getString();
+        String name = npc.getNpcName();
         boolean addHealth = (hostile && AWNPCStatics.renderHostileHealth.getBoolean()) || (!hostile && AWNPCStatics.renderFriendlyHealth.getBoolean());
         if (addHealth) {
-            customName += " " + getHealthForRender(npc);
+            name += " " + getHealthForRender(npc);
         }
-        return customName;
+        return name;
     }
 
     private String getHealthForRender(NpcBase npc) {

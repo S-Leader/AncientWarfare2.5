@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.npc.entity;
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import com.google.common.base.Predicate;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -34,8 +36,8 @@ public class NpcCombat extends NpcPlayerOwned implements RangedAttackMob {
     private NpcBase distressedTarget;
 
     @SuppressWarnings("squid:S4738")
-    public NpcCombat(Level par1World) {
-        super(par1World);
+    public NpcCombat(EntityType<? extends PathfinderMob> type, Level par1World) {
+        super(type, par1World);
         meleeAI = new NpcAIAttackMeleeLongRange(this);
         arrowAI = new NpcAIPlayerOwnedAttackRanged(this);
         horseAI = new NpcAIPlayerOwnedRideHorse(this);

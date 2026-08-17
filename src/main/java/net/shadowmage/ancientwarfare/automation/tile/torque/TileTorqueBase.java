@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.automation.tile.torque;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -32,6 +34,10 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public abstract class TileTorqueBase extends TileUpdatable implements ITorqueTile, IInteractableTile, IRotatableTile, ITickable {
+    protected TileTorqueBase(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
 
     public static final int DIRECTION_LENGTH = Direction.values().length;
     private static final String ORIENTATION_TAG = "orientation";

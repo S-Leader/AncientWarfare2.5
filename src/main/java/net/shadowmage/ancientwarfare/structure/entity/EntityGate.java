@@ -30,7 +30,6 @@ import net.minecraft.world.scores.Team;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
 import net.shadowmage.ancientwarfare.core.init.AWMenuTypes;
 import net.shadowmage.ancientwarfare.core.interfaces.IEntityPacketHandler;
 import net.shadowmage.ancientwarfare.core.network.NetworkHandler;
@@ -79,10 +78,6 @@ public class EntityGate extends Entity implements IEntityAdditionalSpawnData, IE
 
     private BlockPos renderedTilePos = null;
     private int soundTicks = 15;
-
-    public EntityGate(Level par1World) {
-        this((EntityType<?>) AWEntityRegistry.currentConstructionType(), par1World);
-    }
 
     public EntityGate(EntityType<?> type, Level level) {
         super(type, level);

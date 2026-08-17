@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.automation.tile.torque;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -43,7 +45,9 @@ public class TileHandCrankedGenerator extends TileTorqueSingleCell implements IW
     private double inputRotation;
     private double lastInputRotationDiff;
 
-    public TileHandCrankedGenerator() {
+    public TileHandCrankedGenerator(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
         double eff = AWAutomationStatics.low_efficiency_factor;
         torqueCell = new TorqueCell(0, 32, 32, eff);
         inputCell = new TorqueCell(32, 0, 150, eff);

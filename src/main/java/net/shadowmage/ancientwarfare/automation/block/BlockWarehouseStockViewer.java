@@ -112,10 +112,6 @@ public class BlockWarehouseStockViewer extends BlockBaseAutomation implements IR
         return true;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileWarehouseStockViewer();
-    }
 
     @Override
     public boolean onBlockActivated(Level world, BlockPos pos, BlockState state, Player player, InteractionHand hand, Direction facing, float hitX, float hitY, float hitZ) {
@@ -132,7 +128,5 @@ public class BlockWarehouseStockViewer extends BlockBaseAutomation implements IR
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_WAREHOUSE_STOCK, GuiWarehouseStockViewer.class);
     }
 }

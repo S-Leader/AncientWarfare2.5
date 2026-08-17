@@ -238,8 +238,6 @@ public class ItemStructureScanner extends ItemBaseStructure implements IItemKeyI
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_SCANNER, GuiStructureScanner.class);
     }
 
     @SuppressWarnings("ConstantConditions")

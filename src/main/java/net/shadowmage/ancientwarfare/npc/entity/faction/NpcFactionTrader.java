@@ -1,6 +1,8 @@
 package net.shadowmage.ancientwarfare.npc.entity.faction;
 
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -24,16 +26,13 @@ public class NpcFactionTrader extends NpcFaction {
     private boolean noTradesDespawn = false;
 
     @SuppressWarnings("unused")
-    public NpcFactionTrader(Level world) {
-        super(world);
+    public NpcFactionTrader(EntityType<? extends PathfinderMob> type, Level world) {
+        super(type, world);
         addAI();
     }
 
     @SuppressWarnings("unused")
-    public NpcFactionTrader(Level world, String factionName) {
-        super(world, factionName);
-        addAI();
-    }
+
 
     private void addAI() {
         tasks.addTask(0, new FloatGoal(this));

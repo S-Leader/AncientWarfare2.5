@@ -1,5 +1,8 @@
 package net.shadowmage.ancientwarfare.automation.tile.torque;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -17,6 +20,10 @@ import javax.annotation.Nullable;
  * @author Shadowmage
  */
 public abstract class TileTorqueSingleCell extends TileTorqueBase {
+    protected TileTorqueSingleCell(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
 
     private static final String CLIENT_ENERGY_TAG = "clientEnergy";
     private static final String TORQUE_ENERGY_TAG = "torqueEnergy";

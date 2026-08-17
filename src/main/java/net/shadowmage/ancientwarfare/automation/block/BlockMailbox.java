@@ -51,10 +51,6 @@ public class BlockMailbox extends BlockBaseAutomation implements IRotatableBlock
         return true;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileMailbox();
-    }
 
     @Override
     public boolean onBlockActivated(Level world, BlockPos pos, BlockState state, Player player, InteractionHand hand, Direction facing, float hitX, float hitY, float hitZ) {
@@ -96,7 +92,5 @@ public class BlockMailbox extends BlockBaseAutomation implements IRotatableBlock
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_MAILBOX_INVENTORY, GuiMailboxInventory.class);
     }
 }

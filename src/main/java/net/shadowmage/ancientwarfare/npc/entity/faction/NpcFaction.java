@@ -1,7 +1,8 @@
 package net.shadowmage.ancientwarfare.npc.entity.faction;
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -63,16 +64,11 @@ public abstract class NpcFaction extends NpcBase {
     private Map<String, Long> revengePlayers = new HashMap<>();
     public double dialogueSeed;
 
-    public NpcFaction(Level world) {
-        super(world);
+    public NpcFaction(EntityType<? extends PathfinderMob> type, Level world) {
+        super(type, world);
         addAI();
     }
 
-    public NpcFaction(Level world, String factionName) {
-        super(world);
-        setFactionNameAndDefaults(factionName);
-        addAI();
-    }
 
     @Override
     protected void defineSynchedData() {
@@ -267,10 +263,8 @@ public abstract class NpcFaction extends NpcBase {
     }
 
     @Override
-    @SuppressWarnings("squid:CallToDeprecatedMethod") //need to use I18n call that's available server side for this
     public String getNpcName() {
-        //noinspection deprecation
-        String name = I18n.get("entity.ancientwarfarenpc." + getNpcFullType() + ".name");
+        String name = getLocalizedNpcTypeName();
         if (hasCustomName()) {
             name = getCustomName().getString();
         }

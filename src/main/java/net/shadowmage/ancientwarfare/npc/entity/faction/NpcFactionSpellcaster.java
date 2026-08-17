@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.npc.entity.faction;
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -14,18 +16,11 @@ import net.shadowmage.ancientwarfare.npc.ai.faction.NpcAIFactionHurt;
 public class NpcFactionSpellcaster extends NpcFaction {
 
     @SuppressWarnings("unused")
-    public NpcFactionSpellcaster(Level world) {
-        super(world);
+    public NpcFactionSpellcaster(EntityType<? extends PathfinderMob> type, Level world) {
+        super(type, world);
         addAI();
     }
 
-    @SuppressWarnings("unused")
-    public NpcFactionSpellcaster(Level world, String factionName) {
-        super(world, factionName);
-        addAI();
-    }
-
-    @SuppressWarnings("Duplicates")
     private void addAI() {
         tasks.addTask(0, new FloatGoal(this));
         tasks.addTask(0, new NpcAIRestrictOpenDoor(this));

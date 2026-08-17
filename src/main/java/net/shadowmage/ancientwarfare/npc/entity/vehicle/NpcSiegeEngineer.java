@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.npc.entity.vehicle;
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -50,8 +52,8 @@ public class NpcSiegeEngineer extends NpcPlayerOwned implements IVehicleUser {
         }
     }
 
-    public NpcSiegeEngineer(Level world) {
-        super(world);
+    public NpcSiegeEngineer(EntityType<? extends PathfinderMob> type, Level world) {
+        super(type, world);
 
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(0, new NpcAIRestrictOpenDoor(this));

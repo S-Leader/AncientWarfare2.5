@@ -137,11 +137,6 @@ public class BlockLootBasket extends BlockBaseStructure {
         return state.getValue(FACING).getAxis() == Direction.Axis.X ? SINGLE_WEST_EAST : SINGLE_SOUTH_NORTH;
     }
 
-    @Nullable
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileLootBasket();
-    }
 
     @Override
     public BlockState getStateForPlacement(Level world, BlockPos pos, Direction facing, float hitX, float hitY, float hitZ, int meta, LivingEntity placer) {
@@ -234,7 +229,5 @@ public class BlockLootBasket extends BlockBaseStructure {
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_LOOT_BASKET, GuiLootBasket.class);
     }
 }

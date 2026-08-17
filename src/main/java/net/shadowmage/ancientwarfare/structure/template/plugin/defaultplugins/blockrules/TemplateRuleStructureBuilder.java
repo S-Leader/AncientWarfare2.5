@@ -48,7 +48,7 @@ public class TemplateRuleStructureBuilder extends TemplateRuleBlock {
         WorldTools.getTile(world, pos, TileStructureBuilder.class).ifPresent(structureBuilder -> {
             structureBuilder.setOwner(Owner.EMPTY);
             Direction placementFacing = rotateFacing(turns, facing);
-            AWStructureItems.STRUCTURE_BUILDER_TICKED.setupStructureBuilder(world, pos, structureBuilder, templateName, placementFacing);
+            AWStructureItems.STRUCTURE_BUILDER_TICKED.get().setupStructureBuilder(world, pos, structureBuilder, templateName, placementFacing);
         });
     }
 
@@ -61,7 +61,7 @@ public class TemplateRuleStructureBuilder extends TemplateRuleBlock {
 
     @Override
     protected Optional<ItemStack> getStack() {
-        ItemStack stack = new ItemStack(AWStructureItems.STRUCTURE_BUILDER_TICKED);
+        ItemStack stack = new ItemStack(AWStructureItems.STRUCTURE_BUILDER_TICKED.get());
         stack.getOrCreateTag().put("structureName", StringTag.valueOf(templateName));
         return Optional.of(stack);
     }

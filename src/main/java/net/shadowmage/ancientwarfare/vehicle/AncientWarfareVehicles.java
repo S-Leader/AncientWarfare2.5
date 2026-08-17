@@ -16,10 +16,15 @@ import net.shadowmage.ancientwarfare.vehicle.config.AWVehicleStatics;
 import net.shadowmage.ancientwarfare.vehicle.container.ContainerVehicle;
 import net.shadowmage.ancientwarfare.vehicle.container.ContainerVehicleInventory;
 import net.shadowmage.ancientwarfare.vehicle.init.AWVehicleEntities;
+import net.shadowmage.ancientwarfare.vehicle.init.AWVehicleItems;
 import net.shadowmage.ancientwarfare.vehicle.init.AWVehicleSounds;
 import net.shadowmage.ancientwarfare.vehicle.network.*;
 import net.shadowmage.ancientwarfare.vehicle.proxy.ClientProxy;
 import net.shadowmage.ancientwarfare.vehicle.proxy.CommonProxy;
+import net.shadowmage.ancientwarfare.vehicle.registry.AmmoRegistry;
+import net.shadowmage.ancientwarfare.vehicle.registry.ArmorRegistry;
+import net.shadowmage.ancientwarfare.vehicle.registry.SmeltingRecipeRegistry;
+import net.shadowmage.ancientwarfare.vehicle.registry.UpgradeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,7 +48,14 @@ public final class AncientWarfareVehicles {
 
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         AWVehicleTab.register(modBus);
+        // VehicleType definitions reference ammo/armor/upgrades while they are constructed.
+        // Prepare and attach those registries before concrete vehicle item suppliers are declared.
+        AmmoRegistry.register(modBus);
+        ArmorRegistry.register(modBus);
+        UpgradeRegistry.register(modBus);
+        AWVehicleItems.register(modBus);
         AWVehicleEntities.register(modBus);
+        SmeltingRecipeRegistry.register(modBus);
         AWVehicleSounds.register(modBus);
         modBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.register(this);

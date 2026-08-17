@@ -43,7 +43,7 @@ public class ItemBlockStoneCoffin extends ItemBlockCoffin {
     }
 
     public static ItemStack getVariantStack(BlockCoffin.IVariant variant) {
-        ItemStack stack = new ItemStack(AWStructureBlocks.STONE_COFFIN);
+        ItemStack stack = new ItemStack(AWStructureBlocks.STONE_COFFIN.get());
         stack.setTag(new NBTBuilder().setString(VARIANT_TAG, variant.getSerializedName()).build());
         return stack;
     }

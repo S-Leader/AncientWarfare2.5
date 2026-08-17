@@ -1,6 +1,8 @@
 package net.shadowmage.ancientwarfare.automation.tile.warehouse2;
 
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.LongTag;
@@ -52,7 +54,9 @@ public abstract class TileWarehouseBase extends TileWorksiteBounded implements I
     private final Set<ContainerWarehouseControl> viewers = new HashSet<>();
     private final Set<ContainerWarehouseCraftingStation> craftingViewers = new HashSet<>();
 
-    public TileWarehouseBase() {
+    public TileWarehouseBase(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
 
     }
 

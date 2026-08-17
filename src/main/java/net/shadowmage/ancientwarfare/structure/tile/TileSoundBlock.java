@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.structure.tile;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
@@ -36,7 +38,9 @@ public class TileSoundBlock extends TileUpdatable implements ISinger, ITickable 
     private boolean stoppedForAll = false;
     private Map<UUID, PersistentValues> playerSpecificValues = new HashMap<>();
 
-    public TileSoundBlock() {
+    public TileSoundBlock(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
         tuneData = new BlockSongPlayData();
     }
 
@@ -244,7 +248,7 @@ public class TileSoundBlock extends TileUpdatable implements ISinger, ITickable 
     public void setDisguiseState(ItemStack itemStack) {
         Block block = Block.byItem(itemStack.getItem());
         BlockState state = LegacyBlockState.fromMeta(block, itemStack.getDamageValue());
-        if (block != AWStructureBlocks.SOUND_BLOCK && state.isCollisionShapeFullBlock(world, pos) && state.canOcclude()) {
+        if (block != AWStructureBlocks.SOUND_BLOCK.get() && state.isCollisionShapeFullBlock(world, pos) && state.canOcclude()) {
             disguiseState = state;
             BlockTools.notifyBlockUpdate(this);
             world.updateNeighborsAt(pos, getBlockState().getBlock());

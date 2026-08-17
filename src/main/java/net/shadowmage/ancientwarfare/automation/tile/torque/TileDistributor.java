@@ -1,11 +1,16 @@
 package net.shadowmage.ancientwarfare.automation.tile.torque;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.shadowmage.ancientwarfare.core.interfaces.ITorque.TorqueCell;
 
 public abstract class TileDistributor extends TileTorqueSidedCell {
 
-    public TileDistributor() {
+    public TileDistributor(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
 
     }
 

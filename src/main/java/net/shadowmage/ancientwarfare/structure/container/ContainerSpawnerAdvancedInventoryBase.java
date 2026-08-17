@@ -38,7 +38,7 @@ public class ContainerSpawnerAdvancedInventoryBase extends ContainerBase {
                     public boolean mayPlace(ItemStack stack) {
                         if (stack.getItem() instanceof BlockItem) {
                             BlockItem block = (BlockItem) stack.getItem();
-                            if (block.getBlock() == AWStructureBlocks.ADVANCED_SPAWNER) {
+                            if (block.getBlock() == AWStructureBlocks.ADVANCED_SPAWNER.get()) {
                                 return false;
                             }
                         }

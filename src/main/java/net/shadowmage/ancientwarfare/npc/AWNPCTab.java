@@ -10,15 +10,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.shadowmage.ancientwarfare.core.util.LegacyCreativeTabContents;
 import net.shadowmage.ancientwarfare.core.util.SortItemsFirstComparator;
+import net.shadowmage.ancientwarfare.npc.init.AWNPCBlocks;
+import net.shadowmage.ancientwarfare.npc.init.AWNPCItems;
 import net.shadowmage.ancientwarfare.npc.item.ItemCommandBaton;
 import net.shadowmage.ancientwarfare.npc.item.ItemOrders;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.shadowmage.ancientwarfare.npc.init.AWNPCBlocks.TOWN_HALL;
-import static net.shadowmage.ancientwarfare.npc.init.AWNPCItems.BARD_INSTRUMENT_LUTE;
-import static net.shadowmage.ancientwarfare.npc.init.AWNPCItems.NPC_SPAWNER;
 
 /**
  * 1.20.1 creative tab registration for NPC content.
@@ -30,7 +29,7 @@ public final class AWNPCTab {
     public static final RegistryObject<CreativeModeTab> TAB = TABS.register("npc", () ->
             CreativeModeTab.builder()
                     .title(Component.translatable("tabs.npc"))
-                    .icon(() -> new ItemStack(NPC_SPAWNER))
+                    .icon(() -> new ItemStack(AWNPCItems.NPC_SPAWNER_WORKER.get()))
                     .displayItems((parameters, output) -> {
                         List<ItemStack> stacks = new ArrayList<>();
                         ForgeRegistries.ITEMS.getValues().stream()
@@ -42,8 +41,9 @@ public final class AWNPCTab {
                                 .flatMap(item -> LegacyCreativeTabContents.stacksFor(item).stream())
                                 .forEach(stacks::add);
                         stacks.sort(new SortItemsFirstComparator(
-                                TOWN_HALL, ItemOrders.class, ItemCommandBaton.class,
-                                BARD_INSTRUMENT_LUTE, NPC_SPAWNER));
+                                AWNPCBlocks.TOWN_HALL.get(), ItemOrders.class, ItemCommandBaton.class,
+                                AWNPCItems.BARD_INSTRUMENT_LUTE.get(), AWNPCItems.NPC_SPAWNER_WORKER.get(),
+                                AWNPCItems.NPC_SPAWNER.get()));
                         stacks.forEach(output::accept);
                     })
                     .build());

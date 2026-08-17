@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import net.shadowmage.ancientwarfare.core.container.ContainerBase;
@@ -24,9 +25,9 @@ public class PacketGui extends PacketBase {
         packetData = new CompoundTag();
     }
 
-    public void setMenuRequest(int id, int x, int y, int z) {
+    public void setMenuRequest(ResourceLocation id, int x, int y, int z) {
         packetData.putBoolean("requestMenu", true);
-        packetData.putInt("id", id);
+        packetData.putString("menu", id.toString());
         packetData.putInt("x", x);
         packetData.putInt("y", y);
         packetData.putInt("z", z);
@@ -68,7 +69,12 @@ public class PacketGui extends PacketBase {
     @Override
     protected void execute(Player player) {
         if (packetData.contains("requestMenu")) {
-            AWMenuTypes.openRequested(player, packetData.getInt("id"), packetData.getInt("x"), packetData.getInt("y"), packetData.getInt("z"));
+            ResourceLocation id = ResourceLocation.tryParse(packetData.getString("menu"));
+            if (id == null) {
+                AncientWarfareCore.LOG.error("Invalid menu id in GUI request: {}", packetData.getString("menu"));
+                return;
+            }
+            AWMenuTypes.openRequested(player, id, packetData.getInt("x"), packetData.getInt("y"), packetData.getInt("z"));
         } else if (player.containerMenu instanceof ContainerBase container
                 && (!packetData.contains(MENU_TARGET) || packetData.getInt(MENU_TARGET) == container.containerId)) {
             container.onPacketData(payload());

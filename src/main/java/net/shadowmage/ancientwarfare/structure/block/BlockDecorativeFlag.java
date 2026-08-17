@@ -23,11 +23,6 @@ public class BlockDecorativeFlag extends BlockFlag {
         setHardness(2.0F);
     }
 
-    @Nullable
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileDecorativeFlag();
-    }
 
     @Override
     @OnlyIn(Dist.CLIENT)

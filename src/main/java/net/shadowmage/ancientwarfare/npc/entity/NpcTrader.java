@@ -1,6 +1,8 @@
 package net.shadowmage.ancientwarfare.npc.entity;
 
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,8 +28,8 @@ public class NpcTrader extends NpcPlayerOwned {
     private POTradeList tradeList = new POTradeList();
     private NpcAIPlayerOwnedTrader tradeAI;
 
-    public NpcTrader(Level par1World) {
-        super(par1World);
+    public NpcTrader(EntityType<? extends PathfinderMob> type, Level par1World) {
+        super(type, par1World);
 
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(0, new NpcAIRestrictOpenDoor(this));

@@ -1,17 +1,17 @@
 package net.shadowmage.ancientwarfare.npc.entity.faction;
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 
 public class NpcFactionCivilianMale extends NpcFactionCivilian {
     @SuppressWarnings("unused")
-    public NpcFactionCivilianMale(Level world) {
-        super(world);
+    public NpcFactionCivilianMale(EntityType<? extends PathfinderMob> type, Level world) {
+        super(type, world);
     }
 
     @SuppressWarnings("unused")
-    public NpcFactionCivilianMale(Level world, String factionName) {
-        super(world, factionName);
-    }
+
 
     @Override
     public String getNpcType() {

@@ -1,6 +1,7 @@
 package net.shadowmage.ancientwarfare.automation.tile.worksite;
 
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -35,8 +36,8 @@ public final class WorkSiteQuarry extends TileWorksiteBoundedInventory {
     private BlockPos current = BlockPos.ZERO;//position within bounds that is the 'active' position
     private BlockPos validate = BlockPos.ZERO;
 
-    public WorkSiteQuarry() {
-        super();
+    public WorkSiteQuarry(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     @Override

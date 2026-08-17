@@ -21,12 +21,12 @@ public final class AWCoreTab {
     public static final RegistryObject<CreativeModeTab> TAB = TABS.register("core", () ->
             CreativeModeTab.builder()
                     .title(Component.translatable("tabs.awcore"))
-                    .icon(() -> new ItemStack(AWCoreItems.RESEARCH_BOOK))
+                    .icon(() -> new ItemStack(AWCoreItems.RESEARCH_BOOK.get()))
                     .displayItems((parameters, output) -> ForgeRegistries.ITEMS.getValues().stream()
                             .filter(item -> {
                                 var id = ForgeRegistries.ITEMS.getKey(item);
-                                return item != AWCoreItems.LEGACY_COMPONENT
-                                        && item != AWCoreItems.LEGACY_BACKPACK
+                                return item != AWCoreItems.LEGACY_COMPONENT.get()
+                                        && item != AWCoreItems.LEGACY_BACKPACK.get()
                                         && id != null && AncientWarfareCore.MOD_ID.equals(id.getNamespace());
                             })
                             .flatMap(item -> LegacyCreativeTabContents.stacksFor(item).stream())

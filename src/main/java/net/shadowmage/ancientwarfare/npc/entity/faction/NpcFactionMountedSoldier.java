@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.npc.entity.faction;
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -12,16 +14,13 @@ public class NpcFactionMountedSoldier extends NpcFactionMounted {
     private NpcAIAttackMeleeLongRange meleeAI;
 
     @SuppressWarnings("unused") //required for deserialization
-    public NpcFactionMountedSoldier(Level world) {
-        super(world);
+    public NpcFactionMountedSoldier(EntityType<? extends PathfinderMob> type, Level world) {
+        super(type, world);
         addAI();
     }
 
     @SuppressWarnings("unused") //used in reflection
-    public NpcFactionMountedSoldier(Level world, String factionName) {
-        super(world, factionName);
-        addAI();
-    }
+
 
     private void addAI() {
         meleeAI = new NpcAIAttackMeleeLongRange(this);

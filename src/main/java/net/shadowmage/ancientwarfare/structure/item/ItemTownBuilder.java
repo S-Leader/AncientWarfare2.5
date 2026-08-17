@@ -117,8 +117,6 @@ public class ItemTownBuilder extends ItemBaseStructure implements IItemKeyInterf
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_TOWN_BUILDER, GuiTownSelection.class);
     }
 
     public static int getWidth(ItemStack townBuilder) {

@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -26,23 +27,25 @@ import net.shadowmage.ancientwarfare.core.network.PacketGui;
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * Native Forge menu registrations for every Ancient Warfare GUI.
- * <p>
- * Existing legacy container constructors remain unchanged, but every GUI now
- * has its own MenuType and is opened through NetworkHooks.openScreen.
+ * Forge 1.20.1 native menu registry.
+ *
+ * Every AW menu is identified by a stable ResourceLocation, e.g.
+ * ancientwarfare:npc_inventory. No numeric/legacy GUI id participates in
+ * registration, opening, screen lookup or network requests.
  */
 public final class AWMenuTypes {
     private static final DeferredRegister<MenuType<?>> MENUS =
             DeferredRegister.create(ForgeRegistries.MENU_TYPES, AncientWarfareCore.MOD_ID);
 
-    private static final Map<Integer, MenuRegistration> MENUS_BY_LEGACY_ID = new LinkedHashMap<>();
+    private static final Map<ResourceLocation, MenuRegistration> MENUS_BY_ID = new LinkedHashMap<>();
 
-    /**
-     * Used only by local child screens that need a harmless menu instance.
-     */
+    /** Used only by local child screens that need a harmless menu instance. */
     public static final RegistryObject<MenuType<ContainerBase>> CLIENT_ONLY = MENUS.register(
             "client_only",
             () -> new MenuType<>((containerId, inventory) -> {
@@ -57,14 +60,16 @@ public final class AWMenuTypes {
         MENUS.register(modBus);
     }
 
-    /**
-     * Called by the existing module registration sites during mod construction.
-     */
-    public static synchronized void registerLegacy(int legacyGuiId, Class<? extends ContainerBase> containerClass) {
-        MenuRegistration existing = MENUS_BY_LEGACY_ID.get(legacyGuiId);
+    public static synchronized void registerMenu(ResourceLocation id, Class<? extends ContainerBase> containerClass) {
+        if (!AncientWarfareCore.MOD_ID.equals(id.getNamespace())) {
+            throw new IllegalArgumentException("Ancient Warfare menu id must use namespace '"
+                    + AncientWarfareCore.MOD_ID + "': " + id);
+        }
+
+        MenuRegistration existing = MENUS_BY_ID.get(id);
         if (existing != null) {
             if (existing.containerClass() != containerClass) {
-                throw new IllegalStateException("GUI id " + legacyGuiId + " already belongs to "
+                throw new IllegalStateException("Menu " + id + " already belongs to "
                         + existing.containerClass().getName());
             }
             return;
@@ -75,81 +80,83 @@ public final class AWMenuTypes {
             constructor = containerClass.getConstructor(Player.class, int.class, int.class, int.class);
         } catch (NoSuchMethodException exception) {
             throw new IllegalStateException(containerClass.getName()
-                    + " must expose (Player,int,int,int) for menu registration", exception);
+                    + " must expose (Player,int,int,int) for native menu registration", exception);
         }
 
-        String registryName = registryName(containerClass, legacyGuiId);
-        RegistryObject<MenuType<ContainerBase>> menuType = MENUS.register(registryName, () ->
+        RegistryObject<MenuType<ContainerBase>> menuType = MENUS.register(id.getPath(), () ->
                 IForgeMenuType.create((windowId, inventory, data) ->
-                        createClientMenu(legacyGuiId, windowId, inventory, data)));
+                        createClientMenu(id, windowId, inventory, data)));
 
-        MENUS_BY_LEGACY_ID.put(legacyGuiId,
-                new MenuRegistration(legacyGuiId, containerClass, constructor, menuType));
+        MENUS_BY_ID.put(id, new MenuRegistration(id, containerClass, constructor, menuType));
     }
 
     public static Collection<MenuRegistration> registrations() {
-        return Collections.unmodifiableCollection(MENUS_BY_LEGACY_ID.values());
+        return Collections.unmodifiableCollection(MENUS_BY_ID.values());
     }
 
     @Nullable
-    public static MenuRegistration getRegistration(int legacyGuiId) {
-        return MENUS_BY_LEGACY_ID.get(legacyGuiId);
+    public static MenuRegistration getRegistration(ResourceLocation id) {
+        return MENUS_BY_ID.get(id);
     }
 
-    public static void open(Player player, int legacyGuiId) {
-        open(player, legacyGuiId, 0, 0, 0);
+    @Nullable
+    public static MenuType<ContainerBase> getMenuType(ResourceLocation id) {
+        MenuRegistration registration = MENUS_BY_ID.get(id);
+        return registration == null ? null : registration.menuType().get();
     }
 
-    public static void open(Player player, int legacyGuiId, BlockPos pos) {
-        open(player, legacyGuiId, pos.getX(), pos.getY(), pos.getZ());
+    public static void open(Player player, ResourceLocation id) {
+        open(player, id, 0, 0, 0);
     }
 
-    public static void open(Player player, int legacyGuiId, int firstValue) {
-        open(player, legacyGuiId, firstValue, 0, 0);
+    public static void open(Player player, ResourceLocation id, BlockPos pos) {
+        open(player, id, pos.getX(), pos.getY(), pos.getZ());
     }
 
-    public static void open(Player player, int legacyGuiId, int x, int y, int z) {
+    public static void open(Player player, ResourceLocation id, int firstValue) {
+        open(player, id, firstValue, 0, 0);
+    }
+
+    public static void open(Player player, ResourceLocation id, int x, int y, int z) {
         if (player.level().isClientSide()) {
-            // Normal world/item interactions also run on the server. Only menu
-            // switches and the client-only vehicle key need a request packet.
+            // World/item interactions also execute server-side. A request packet is
+            // only needed for screen-to-screen switches and the client vehicle key.
             boolean replacingMenu = player.containerMenu instanceof ContainerBase;
-            boolean clientOnlyVehicleAction = legacyGuiId == NetworkHandler.GUI_VEHICLE_AMMO_SELECTION;
+            boolean clientOnlyVehicleAction = NetworkHandler.GUI_VEHICLE_AMMO_SELECTION.equals(id);
             if (replacingMenu || clientOnlyVehicleAction) {
                 PacketGui packet = new PacketGui();
-                packet.setMenuRequest(legacyGuiId, x, y, z);
+                packet.setMenuRequest(id, x, y, z);
                 NetworkHandler.sendToServer(packet);
             }
             return;
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
-            openServer(serverPlayer, legacyGuiId, x, y, z);
+            openServer(serverPlayer, id, x, y, z);
         }
     }
 
-    /**
-     * Handles GUI switches initiated from a client screen or client-only key.
-     */
-    public static void openRequested(Player player, int legacyGuiId, int x, int y, int z) {
+    /** Handles menu switches initiated from an already-open client screen. */
+    public static void openRequested(Player player, ResourceLocation id, int x, int y, int z) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
             return;
         }
 
         boolean replacingMenu = serverPlayer.containerMenu instanceof ContainerBase;
-        boolean validVehicleRequest = legacyGuiId == NetworkHandler.GUI_VEHICLE_AMMO_SELECTION
+        boolean validVehicleRequest = NetworkHandler.GUI_VEHICLE_AMMO_SELECTION.equals(id)
                 && serverPlayer.getVehicle() != null
                 && serverPlayer.getVehicle().getId() == x;
         if (!replacingMenu && !validVehicleRequest) {
             return;
         }
 
-        openServer(serverPlayer, legacyGuiId, x, y, z);
+        openServer(serverPlayer, id, x, y, z);
     }
 
-    private static void openServer(ServerPlayer player, int legacyGuiId, int x, int y, int z) {
-        MenuRegistration registration = MENUS_BY_LEGACY_ID.get(legacyGuiId);
+    private static void openServer(ServerPlayer player, ResourceLocation id, int x, int y, int z) {
+        MenuRegistration registration = MENUS_BY_ID.get(id);
         if (registration == null) {
-            AncientWarfareCore.LOG.error("No registered MenuType for GUI id {}", legacyGuiId);
+            AncientWarfareCore.LOG.error("No registered MenuType for {}", id);
             return;
         }
 
@@ -169,16 +176,16 @@ public final class AWMenuTypes {
     }
 
     private static ContainerBase createClientMenu(
-            int legacyGuiId, int windowId, Inventory inventory, FriendlyByteBuf data) {
+            ResourceLocation id, int windowId, Inventory inventory, FriendlyByteBuf data) {
         int x = data.readInt();
         int y = data.readInt();
         int z = data.readInt();
         CompoundTag blockEntityData = data.readNbt();
         restoreClientBlockEntity(inventory.player, x, y, z, blockEntityData);
 
-        MenuRegistration registration = MENUS_BY_LEGACY_ID.get(legacyGuiId);
+        MenuRegistration registration = MENUS_BY_ID.get(id);
         if (registration == null) {
-            throw new IllegalStateException("Missing client MenuType registration for GUI id " + legacyGuiId);
+            throw new IllegalStateException("Missing native MenuType registration for " + id);
         }
         return createMenu(registration, windowId, inventory.player, x, y, z);
     }
@@ -188,14 +195,13 @@ public final class AWMenuTypes {
         return ContainerBase.createForMenu(
                 registration.menuType().get(),
                 windowId,
-                registration.legacyGuiId(),
                 () -> {
                     try {
                         return registration.constructor().newInstance(player, x, y, z);
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException exception) {
                         Throwable cause = exception instanceof InvocationTargetException invocation
                                 && invocation.getCause() != null ? invocation.getCause() : exception;
-                        throw new MenuCreationException(registration.legacyGuiId(), cause);
+                        throw new MenuCreationException(registration.id(), cause);
                     }
                 }
         );
@@ -227,24 +233,16 @@ public final class AWMenuTypes {
         }
     }
 
-    private static String registryName(Class<?> containerClass, int legacyGuiId) {
-        String simpleName = containerClass.getSimpleName().replaceFirst("^Container", "");
-        String snakeCase = simpleName
-                .replaceAll("([a-z0-9])([A-Z])", "$1_$2")
-                .toLowerCase(Locale.ROOT);
-        return snakeCase + "_" + legacyGuiId;
-    }
-
     public record MenuRegistration(
-            int legacyGuiId,
+            ResourceLocation id,
             Class<? extends ContainerBase> containerClass,
             Constructor<? extends ContainerBase> constructor,
             RegistryObject<MenuType<ContainerBase>> menuType) {
     }
 
     private static final class MenuCreationException extends RuntimeException {
-        private MenuCreationException(int legacyGuiId, Throwable cause) {
-            super("Unable to create menu for GUI id " + legacyGuiId, cause);
+        private MenuCreationException(ResourceLocation id, Throwable cause) {
+            super("Unable to create menu " + id, cause);
         }
     }
 }

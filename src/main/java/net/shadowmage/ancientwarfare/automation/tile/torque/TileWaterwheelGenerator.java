@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.automation.tile.torque;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -24,7 +25,9 @@ public class TileWaterwheelGenerator extends TileTorqueSingleCell {
 
     public boolean validSetup = false;
 
-    public TileWaterwheelGenerator() {
+    public TileWaterwheelGenerator(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
         torqueCell = new TorqueCell(0, 4, AWAutomationStatics.low_transfer_max, AWAutomationStatics.low_efficiency_factor);
         float maxWheelRpm = 20;
         rotTick = maxWheelRpm * AWAutomationStatics.rpmToRpt;

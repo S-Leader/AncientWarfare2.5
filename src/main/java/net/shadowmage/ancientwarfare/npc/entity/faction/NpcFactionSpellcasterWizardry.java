@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.npc.entity.faction;
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import com.binaris.wizardry.api.content.entity.living.ISpellCaster;
 import com.binaris.wizardry.api.content.spell.Spell;
 import com.binaris.wizardry.api.content.spell.internal.EntityCastContext;
@@ -44,15 +46,11 @@ public class NpcFactionSpellcasterWizardry extends NpcFactionSpellcaster impleme
     private final List<ResourceLocation> spellIds = new ArrayList<>();
     private int healCooldown = -1;
 
-    public NpcFactionSpellcasterWizardry(Level level) {
-        super(level);
+    public NpcFactionSpellcasterWizardry(EntityType<? extends PathfinderMob> type, Level level) {
+        super(type, level);
         addWizardryAI();
     }
 
-    public NpcFactionSpellcasterWizardry(Level level, String factionName) {
-        super(level, factionName);
-        addWizardryAI();
-    }
 
     private void addWizardryAI() {
         // Keep AW's home/follow/door goals, but use Redux' actual casting

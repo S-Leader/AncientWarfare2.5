@@ -18,7 +18,7 @@ public class ItemBlockGravestone extends ItemBlockBase {
     }
 
     public static ItemStack getVariantStack(int variant) {
-        ItemStack stack = new ItemStack(AWStructureBlocks.GRAVESTONE);
+        ItemStack stack = new ItemStack(AWStructureBlocks.GRAVESTONE.get());
         stack.setTag(new NBTBuilder().setInteger("variant", variant).build());
         return stack;
     }
@@ -26,7 +26,7 @@ public class ItemBlockGravestone extends ItemBlockBase {
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
         if (stack.hasTag()) {
-            String name = "block.gravestone." + getVariant(stack);
+            String name = "tile.gravestone." + getVariant(stack) + ".name";
             return I18n.get(name);
         }
 

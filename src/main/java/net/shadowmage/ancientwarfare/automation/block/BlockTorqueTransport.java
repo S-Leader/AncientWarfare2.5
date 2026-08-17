@@ -61,7 +61,7 @@ public abstract class BlockTorqueTransport extends BlockTorqueBase {
         return fixedTier == null ? state.getValue(AutomationProperties.TIER).getMeta() : 0;
     }
 
-    protected final TorqueTier getTier(BlockState state) {
+    public final TorqueTier getTier(BlockState state) {
         return fixedTier == null ? state.getValue(AutomationProperties.TIER) : fixedTier;
     }
 

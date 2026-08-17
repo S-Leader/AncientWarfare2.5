@@ -13,7 +13,7 @@ import net.shadowmage.ancientwarfare.npc.AncientWarfareNPC;
 
 import java.util.Map;
 
-import static net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry.*;
+import static net.shadowmage.ancientwarfare.npc.init.AWNPCEntities.*;
 
 public class FactionEntityFixer implements ILegacyDataFixer {
     private Map<String, Tuple<String, String>> factionFixes = new ImmutableMap.Builder<String, Tuple<String, String>>()

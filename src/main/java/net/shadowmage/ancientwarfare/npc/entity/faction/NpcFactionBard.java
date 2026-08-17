@@ -1,6 +1,8 @@
 package net.shadowmage.ancientwarfare.npc.entity.faction;
 
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -19,16 +21,13 @@ public class NpcFactionBard extends NpcFaction implements ISinger {
     private SongPlayData tuneData = new SongPlayData();
 
     @SuppressWarnings("unused")
-    public NpcFactionBard(Level world) {
-        super(world);
+    public NpcFactionBard(EntityType<? extends PathfinderMob> type, Level world) {
+        super(type, world);
         addAI();
     }
 
     @SuppressWarnings("unused")
-    public NpcFactionBard(Level world, String factionName) {
-        super(world, factionName);
-        addAI();
-    }
+
 
     private void addAI() {
         tasks.addTask(0, new FloatGoal(this));

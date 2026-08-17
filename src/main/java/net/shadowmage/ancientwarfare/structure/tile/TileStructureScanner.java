@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.structure.tile;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -28,6 +29,10 @@ import java.util.Collections;
 import java.util.Optional;
 
 public class TileStructureScanner extends TileUpdatable implements IBlockBreakHandler {
+    public TileStructureScanner(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
     private static final String SCANNER_INVENTORY_TAG = "scannerInventory";
     private static final String BOUNDS_ACTIVE_TAG = "boundsActive";
     private static final String FACING_TAG = "facing";
@@ -35,7 +40,7 @@ public class TileStructureScanner extends TileUpdatable implements IBlockBreakHa
     private ItemStackHandler scannerInventory = new ItemStackHandler(1) {
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            return stack.getItem() == AWStructureItems.STRUCTURE_SCANNER ? super.insertItem(slot, stack, simulate) : stack;
+            return stack.getItem() == AWStructureItems.STRUCTURE_SCANNER.get() ? super.insertItem(slot, stack, simulate) : stack;
         }
 
         @Override
@@ -66,7 +71,7 @@ public class TileStructureScanner extends TileUpdatable implements IBlockBreakHa
 
     private void updateRenderFacing() {
         ItemStack scanner = getScannerInventory().getStackInSlot(0);
-        Direction newRenderFacing = scanner.getItem() == AWStructureItems.STRUCTURE_SCANNER &&
+        Direction newRenderFacing = scanner.getItem() == AWStructureItems.STRUCTURE_SCANNER.get() &&
                 ItemStructureScanner.readyToExport(scanner)
                 ? Direction.UP : facing;
 
@@ -118,7 +123,7 @@ public class TileStructureScanner extends TileUpdatable implements IBlockBreakHa
     @OnlyIn(Dist.CLIENT)
     public AABB getRenderBoundingBox() {
         ItemStack scanner = scannerInventory.getStackInSlot(0);
-        if (scanner.getItem() != AWStructureItems.STRUCTURE_SCANNER) {
+        if (scanner.getItem() != AWStructureItems.STRUCTURE_SCANNER.get()) {
             return super.getRenderBoundingBox();
         }
 
@@ -138,7 +143,7 @@ public class TileStructureScanner extends TileUpdatable implements IBlockBreakHa
     public void restoreTemplate(String name) {
         ItemStack scanner = scannerInventory.getStackInSlot(0);
 
-        if (scanner.getItem() != AWStructureItems.STRUCTURE_SCANNER) {
+        if (scanner.getItem() != AWStructureItems.STRUCTURE_SCANNER.get()) {
             return;
         }
 
@@ -247,7 +252,7 @@ public class TileStructureScanner extends TileUpdatable implements IBlockBreakHa
     Optional<ItemStack> getScanner() {
         ItemStack scanner = scannerInventory.getStackInSlot(0);
 
-        if (scanner.getItem() != AWStructureItems.STRUCTURE_SCANNER) {
+        if (scanner.getItem() != AWStructureItems.STRUCTURE_SCANNER.get()) {
             return Optional.empty();
         }
         return Optional.of(scanner);

@@ -1,68 +1,42 @@
 package net.shadowmage.ancientwarfare.vehicle.init;
 
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
-import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry.EntityDeclaration;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import net.shadowmage.ancientwarfare.vehicle.AncientWarfareVehicles;
 import net.shadowmage.ancientwarfare.vehicle.entity.VehicleBase;
 import net.shadowmage.ancientwarfare.vehicle.missiles.MissileBase;
 
-public class AWVehicleEntities {
+/** Native Forge registration for vehicle entities. */
+public final class AWVehicleEntities {
+    public static final String VEHICLE_ID = "vehicle";
+    public static final String MISSILE_ID = "missile";
 
-    private static int nextID = 0;
+    private static final DeferredRegister<EntityType<?>> ENTITIES =
+            DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, AncientWarfareVehicles.MOD_ID);
+
+    public static final RegistryObject<EntityType<VehicleBase>> VEHICLE = ENTITIES.register(VEHICLE_ID, () ->
+            EntityType.Builder.of(VehicleBase::new, MobCategory.MISC)
+                    .sized(2.5F, 2.0F)
+                    .clientTrackingRange(120)
+                    .updateInterval(3)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .build(AncientWarfareVehicles.MOD_ID + ":" + VEHICLE_ID));
+
+    public static final RegistryObject<EntityType<MissileBase>> MISSILE = ENTITIES.register(MISSILE_ID, () ->
+            EntityType.Builder.of(MissileBase::new, MobCategory.MISC)
+                    .sized(0.35F, 0.35F)
+                    .clientTrackingRange(120)
+                    .updateInterval(3)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .build(AncientWarfareVehicles.MOD_ID + ":" + MISSILE_ID));
+
+    private AWVehicleEntities() {}
 
     public static void register(IEventBus modBus) {
-        load();
-        AWEntityRegistry.attachRegisterListener(modBus, AncientWarfareVehicles.MOD_ID);
-    }
-
-    private static boolean loaded;
-
-    public static synchronized void load() {
-        if (loaded) return;
-        loaded = true;
-        EntityDeclaration reg = new VehiculeDeclaration(VehicleBase.class, AWEntityRegistry.VEHICLE);
-        AWEntityRegistry.registerEntity(reg);
-
-        reg = new VehiculeDeclaration(MissileBase.class, AWEntityRegistry.MISSILE);
-        AWEntityRegistry.registerEntity(reg);
-    }
-
-    private static class VehiculeDeclaration extends EntityDeclaration {
-
-        public VehiculeDeclaration(Class<? extends Entity> entityClass, String entityName) {
-            super(entityClass, entityName, nextID++, AncientWarfareVehicles.MOD_ID);
-        }
-
-        @Override
-        public Object mod() {
-            return AncientWarfareVehicles.instance;
-        }
-
-        @Override
-        public int trackingRange() {
-            return 120;
-        }
-
-        @Override
-        public int updateFrequency() {
-            return 3;
-        }
-
-        @Override
-        public boolean sendsVelocityUpdates() {
-            return true;
-        }
-
-        @Override
-        public float width() {
-            return getEntityClass() == MissileBase.class ? 0.35F : 2.5F;
-        }
-
-        @Override
-        public float height() {
-            return getEntityClass() == MissileBase.class ? 0.35F : 2.0F;
-        }
+        ENTITIES.register(modBus);
     }
 }

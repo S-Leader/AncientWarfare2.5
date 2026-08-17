@@ -36,7 +36,7 @@ public class BlockWoodenCoffin extends BlockCoffin<TileWoodenCoffin> {
     private static final EnumProperty<Variant> VARIANT = EnumProperty.create("variant", Variant.class);
 
     public BlockWoodenCoffin() {
-        super(LegacyMaterial.WOOD, "wooden_coffin", TileWoodenCoffin::new, TileWoodenCoffin.class);
+        super(LegacyMaterial.WOOD, "wooden_coffin", TileWoodenCoffin.class);
     }
 
     public void getSubBlocks(CreativeModeTab itemIn, NonNullList<ItemStack> items) {

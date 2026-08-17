@@ -10,7 +10,6 @@ import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
 import net.shadowmage.ancientwarfare.core.network.NetworkHandler;
 import net.shadowmage.ancientwarfare.core.render.model.LegacyModelRegistryHelper;
 import net.shadowmage.ancientwarfare.vehicle.AncientWarfareVehicles;
@@ -18,6 +17,7 @@ import net.shadowmage.ancientwarfare.vehicle.gui.GuiVehicleAmmoSelection;
 import net.shadowmage.ancientwarfare.vehicle.gui.GuiVehicleInventory;
 import net.shadowmage.ancientwarfare.vehicle.gui.GuiVehicleStats;
 import net.shadowmage.ancientwarfare.vehicle.input.VehicleInputHandler;
+import net.shadowmage.ancientwarfare.vehicle.init.AWVehicleEntities;
 import net.shadowmage.ancientwarfare.vehicle.item.ItemBaseVehicle;
 import net.shadowmage.ancientwarfare.vehicle.render.RenderMissile;
 import net.shadowmage.ancientwarfare.vehicle.render.RenderOverlay;
@@ -42,26 +42,12 @@ public class ClientProxy extends CommonProxy {
     }
 
     private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(entityType(AWEntityRegistry.MISSILE), RenderMissile::new);
-        event.registerEntityRenderer(entityType(AWEntityRegistry.VEHICLE), RenderVehicle::new);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T extends Entity> EntityType<T> entityType(String name) {
-        EntityType<?> type = AWEntityRegistry.getType(new ResourceLocation(AncientWarfareVehicles.MOD_ID, name));
-        if (type == null) {
-            throw new IllegalStateException("Missing registered vehicle entity type: " + name);
-        }
-        return (EntityType<T>) type;
+        event.registerEntityRenderer(AWVehicleEntities.MISSILE.get(), RenderMissile::new);
+        event.registerEntityRenderer(AWVehicleEntities.VEHICLE.get(), RenderVehicle::new);
     }
 
     @Override
     public void preInit() {
-        NetworkHandler.registerGui(NetworkHandler.GUI_VEHICLE_AMMO_SELECTION, GuiVehicleAmmoSelection.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_VEHICLE_INVENTORY, GuiVehicleInventory.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_VEHICLE_STATS, GuiVehicleStats.class);
-
-
         MinecraftForge.EVENT_BUS.register(new RenderOverlay());
         MinecraftForge.EVENT_BUS.register(new RenderOverlayAdvanced());
     }

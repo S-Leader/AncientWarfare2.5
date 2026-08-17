@@ -69,7 +69,7 @@ public class ContainerStructureScanner extends ContainerBase {
         } else {
             scannerTile = null;
             scanner = EntityTools.getItemFromEitherHand(player, ItemStructureScanner.class);
-            hand = EntityTools.getHandHoldingItem(player, AWStructureItems.STRUCTURE_SCANNER);
+            hand = EntityTools.getHandHoldingItem(player, AWStructureItems.STRUCTURE_SCANNER.get());
         }
     }
 

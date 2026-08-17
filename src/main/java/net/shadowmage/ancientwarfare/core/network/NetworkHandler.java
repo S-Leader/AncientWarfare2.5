@@ -15,10 +15,6 @@ import net.shadowmage.ancientwarfare.core.compat.jei.PacketTransferRecipe;
 import net.shadowmage.ancientwarfare.core.container.ContainerBase;
 import net.shadowmage.ancientwarfare.core.init.AWMenuTypes;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -28,7 +24,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public final class NetworkHandler {
     public static final String CHANNELNAME = "main";
-    private static final String PROTOCOL_VERSION = "2";
+    private static final String PROTOCOL_VERSION = "3";
     public static final NetworkHandler INSTANCE = new NetworkHandler();
 
     private static final int PACKET_GUI = 1;
@@ -65,67 +61,70 @@ public final class NetworkHandler {
     public static final int PACKET_SHOW_BBS = 35;
     public static final int PACKET_ITEM_MOUSE_SCROLL = 36;
 
-    public static final int GUI_CRAFTING = 0;
-    public static final int GUI_SCANNER = 1;
-    public static final int GUI_BUILDER = 2;
-    public static final int GUI_NPC_INVENTORY = 4;
-    public static final int GUI_WORKSITE_INVENTORY_SIDE_ADJUST = 5;
-    public static final int GUI_NPC_TRADE_ORDER = 6;
-    public static final int GUI_SPAWNER_ADVANCED = 7;
-    public static final int GUI_SPAWNER_ADVANCED_BLOCK = 8;
-    public static final int GUI_SPAWNER_ADVANCED_INVENTORY = 9;
-    public static final int GUI_SPAWNER_ADVANCED_BLOCK_INVENTORY = 10;
-    public static final int GUI_GATE_CONTROL = 11;
-    public static final int GUI_RESEARCH_STATION = 12;
-    public static final int GUI_DRAFTING_STATION = 13;
-    public static final int GUI_WORKSITE_ANIMAL_CONTROL = 14;
-    public static final int GUI_WORKSITE_AUTO_CRAFT = 15;
-    public static final int GUI_WORKSITE_FISH_CONTROL = 16;
-    public static final int GUI_MAILBOX_INVENTORY = 17;
-    public static final int GUI_WAREHOUSE_CONTROL = 18;
-    public static final int GUI_WAREHOUSE_STORAGE = 19;
-    public static final int GUI_WAREHOUSE_STOCK = 20;
-    public static final int GUI_WAREHOUSE_OUTPUT = 21;
-    public static final int GUI_WAREHOUSE_CRAFTING = 22;
-    public static final int GUI_CHUNK_LOADER_DELUXE = 23;
-    public static final int GUI_WORKSITE_QUARRY = 24;
-    public static final int GUI_WORKSITE_TREE_FARM = 25;
-    public static final int GUI_WORKSITE_ANIMAL_FARM = 26;
-    public static final int GUI_WORKSITE_CROP_FARM = 27;
-    public static final int GUI_WORKSITE_FISH_FARM = 29;
-    public static final int GUI_WORKSITE_QUARRY_BOUNDS = 30;
-    public static final int GUI_STIRLING_GENERATOR = 31;
-    public static final int GUI_WAREHOUSE_STOCK_LINKER = 32;
-    public static final int GUI_NPC_WORK_ORDER = 34;
-    public static final int GUI_NPC_UPKEEP_ORDER = 35;
-    public static final int GUI_NPC_COMBAT_ORDER = 36;
-    public static final int GUI_NPC_ROUTING_ORDER = 37;
-    public static final int GUI_NPC_FACTION_TRADE_SETUP = 39;
-    public static final int GUI_BACKPACK = 40;
-    public static final int GUI_NPC_TOWN_HALL = 41;
-    public static final int GUI_NPC_FACTION_TRADE_VIEW = 42;
-    public static final int GUI_NPC_BARD = 43;
-    public static final int GUI_NPC_CREATIVE = 44;
-    public static final int GUI_RESEARCH_BOOK = 45;
-    public static final int GUI_WORKSITE_BOUNDS = 46;
-    public static final int GUI_NPC_PLAYER_OWNED_TRADE = 47;
-    public static final int GUI_SOUND_BLOCK = 48;
-    public static final int GUI_NPC_FACTION_BARD = 49;
-    public static final int GUI_VEHICLE_AMMO_SELECTION = 50;
-    public static final int GUI_VEHICLE_INVENTORY = 51;
-    public static final int GUI_VEHICLE_STATS = 52;
-    public static final int GUI_WORKSITE_FRUIT_FARM = 53;
-    public static final int GUI_TOWN_BUILDER = 54;
-    public static final int GUI_LOOT_CHEST_PLACER = 55;
-    public static final int GUI_MANUAL = 56;
-    public static final int GUI_INFO_TOOL = 57;
-    public static final int GUI_GATE_CONTROL_CREATIVE = 58;
-    public static final int GUI_LOOT_BASKET = 59;
-    public static final int GUI_STAKE = 60;
-    public static final int GUI_STATUE = 61;
-    public static final int GUI_NPC_FACTION_SPELLCASTER_WIZARDRY = 62;
+    private static ResourceLocation menuId(String path) {
+        return new ResourceLocation(AncientWarfareCore.MOD_ID, path);
+    }
 
-    private final Map<Integer, Class<?>> guiClasses = new HashMap<>();
+    public static final ResourceLocation GUI_CRAFTING = menuId("crafting");
+    public static final ResourceLocation GUI_SCANNER = menuId("scanner");
+    public static final ResourceLocation GUI_BUILDER = menuId("builder");
+    public static final ResourceLocation GUI_NPC_INVENTORY = menuId("npc_inventory");
+    public static final ResourceLocation GUI_WORKSITE_INVENTORY_SIDE_ADJUST = menuId("worksite_inventory_side_adjust");
+    public static final ResourceLocation GUI_NPC_TRADE_ORDER = menuId("npc_trade_order");
+    public static final ResourceLocation GUI_SPAWNER_ADVANCED = menuId("spawner_advanced");
+    public static final ResourceLocation GUI_SPAWNER_ADVANCED_BLOCK = menuId("spawner_advanced_block");
+    public static final ResourceLocation GUI_SPAWNER_ADVANCED_INVENTORY = menuId("spawner_advanced_inventory");
+    public static final ResourceLocation GUI_SPAWNER_ADVANCED_BLOCK_INVENTORY = menuId("spawner_advanced_block_inventory");
+    public static final ResourceLocation GUI_GATE_CONTROL = menuId("gate_control");
+    public static final ResourceLocation GUI_RESEARCH_STATION = menuId("research_station");
+    public static final ResourceLocation GUI_DRAFTING_STATION = menuId("drafting_station");
+    public static final ResourceLocation GUI_WORKSITE_ANIMAL_CONTROL = menuId("worksite_animal_control");
+    public static final ResourceLocation GUI_WORKSITE_AUTO_CRAFT = menuId("worksite_auto_craft");
+    public static final ResourceLocation GUI_WORKSITE_FISH_CONTROL = menuId("worksite_fish_control");
+    public static final ResourceLocation GUI_MAILBOX_INVENTORY = menuId("mailbox_inventory");
+    public static final ResourceLocation GUI_WAREHOUSE_CONTROL = menuId("warehouse_control");
+    public static final ResourceLocation GUI_WAREHOUSE_STORAGE = menuId("warehouse_storage");
+    public static final ResourceLocation GUI_WAREHOUSE_STOCK = menuId("warehouse_stock");
+    public static final ResourceLocation GUI_WAREHOUSE_OUTPUT = menuId("warehouse_output");
+    public static final ResourceLocation GUI_WAREHOUSE_CRAFTING = menuId("warehouse_crafting");
+    public static final ResourceLocation GUI_CHUNK_LOADER_DELUXE = menuId("chunk_loader_deluxe");
+    public static final ResourceLocation GUI_WORKSITE_QUARRY = menuId("worksite_quarry");
+    public static final ResourceLocation GUI_WORKSITE_TREE_FARM = menuId("worksite_tree_farm");
+    public static final ResourceLocation GUI_WORKSITE_ANIMAL_FARM = menuId("worksite_animal_farm");
+    public static final ResourceLocation GUI_WORKSITE_CROP_FARM = menuId("worksite_crop_farm");
+    public static final ResourceLocation GUI_WORKSITE_FISH_FARM = menuId("worksite_fish_farm");
+    public static final ResourceLocation GUI_WORKSITE_QUARRY_BOUNDS = menuId("worksite_quarry_bounds");
+    public static final ResourceLocation GUI_STIRLING_GENERATOR = menuId("stirling_generator");
+    public static final ResourceLocation GUI_WAREHOUSE_STOCK_LINKER = menuId("warehouse_stock_linker");
+    public static final ResourceLocation GUI_NPC_WORK_ORDER = menuId("npc_work_order");
+    public static final ResourceLocation GUI_NPC_UPKEEP_ORDER = menuId("npc_upkeep_order");
+    public static final ResourceLocation GUI_NPC_COMBAT_ORDER = menuId("npc_combat_order");
+    public static final ResourceLocation GUI_NPC_ROUTING_ORDER = menuId("npc_routing_order");
+    public static final ResourceLocation GUI_NPC_FACTION_TRADE_SETUP = menuId("npc_faction_trade_setup");
+    public static final ResourceLocation GUI_BACKPACK = menuId("backpack");
+    public static final ResourceLocation GUI_NPC_TOWN_HALL = menuId("npc_town_hall");
+    public static final ResourceLocation GUI_NPC_FACTION_TRADE_VIEW = menuId("npc_faction_trade_view");
+    public static final ResourceLocation GUI_NPC_BARD = menuId("npc_bard");
+    public static final ResourceLocation GUI_NPC_CREATIVE = menuId("npc_creative");
+    public static final ResourceLocation GUI_RESEARCH_BOOK = menuId("research_book");
+    public static final ResourceLocation GUI_WORKSITE_BOUNDS = menuId("worksite_bounds");
+    public static final ResourceLocation GUI_NPC_PLAYER_OWNED_TRADE = menuId("npc_player_owned_trade");
+    public static final ResourceLocation GUI_SOUND_BLOCK = menuId("sound_block");
+    public static final ResourceLocation GUI_NPC_FACTION_BARD = menuId("npc_faction_bard");
+    public static final ResourceLocation GUI_VEHICLE_AMMO_SELECTION = menuId("vehicle_ammo_selection");
+    public static final ResourceLocation GUI_VEHICLE_INVENTORY = menuId("vehicle_inventory");
+    public static final ResourceLocation GUI_VEHICLE_STATS = menuId("vehicle_stats");
+    public static final ResourceLocation GUI_WORKSITE_FRUIT_FARM = menuId("worksite_fruit_farm");
+    public static final ResourceLocation GUI_TOWN_BUILDER = menuId("town_builder");
+    public static final ResourceLocation GUI_LOOT_CHEST_PLACER = menuId("loot_chest_placer");
+    public static final ResourceLocation GUI_MANUAL = menuId("manual");
+    public static final ResourceLocation GUI_INFO_TOOL = menuId("info_tool");
+    public static final ResourceLocation GUI_GATE_CONTROL_CREATIVE = menuId("gate_control_creative");
+    public static final ResourceLocation GUI_LOOT_BASKET = menuId("loot_basket");
+    public static final ResourceLocation GUI_STAKE = menuId("stake");
+    public static final ResourceLocation GUI_STATUE = menuId("statue");
+    public static final ResourceLocation GUI_NPC_FACTION_SPELLCASTER_WIZARDRY = menuId("npc_faction_spellcaster_wizardry");
+
     private final Map<Integer, ConcurrentLinkedQueue<CompoundTag>> pendingClientGuiPackets = new ConcurrentHashMap<>();
     private SimpleChannel channel;
 
@@ -185,17 +184,8 @@ public final class NetworkHandler {
         return channel;
     }
 
-    public static void registerContainer(int id, Class<? extends ContainerBase> containerClass) {
-        AWMenuTypes.registerLegacy(id, containerClass);
-    }
-
-    public static void registerGui(int id, Class<?> guiClass) {
-        INSTANCE.guiClasses.put(id, guiClass);
-    }
-
-    @Nullable
-    Class<?> getGuiClass(int id) {
-        return guiClasses.get(id);
+    public static void registerContainer(ResourceLocation id, Class<? extends ContainerBase> containerClass) {
+        AWMenuTypes.registerMenu(id, containerClass);
     }
 
     /**
@@ -223,25 +213,5 @@ public final class NetworkHandler {
         }
     }
 
-    int validateClientGuiRegistrations() {
-        List<String> errors = new ArrayList<>();
-        for (AWMenuTypes.MenuRegistration registration : AWMenuTypes.registrations()) {
-            int id = registration.legacyGuiId();
-            Class<?> guiClass = guiClasses.get(id);
-            if (guiClass == null) {
-                errors.add("GUI id " + id + " has no client screen");
-                continue;
-            }
-            try {
-                guiClass.getConstructor(ContainerBase.class);
-            } catch (NoSuchMethodException exception) {
-                errors.add(guiClass.getName() + " lacks (ContainerBase) constructor");
-            }
-        }
-        if (!errors.isEmpty()) {
-            throw new IllegalStateException("Invalid Ancient Warfare GUI registrations: " + String.join("; ", errors));
-        }
-        return AWMenuTypes.registrations().size();
-    }
-
 }
+

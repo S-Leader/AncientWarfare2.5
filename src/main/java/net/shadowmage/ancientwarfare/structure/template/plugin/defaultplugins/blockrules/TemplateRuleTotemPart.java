@@ -11,6 +11,7 @@ import net.shadowmage.ancientwarfare.core.util.WorldTools;
 import net.shadowmage.ancientwarfare.structure.api.IStructureBuilder;
 import net.shadowmage.ancientwarfare.structure.api.TemplateRuleBlock;
 import net.shadowmage.ancientwarfare.structure.block.BlockTotemPart;
+import net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks;
 import net.shadowmage.ancientwarfare.structure.tile.TileTotemPart;
 
 import javax.annotation.Nullable;
@@ -83,8 +84,10 @@ public class TemplateRuleTotemPart extends TemplateRuleBlock {
     @Nullable
     @Override
     public BlockEntity getTileEntity(int turns) {
-        TileTotemPart te = new TileTotemPart();
-        te.setVariant(variant != null ? variant : BlockTotemPart.Variant.WINGS);
+        TileTotemPart te = AWStructureBlocks.TOTEM_PART_TILE.get().create(BlockPos.ZERO, getState(turns));
+        if (te != null) {
+            te.setVariant(variant != null ? variant : BlockTotemPart.Variant.WINGS);
+        }
         return te;
     }
 }

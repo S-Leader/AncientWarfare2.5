@@ -1,6 +1,7 @@
 package net.shadowmage.ancientwarfare.automation.tile.worksite.treefarm;
 
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -48,8 +49,8 @@ public class WorkSiteTreeFarm extends TileWorksiteFarm {
 
     private final IItemHandler inventoryForDrops;
 
-    public WorkSiteTreeFarm() {
-        super();
+    public WorkSiteTreeFarm(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
         inventoryForDrops = new CombinedInvWrapper(plantableInventory, mainInventory);
     }
 

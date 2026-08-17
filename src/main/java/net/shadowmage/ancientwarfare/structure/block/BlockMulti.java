@@ -18,28 +18,14 @@ import net.shadowmage.ancientwarfare.structure.tile.TileMulti;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 
 public abstract class BlockMulti<T extends TileMulti> extends BlockBaseStructure {
     public static final BooleanProperty INVISIBLE = BooleanProperty.create("invisible");
-    private final Supplier<T> instantiateTe;
     private final Class<T> teClass;
 
-    public BlockMulti(LegacyMaterial material, String regName, Supplier<T> instantiateTe, Class<T> teClass) {
+    public BlockMulti(LegacyMaterial material, String regName, Class<T> teClass) {
         super(material, regName);
-        this.instantiateTe = instantiateTe;
         this.teClass = teClass;
-    }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return instantiateTe.get();
     }
 
     @Override

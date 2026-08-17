@@ -60,10 +60,6 @@ public class BlockWarehouseStockLinker extends BlockBaseAutomation implements IR
         return true;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileWarehouseStockLinker();
-    }
 
     @Override
     public boolean isSignalSource(BlockState iBlockState) {
@@ -190,7 +186,5 @@ public class BlockWarehouseStockLinker extends BlockBaseAutomation implements IR
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_WAREHOUSE_STOCK_LINKER, GuiWarehouseStockLinker.class);
     }
 }

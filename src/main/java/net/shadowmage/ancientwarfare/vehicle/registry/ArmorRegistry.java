@@ -2,10 +2,12 @@ package net.shadowmage.ancientwarfare.vehicle.registry;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
+import net.shadowmage.ancientwarfare.vehicle.AncientWarfareVehicles;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
-import net.shadowmage.ancientwarfare.core.util.LegacyRegistryHelper;
 import net.shadowmage.ancientwarfare.vehicle.armors.IVehicleArmor;
 import net.shadowmage.ancientwarfare.vehicle.armors.VehicleArmorIron;
 import net.shadowmage.ancientwarfare.vehicle.armors.VehicleArmorObsidian;
@@ -24,19 +26,25 @@ public class ArmorRegistry {
     public static IVehicleArmor armorIron;
     public static IVehicleArmor armorObsidian;
 
-    private static Map<ResourceLocation, IVehicleArmor> armorInstances = new HashMap<>();
+    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, AncientWarfareVehicles.MOD_ID);
+    private static final Map<ResourceLocation, IVehicleArmor> armorInstances = new HashMap<>();
+    private static final Map<ResourceLocation, RegistryObject<ItemArmor>> armorItems = new HashMap<>();
+    private static boolean prepared;
 
-    public static void registerArmorTypes(RegisterEvent.RegisterHelper<Item> helper) {
-        armorStone = registerArmorType(new VehicleArmorStone(), helper);
-        armorIron = registerArmorType(new VehicleArmorIron(), helper);
-        armorObsidian = registerArmorType(new VehicleArmorObsidian(), helper);
+    public static synchronized void register(IEventBus modBus) {
+        if (!prepared) {
+            armorStone = registerArmorType(new VehicleArmorStone());
+            armorIron = registerArmorType(new VehicleArmorIron());
+            armorObsidian = registerArmorType(new VehicleArmorObsidian());
+            prepared = true;
+        }
+        ITEMS.register(modBus);
     }
 
-    private static IVehicleArmor registerArmorType(IVehicleArmor armor, RegisterEvent.RegisterHelper<Item> helper) {
-
-        armorInstances.put(armor.getRegistryName(), armor);
-        ItemArmor item = new ItemArmor(armor.getRegistryName(), armor);
-        LegacyRegistryHelper.register(helper, item);
+    private static IVehicleArmor registerArmorType(IVehicleArmor armor) {
+        ResourceLocation id = armor.getRegistryName();
+        armorInstances.put(id, armor);
+        armorItems.put(id, ITEMS.register(id.getPath(), () -> new ItemArmor(id, armor)));
         return armor;
     }
 

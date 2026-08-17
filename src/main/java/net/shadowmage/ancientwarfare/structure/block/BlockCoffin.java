@@ -22,12 +22,11 @@ import net.shadowmage.ancientwarfare.core.util.WorldTools;
 import net.shadowmage.ancientwarfare.structure.tile.TileCoffin;
 
 import java.util.Map;
-import java.util.function.Supplier;
 
 @SuppressWarnings("squid:MaximumInheritanceDepth")
 public abstract class BlockCoffin<T extends TileCoffin> extends BlockMulti<T> {
-    public BlockCoffin(LegacyMaterial material, String regName, Supplier<T> instantiateTe, Class<T> teClass) {
-        super(material, regName, instantiateTe, teClass);
+    public BlockCoffin(LegacyMaterial material, String regName, Class<T> teClass) {
+        super(material, regName, teClass);
     }
 
     @Override

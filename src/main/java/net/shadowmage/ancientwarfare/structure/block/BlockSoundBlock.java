@@ -52,10 +52,6 @@ public class BlockSoundBlock extends BlockBaseStructure implements LegacyBakeryP
         return true;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileSoundBlock();
-    }
 
     @Override
     public boolean onBlockActivated(Level world, BlockPos pos, BlockState state, Player player, InteractionHand hand, Direction facing, float hitX, float hitY, float hitZ) {
@@ -89,8 +85,6 @@ public class BlockSoundBlock extends BlockBaseStructure implements LegacyBakeryP
         ModelLoaderHelper.registerItem(this, SoundBlockRenderer.MODEL_LOCATION);
 
         LegacyModelBakery.registerBlockKeyGenerator(this, new BlockStateKeyGenerator.Builder().addKeyProperties(DISGUISE_BLOCK).build());
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_SOUND_BLOCK, GuiSoundBlock.class);
     }
 
     @Override

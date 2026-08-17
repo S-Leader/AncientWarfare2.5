@@ -24,10 +24,6 @@ public class BlockChunkLoaderSimple extends BlockBaseAutomation {
         return true;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileChunkLoaderSimple();
-    }
 
     @Override
     public void breakBlock(Level world, BlockPos pos, BlockState state) {

@@ -27,7 +27,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
-import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
 import net.shadowmage.ancientwarfare.core.owner.IOwnable;
 import net.shadowmage.ancientwarfare.core.owner.Owner;
 import net.shadowmage.ancientwarfare.core.util.InventoryTools;
@@ -151,10 +150,6 @@ public class VehicleBase extends Entity implements IEntityAdditionalSpawnData, I
     public int vehicleMaterialLevel = 0;//the current material level of this vehicle. should be read/set prior to calling updateBaseStats
     private Owner owner = Owner.EMPTY;
     private LazyOptional<net.minecraftforge.items.IItemHandler> itemHandlerCapability = LazyOptional.empty();
-
-    public VehicleBase(Level par1World) {
-        this((EntityType<?>) AWEntityRegistry.currentConstructionType(), par1World);
-    }
 
     public VehicleBase(EntityType<?> type, Level level) {
         super(type, level);

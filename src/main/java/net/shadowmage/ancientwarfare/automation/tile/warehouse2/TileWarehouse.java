@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.automation.tile.warehouse2;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -16,6 +18,10 @@ import net.shadowmage.ancientwarfare.core.util.WorldTools;
 import java.util.List;
 
 public class TileWarehouse extends TileWarehouseBase {
+    public TileWarehouse(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
     private SortType sortType = SortType.NAME;
     private SortOrder sortOrder = SortOrder.DESCENDING;
 

@@ -20,7 +20,7 @@ public class FactionExpansionItemFixer implements ILegacyDataFixer {
         String id = compound.getString("id");
 
         //noinspection ConstantConditions
-        if (id.equals(RegistryTools.getRegistryName(AWNPCItems.NPC_SPAWNER).toString())) {
+        if (id.equals(RegistryTools.getRegistryName(AWNPCItems.NPC_SPAWNER.get()).toString())) {
             CompoundTag tag = compound.getCompound("tag");
             if (tag.contains(FACTION_TAG) && RENAMES.containsKey(tag.getString(FACTION_TAG))) {
                 tag.putString(FACTION_TAG, RENAMES.get(tag.getString(FACTION_TAG)));

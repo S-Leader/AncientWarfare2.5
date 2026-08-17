@@ -30,10 +30,6 @@ public class BlockWindmillGenerator extends BlockTorqueGenerator implements Lega
         return true;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileWindmillController();
-    }
 
     @Override
     @OnlyIn(Dist.CLIENT)

@@ -1,6 +1,7 @@
 package net.shadowmage.ancientwarfare.automation.tile.worksite.fruitfarm;
 
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -32,8 +33,8 @@ public class WorkSiteFruitFarm extends TileWorksiteFarm {
 
     private final IItemHandler inventoryForDrops;
 
-    public WorkSiteFruitFarm() {
-        super();
+    public WorkSiteFruitFarm(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
         inventoryForDrops = new CombinedInvWrapper(plantableInventory, mainInventory);
     }
 

@@ -26,10 +26,6 @@ public abstract class TileUpdatable extends BlockEntity {
     @Deprecated
     protected final BlockPos pos;
 
-    protected TileUpdatable() {
-        this(LegacyBlockEntityRegistry.currentType(), LegacyBlockEntityRegistry.currentPos(), LegacyBlockEntityRegistry.currentState());
-    }
-
     protected TileUpdatable(BlockEntityType<?> type, BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
         super(type, pos, state);
         this.pos = pos;

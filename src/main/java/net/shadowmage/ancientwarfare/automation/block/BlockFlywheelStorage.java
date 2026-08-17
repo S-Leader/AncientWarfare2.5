@@ -128,10 +128,6 @@ public class BlockFlywheelStorage extends BlockBaseAutomation implements LegacyB
         }
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileFlywheelStorage();
-    }
 
     @Override
     public boolean hasTileEntity(BlockState state) {

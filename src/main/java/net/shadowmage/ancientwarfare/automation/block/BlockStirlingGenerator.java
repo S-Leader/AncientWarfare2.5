@@ -27,10 +27,6 @@ public class BlockStirlingGenerator extends BlockTorqueGenerator implements Lega
         return StirlingGeneratorRenderer.INSTANCE.handleState(LegacyModelState.of(state), world, pos);
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileStirlingGenerator();
-    }
 
     @Override
     @OnlyIn(Dist.CLIENT)
@@ -42,9 +38,6 @@ public class BlockStirlingGenerator extends BlockTorqueGenerator implements Lega
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_STIRLING_GENERATOR, GuiStirlingGenerator.class);
-
         LegacyModelLoader.setCustomStateMapper(this, new LegacyStateMapperBase() {
             @Override
             @OnlyIn(Dist.CLIENT)

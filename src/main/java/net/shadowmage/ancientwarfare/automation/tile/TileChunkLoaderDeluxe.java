@@ -1,6 +1,9 @@
 package net.shadowmage.ancientwarfare.automation.tile;
 
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.InteractionHand;
@@ -24,7 +27,9 @@ public class TileChunkLoaderDeluxe extends TileChunkLoaderSimple implements IInt
 
     private final List<ContainerChunkLoaderDeluxe> viewers = new ArrayList<>();
 
-    public TileChunkLoaderDeluxe() {
+    public TileChunkLoaderDeluxe(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
 
     }
 

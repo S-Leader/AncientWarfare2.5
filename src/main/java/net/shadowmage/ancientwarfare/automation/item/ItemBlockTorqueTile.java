@@ -27,7 +27,7 @@ public class ItemBlockTorqueTile extends ItemBlockBase {
             throw new IllegalArgumentException("Must be a rotatable block!!");
         }
         rotatable = rotatableBlock;
-        //Must not build ItemStacks here — this runs during RegisterEvent, before registries are queryable.
+        //Must not build ItemStacks here — this may run while registry population is still in progress, before registries are queryable.
         setHasSubtypes(legacyVariants && LegacyCreativeTabContents.suppliesVariants(this));
     }
 

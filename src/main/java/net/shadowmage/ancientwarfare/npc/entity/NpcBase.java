@@ -44,7 +44,6 @@ import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
-import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
 import net.shadowmage.ancientwarfare.core.init.AWMenuTypes;
 import net.shadowmage.ancientwarfare.core.interfaces.IEntityPacketHandler;
 import net.shadowmage.ancientwarfare.core.network.NetworkHandler;
@@ -140,9 +139,7 @@ public abstract class NpcBase extends PathfinderMob implements IEntityAdditional
 
     private int stopAIControlFlags = 0;
 
-    public NpcBase(Level par1World) {
-        this((EntityType<? extends PathfinderMob>) AWEntityRegistry.currentConstructionType(), par1World);
-    }
+
 
     public NpcBase(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
@@ -690,8 +687,28 @@ public abstract class NpcBase extends PathfinderMob implements IEntityAdditional
         return type;
     }
 
+    /**
+     * Use the same dynamic entity-name path as the modern reference implementation.
+     * Faction/type/subtype is part of the translation key, so e.g.
+     * empire.archer.elite resolves to "Empire Archer" instead of the generic
+     * registered EntityType name.
+     */
+    @Override
+    public Component getTypeName() {
+        return Component.translatable("entity.ancientwarfarenpc." + getNpcFullType());
+    }
+
+    protected String getLocalizedNpcTypeName() {
+        String modernKey = "entity.ancientwarfarenpc." + getNpcFullType();
+        if (I18n.exists(modernKey)) {
+            return I18n.get(modernKey);
+        }
+        String legacyKey = modernKey + ".name";
+        return I18n.exists(legacyKey) ? I18n.get(legacyKey) : getNpcFullType();
+    }
+
     public String getNpcName() {
-        String name = I18n.get("entity.ancientwarfarenpc." + getNpcFullType() + ".name");
+        String name = getLocalizedNpcTypeName();
         if (hasCustomName()) {
             name = name + " : " + getCustomName().getString();
         }

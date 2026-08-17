@@ -182,11 +182,6 @@ public class BlockStake extends BlockBaseStructure {
         return state.getValue(TOP_BOTTOM_PART) == BOTTOM;
     }
 
-    @Nullable
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileStake();
-    }
 
     @Override
     @OnlyIn(Dist.CLIENT)
@@ -201,6 +196,5 @@ public class BlockStake extends BlockBaseStructure {
         });
 
         ModelLoaderHelper.registerItem(this, "structure", "inventory");
-        NetworkHandler.registerGui(NetworkHandler.GUI_STAKE, GuiStake.class);
     }
 }

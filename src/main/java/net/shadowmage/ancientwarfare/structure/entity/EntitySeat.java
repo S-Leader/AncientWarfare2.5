@@ -14,7 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
-import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
 import net.shadowmage.ancientwarfare.structure.block.BlockSeat;
 import net.shadowmage.ancientwarfare.structure.util.RotationLimit;
 
@@ -24,17 +23,8 @@ import java.util.Optional;
 public class EntitySeat extends Entity implements IEntityAdditionalSpawnData {
     private BlockPos seatPos = BlockPos.ZERO;
 
-    public EntitySeat(Level world) {
-        this((EntityType<?>) AWEntityRegistry.currentConstructionType(), world);
-    }
-
     public EntitySeat(EntityType<?> type, Level world) {
         super(type, world);
-    }
-
-    public EntitySeat(Level world, Vec3 position, BlockPos seatPos) {
-        this(world);
-        configure(position, seatPos);
     }
 
     public EntitySeat configure(Vec3 position, BlockPos seatPos) {

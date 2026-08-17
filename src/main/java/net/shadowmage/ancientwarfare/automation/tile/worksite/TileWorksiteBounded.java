@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.automation.tile.worksite;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.ChunkPos;
@@ -16,6 +17,10 @@ import net.shadowmage.ancientwarfare.core.util.BlockTools;
 import java.util.*;
 
 public abstract class TileWorksiteBounded extends TileWorksiteBase implements IBoundedSite, IChunkLoaderTile {
+    protected TileWorksiteBounded(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
 
     private static final String BB_MIN_TAG = "bbMin";
     private static final String BB_MAX_TAG = "bbMax";

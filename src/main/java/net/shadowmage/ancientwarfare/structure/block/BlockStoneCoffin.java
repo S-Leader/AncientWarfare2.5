@@ -39,7 +39,7 @@ public class BlockStoneCoffin extends BlockCoffin<TileStoneCoffin> {
     private static final AABB AABB = new AABB(0, 0D, 0D, 1D, 14.1 / 16D, 1D);
 
     public BlockStoneCoffin() {
-        super(LegacyMaterial.ROCK, "stone_coffin", TileStoneCoffin::new, TileStoneCoffin.class);
+        super(LegacyMaterial.ROCK, "stone_coffin", TileStoneCoffin.class);
     }
 
     public void getSubBlocks(CreativeModeTab itemIn, NonNullList<ItemStack> items) {

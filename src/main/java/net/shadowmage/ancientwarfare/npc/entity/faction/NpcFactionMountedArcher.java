@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.npc.entity.faction;
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import com.google.common.base.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -18,16 +20,13 @@ import net.shadowmage.ancientwarfare.npc.entity.RangeAttackHelper;
 
 public class NpcFactionMountedArcher extends NpcFactionMounted implements RangedAttackMob {
     @SuppressWarnings("unused") //used when deserializing
-    public NpcFactionMountedArcher(Level world) {
-        super(world);
+    public NpcFactionMountedArcher(EntityType<? extends PathfinderMob> type, Level world) {
+        super(type, world);
         addAI();
     }
 
     @SuppressWarnings("unused") //used in reflection
-    public NpcFactionMountedArcher(Level world, String factionName) {
-        super(world, factionName);
-        addAI();
-    }
+
 
     private void addAI() {
         //noinspection Guava - because dependency on what vanilla does

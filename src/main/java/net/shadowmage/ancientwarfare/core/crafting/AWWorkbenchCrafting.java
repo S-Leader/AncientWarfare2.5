@@ -16,10 +16,10 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
+import net.minecraftforge.registries.RegistryObject;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 
 import java.util.HashMap;
@@ -30,22 +30,19 @@ import java.util.Map;
  * assets/ in the 1.12 layout. The serializers deliberately retain legacy item
  * metadata and result NBT, both of which vanilla 1.20 recipe serializers drop.
  */
-@Mod.EventBusSubscriber(modid = AncientWarfareCore.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class AWWorkbenchCrafting {
-    private static RecipeSerializer<LegacyShapedRecipe> shapedSerializer;
-    private static RecipeSerializer<LegacyShapelessRecipe> shapelessSerializer;
+    private static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS =
+            DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, AncientWarfareCore.MOD_ID);
+    private static final RegistryObject<RecipeSerializer<LegacyShapedRecipe>> SHAPED_SERIALIZER =
+            SERIALIZERS.register("legacy_shaped", ShapedSerializer::new);
+    private static final RegistryObject<RecipeSerializer<LegacyShapelessRecipe>> SHAPELESS_SERIALIZER =
+            SERIALIZERS.register("legacy_shapeless", ShapelessSerializer::new);
 
     private AWWorkbenchCrafting() {
     }
 
-    @SubscribeEvent
-    public static void register(RegisterEvent event) {
-        event.register(ForgeRegistries.Keys.RECIPE_SERIALIZERS, helper -> {
-            shapedSerializer = new ShapedSerializer();
-            shapelessSerializer = new ShapelessSerializer();
-            helper.register(new ResourceLocation(AncientWarfareCore.MOD_ID, "legacy_shaped"), shapedSerializer);
-            helper.register(new ResourceLocation(AncientWarfareCore.MOD_ID, "legacy_shapeless"), shapelessSerializer);
-        });
+    public static void register(IEventBus modBus) {
+        SERIALIZERS.register(modBus);
     }
 
     private static CraftingBookCategory category(JsonObject json) {
@@ -141,7 +138,7 @@ public final class AWWorkbenchCrafting {
 
         @Override
         public RecipeSerializer<?> getSerializer() {
-            return shapedSerializer;
+            return SHAPED_SERIALIZER.get();
         }
     }
 
@@ -181,7 +178,7 @@ public final class AWWorkbenchCrafting {
 
         @Override
         public RecipeSerializer<?> getSerializer() {
-            return shapelessSerializer;
+            return SHAPELESS_SERIALIZER.get();
         }
     }
 

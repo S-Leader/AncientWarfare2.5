@@ -21,17 +21,16 @@ import java.util.function.Supplier;
 
 /**
  * Shared menu base adapted to the 1.20.1 AbstractContainerMenu contract.
- * Legacy subclasses keep their Player-only constructors; the registered MenuType
+ * Existing subclasses keep their Player-only constructors; the registered native MenuType
  * factory supplies the correct menu type and window id through a short-lived context.
  */
 public class ContainerBase extends AbstractContainerMenu {
-    private record ConstructionContext(MenuType<?> menuType, int windowId, int legacyGuiId) {
+    private record ConstructionContext(MenuType<?> menuType, int windowId) {
     }
 
     private static final ThreadLocal<ConstructionContext> CONSTRUCTION_CONTEXT = new ThreadLocal<>();
 
     public final Player player;
-    public final int legacyGuiId;
     /**
      * 1.12 name retained so all legacy menus share one migration bridge.
      */
@@ -47,18 +46,16 @@ public class ContainerBase extends AbstractContainerMenu {
     public ContainerBase(Player player) {
         super(currentMenuType(), currentWindowId());
         this.player = player;
-        ConstructionContext context = CONSTRUCTION_CONTEXT.get();
-        this.legacyGuiId = context == null ? -1 : context.legacyGuiId();
     }
 
     /**
-     * Creates an unchanged legacy container through its actual registered MenuType.
+     * Creates an existing AW container through its actual registered MenuType.
      * The context only exists for the duration of the menu factory invocation.
      */
     public static <T extends ContainerBase> T createForMenu(
-            MenuType<?> menuType, int windowId, int legacyGuiId, Supplier<T> constructor) {
+            MenuType<?> menuType, int windowId, Supplier<T> constructor) {
         ConstructionContext previous = CONSTRUCTION_CONTEXT.get();
-        CONSTRUCTION_CONTEXT.set(new ConstructionContext(menuType, windowId, legacyGuiId));
+        CONSTRUCTION_CONTEXT.set(new ConstructionContext(menuType, windowId));
         try {
             return constructor.get();
         } finally {

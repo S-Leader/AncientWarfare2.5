@@ -1,6 +1,8 @@
 package net.shadowmage.ancientwarfare.automation.tile.warehouse2;
 
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,7 +33,9 @@ public class TileWarehouseStorage extends TileControlled implements IWarehouseSt
 
     private final Set<ContainerWarehouseStorage> viewers = new HashSet<>();
 
-    public TileWarehouseStorage() {
+    public TileWarehouseStorage(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
         inventory = new InventorySlotlessBasic(getStorageAdditionSize());
     }
 

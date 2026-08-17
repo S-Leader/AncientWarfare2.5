@@ -85,18 +85,6 @@ public class BlockFlywheelController extends BlockTorqueBase implements LegacyBa
         return true;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        switch (fixedTier == null ? state.getValue(AutomationProperties.TIER) : fixedTier) {
-            case LIGHT:
-                return new TileFlywheelControllerLight();
-            case MEDIUM:
-                return new TileFlywheelControllerMedium();
-            case HEAVY:
-                return new TileFlywheelControllerHeavy();
-        }
-        return null;
-    }
 
     public void getSubBlocks(CreativeModeTab item, NonNullList<ItemStack> items) {
         if (fixedTier == null) {

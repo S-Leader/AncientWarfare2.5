@@ -81,7 +81,6 @@ public class ItemBackpack extends ItemBaseCore {
         ModelLoaderHelper.registerItem(this, "core", false);
         if (!guiRegistered) {
             guiRegistered = true;
-            NetworkHandler.registerGui(NetworkHandler.GUI_BACKPACK, GuiBackpack.class);
         }
     }
 

@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.automation.tile.worksite;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
@@ -56,7 +58,9 @@ public abstract class TileWorksiteBase extends TileUpdatable
     private int timeSinceLastActiveCheck = 0;
     private final LazyOptional<IEnergyStorage> energyCapability = LazyOptional.of(() -> this);
 
-    public TileWorksiteBase() {
+    public TileWorksiteBase(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
         torqueCell = new TorqueCell(32, 0, AWCoreStatics.energyPerWorkUnit * 3, 1);
     }
 

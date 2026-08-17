@@ -147,7 +147,7 @@ public class PathWorldAccess {
     public boolean isDoor(BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         Block block = state.getBlock();
-        if (block == AWStructureBlocks.GATE_PROXY) {
+        if (block == AWStructureBlocks.GATE_PROXY.get()) {
             return WorldTools.getTile(world, pos, TEGateProxy.class)
                     .map(proxy -> proxy.getOwner().map(p -> p.getGateType().canSoldierActivate()).orElse(false)).orElse(true);
         }

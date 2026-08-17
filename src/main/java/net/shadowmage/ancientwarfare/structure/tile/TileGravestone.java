@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.structure.tile;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -12,6 +14,10 @@ import net.shadowmage.ancientwarfare.core.util.EntityTools;
 import net.shadowmage.ancientwarfare.structure.util.LootHelper;
 
 public class TileGravestone extends TileUpdatable implements ISpecialLootContainer, IBlockBreakHandler, BlockRotationHandler.IRotatableTile {
+    public TileGravestone(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
     private Direction facing = Direction.NORTH;
     private int variant = 1;
     private LootSettings lootSettings = new LootSettings();

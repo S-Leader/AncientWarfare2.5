@@ -1,6 +1,7 @@
 package net.shadowmage.ancientwarfare.automation.tile.worksite;
 
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -32,8 +33,8 @@ public class WorkSiteFishFarm extends TileWorksiteBoundedInventory {
     private int waterBlockCount = 0;
     private int waterRescanDelay = 0;
 
-    public WorkSiteFishFarm() {
-        super();
+    public WorkSiteFishFarm(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     private static final IWorksiteAction FISH_ACTION = WorksiteImplementation::getEnergyPerActivation;

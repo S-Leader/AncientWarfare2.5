@@ -2,10 +2,12 @@ package net.shadowmage.ancientwarfare.vehicle.registry;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
+import net.shadowmage.ancientwarfare.vehicle.AncientWarfareVehicles;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
-import net.shadowmage.ancientwarfare.core.util.LegacyRegistryHelper;
 import net.shadowmage.ancientwarfare.vehicle.config.AWVehicleStatics;
 import net.shadowmage.ancientwarfare.vehicle.item.ItemAmmo;
 import net.shadowmage.ancientwarfare.vehicle.missiles.*;
@@ -79,69 +81,79 @@ public class AmmoRegistry {
     private AmmoRegistry() {
     }
 
-    private static Map<ResourceLocation, IAmmo> ammoInstances = new HashMap<>();
-    private static Map<ResourceLocation, ItemAmmo> ammoItemInstances = new HashMap<>();
+    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, AncientWarfareVehicles.MOD_ID);
+    private static final Map<ResourceLocation, IAmmo> ammoInstances = new HashMap<>();
+    private static final Map<ResourceLocation, RegistryObject<ItemAmmo>> ammoItemInstances = new HashMap<>();
+    private static boolean prepared;
 
-    public static void registerAmmo(RegisterEvent.RegisterHelper<Item> helper) {
-
-        ammoBallShot = registerAmmoType(new AmmoBallShot(), helper);
-        ammoBallIronShot = registerAmmoType(new AmmoIronBallShot(), helper);
-        ammoStoneShot10 = registerAmmoType(new AmmoStoneShot(10), helper);
-        ammoStoneShot15 = registerAmmoType(new AmmoStoneShot(15), helper);
-        ammoStoneShot30 = registerAmmoType(new AmmoStoneShot(30), helper);
-        ammoStoneShot45 = registerAmmoType(new AmmoStoneShot(45), helper);
-        ammoFireShot10 = registerAmmoType(new AmmoFlameShot(10), helper);
-        ammoFireShot15 = registerAmmoType(new AmmoFlameShot(15), helper);
-        ammoFireShot30 = registerAmmoType(new AmmoFlameShot(30), helper);
-        ammoFireShot45 = registerAmmoType(new AmmoFlameShot(45), helper);
-        ammoExplosive10 = registerAmmoType(new AmmoExplosiveShot(10, false), helper);
-        ammoExplosive15 = registerAmmoType(new AmmoExplosiveShot(15, false), helper);
-        ammoExplosive30 = registerAmmoType(new AmmoExplosiveShot(30, false), helper);
-        ammoExplosive45 = registerAmmoType(new AmmoExplosiveShot(45, false), helper);
-        ammoHE10 = registerAmmoType(new AmmoExplosiveShot(10, true), helper);
-        ammoHE15 = registerAmmoType(new AmmoExplosiveShot(15, true), helper);
-        ammoHE30 = registerAmmoType(new AmmoExplosiveShot(30, true), helper);
-        ammoHE45 = registerAmmoType(new AmmoExplosiveShot(45, true), helper);
-        ammoNapalm10 = registerAmmoType(new AmmoNapalmShot(10), helper);
-        ammoNapalm15 = registerAmmoType(new AmmoNapalmShot(15), helper);
-        ammoNapalm30 = registerAmmoType(new AmmoNapalmShot(30), helper);
-        ammoNapalm45 = registerAmmoType(new AmmoNapalmShot(45), helper);
-        ammoClusterShot10 = registerAmmoType(new AmmoClusterShot(10), helper);
-        ammoClusterShot15 = registerAmmoType(new AmmoClusterShot(15), helper);
-        ammoClusterShot30 = registerAmmoType(new AmmoClusterShot(30), helper);
-        ammoClusterShot45 = registerAmmoType(new AmmoClusterShot(45), helper);
-        ammoPebbleShot10 = registerAmmoType(new AmmoPebbleShot(10), helper);
-        ammoPebbleShot15 = registerAmmoType(new AmmoPebbleShot(15), helper);
-        ammoPebbleShot30 = registerAmmoType(new AmmoPebbleShot(30), helper);
-        ammoPebbleShot45 = registerAmmoType(new AmmoPebbleShot(45), helper);
-        ammoIronShot5 = registerAmmoType(new AmmoIronShot(5, AWVehicleStatics.vehicleStats.ammoCannonBall5kgDamage), helper);
-        ammoIronShot10 = registerAmmoType(new AmmoIronShot(10, AWVehicleStatics.vehicleStats.ammoCannonBall10kgDamage), helper);
-        ammoIronShot15 = registerAmmoType(new AmmoIronShot(15, AWVehicleStatics.vehicleStats.ammoCannonBall15kgDamage), helper);
-        ammoIronShot25 = registerAmmoType(new AmmoIronShot(25, AWVehicleStatics.vehicleStats.ammoCannonBall25kgDamage), helper);
-        ammoCanisterShot5 = registerAmmoType(new AmmoCanisterShot(5), helper);
-        ammoCanisterShot10 = registerAmmoType(new AmmoCanisterShot(10), helper);
-        ammoCanisterShot15 = registerAmmoType(new AmmoCanisterShot(15), helper);
-        ammoCanisterShot25 = registerAmmoType(new AmmoCanisterShot(25), helper);
-        ammoGrapeShot5 = registerAmmoType(new AmmoGrapeShot(5), helper);
-        ammoGrapeShot10 = registerAmmoType(new AmmoGrapeShot(10), helper);
-        ammoGrapeShot15 = registerAmmoType(new AmmoGrapeShot(15), helper);
-        ammoGrapeShot25 = registerAmmoType(new AmmoGrapeShot(25), helper);
-        ammoArrow = registerAmmoType(new AmmoArrow(), helper);
-        ammoBallistaBolt = registerAmmoType(new AmmoBallistaBolt(), helper);
-        ammoBallistaBoltFlame = registerAmmoType(new AmmoBallistaBoltFlame(), helper);
-        ammoBallistaBoltExplosive = registerAmmoType(new AmmoBallistaBoltExplosive(), helper);
-        ammoBallistaBoltIron = registerAmmoType(new AmmoBallistaBoltIron(), helper);
-        ammoRocket = registerAmmoType(new AmmoHwachaRocket(), helper);
-        ammoHwachaRocketFlame = registerAmmoType(new AmmoHwachaRocketFlame(), helper);
-        ammoHwachaRocketExplosive = registerAmmoType(new AmmoHwachaRocketExplosive(), helper);
-        ammoHwachaRocketAirburst = registerAmmoType(new AmmoHwachaRocketAirburst(), helper);
+    public static synchronized void register(IEventBus modBus) {
+        if (!prepared) {
+            prepareAmmo();
+            prepared = true;
+        }
+        ITEMS.register(modBus);
     }
 
-    private static IAmmo registerAmmoType(IAmmo ammo, RegisterEvent.RegisterHelper<Item> helper) {
-        ammoInstances.put(ammo.getRegistryName(), ammo);
-        ItemAmmo item = new ItemAmmo(ammo.getRegistryName(), ammo);
-        ammoItemInstances.put(ammo.getRegistryName(), item);
-        LegacyRegistryHelper.register(helper, item);
+    private static void prepareAmmo() {
+
+        ammoBallShot = registerAmmoType(new AmmoBallShot());
+        ammoBallIronShot = registerAmmoType(new AmmoIronBallShot());
+        ammoStoneShot10 = registerAmmoType(new AmmoStoneShot(10));
+        ammoStoneShot15 = registerAmmoType(new AmmoStoneShot(15));
+        ammoStoneShot30 = registerAmmoType(new AmmoStoneShot(30));
+        ammoStoneShot45 = registerAmmoType(new AmmoStoneShot(45));
+        ammoFireShot10 = registerAmmoType(new AmmoFlameShot(10));
+        ammoFireShot15 = registerAmmoType(new AmmoFlameShot(15));
+        ammoFireShot30 = registerAmmoType(new AmmoFlameShot(30));
+        ammoFireShot45 = registerAmmoType(new AmmoFlameShot(45));
+        ammoExplosive10 = registerAmmoType(new AmmoExplosiveShot(10, false));
+        ammoExplosive15 = registerAmmoType(new AmmoExplosiveShot(15, false));
+        ammoExplosive30 = registerAmmoType(new AmmoExplosiveShot(30, false));
+        ammoExplosive45 = registerAmmoType(new AmmoExplosiveShot(45, false));
+        ammoHE10 = registerAmmoType(new AmmoExplosiveShot(10, true));
+        ammoHE15 = registerAmmoType(new AmmoExplosiveShot(15, true));
+        ammoHE30 = registerAmmoType(new AmmoExplosiveShot(30, true));
+        ammoHE45 = registerAmmoType(new AmmoExplosiveShot(45, true));
+        ammoNapalm10 = registerAmmoType(new AmmoNapalmShot(10));
+        ammoNapalm15 = registerAmmoType(new AmmoNapalmShot(15));
+        ammoNapalm30 = registerAmmoType(new AmmoNapalmShot(30));
+        ammoNapalm45 = registerAmmoType(new AmmoNapalmShot(45));
+        ammoClusterShot10 = registerAmmoType(new AmmoClusterShot(10));
+        ammoClusterShot15 = registerAmmoType(new AmmoClusterShot(15));
+        ammoClusterShot30 = registerAmmoType(new AmmoClusterShot(30));
+        ammoClusterShot45 = registerAmmoType(new AmmoClusterShot(45));
+        ammoPebbleShot10 = registerAmmoType(new AmmoPebbleShot(10));
+        ammoPebbleShot15 = registerAmmoType(new AmmoPebbleShot(15));
+        ammoPebbleShot30 = registerAmmoType(new AmmoPebbleShot(30));
+        ammoPebbleShot45 = registerAmmoType(new AmmoPebbleShot(45));
+        ammoIronShot5 = registerAmmoType(new AmmoIronShot(5, AWVehicleStatics.vehicleStats.ammoCannonBall5kgDamage));
+        ammoIronShot10 = registerAmmoType(new AmmoIronShot(10, AWVehicleStatics.vehicleStats.ammoCannonBall10kgDamage));
+        ammoIronShot15 = registerAmmoType(new AmmoIronShot(15, AWVehicleStatics.vehicleStats.ammoCannonBall15kgDamage));
+        ammoIronShot25 = registerAmmoType(new AmmoIronShot(25, AWVehicleStatics.vehicleStats.ammoCannonBall25kgDamage));
+        ammoCanisterShot5 = registerAmmoType(new AmmoCanisterShot(5));
+        ammoCanisterShot10 = registerAmmoType(new AmmoCanisterShot(10));
+        ammoCanisterShot15 = registerAmmoType(new AmmoCanisterShot(15));
+        ammoCanisterShot25 = registerAmmoType(new AmmoCanisterShot(25));
+        ammoGrapeShot5 = registerAmmoType(new AmmoGrapeShot(5));
+        ammoGrapeShot10 = registerAmmoType(new AmmoGrapeShot(10));
+        ammoGrapeShot15 = registerAmmoType(new AmmoGrapeShot(15));
+        ammoGrapeShot25 = registerAmmoType(new AmmoGrapeShot(25));
+        ammoArrow = registerAmmoType(new AmmoArrow());
+        ammoBallistaBolt = registerAmmoType(new AmmoBallistaBolt());
+        ammoBallistaBoltFlame = registerAmmoType(new AmmoBallistaBoltFlame());
+        ammoBallistaBoltExplosive = registerAmmoType(new AmmoBallistaBoltExplosive());
+        ammoBallistaBoltIron = registerAmmoType(new AmmoBallistaBoltIron());
+        ammoRocket = registerAmmoType(new AmmoHwachaRocket());
+        ammoHwachaRocketFlame = registerAmmoType(new AmmoHwachaRocketFlame());
+        ammoHwachaRocketExplosive = registerAmmoType(new AmmoHwachaRocketExplosive());
+        ammoHwachaRocketAirburst = registerAmmoType(new AmmoHwachaRocketAirburst());
+    }
+
+    private static IAmmo registerAmmoType(IAmmo ammo) {
+        ResourceLocation id = ammo.getRegistryName();
+        ammoInstances.put(id, ammo);
+        RegistryObject<ItemAmmo> item = ITEMS.register(id.getPath(), () -> new ItemAmmo(id, ammo));
+        ammoItemInstances.put(id, item);
         return ammo;
     }
 
@@ -154,10 +166,12 @@ public class AmmoRegistry {
     }
 
     public static ItemAmmo getItemForAmmo(IAmmo ammo) {
-        return ammoItemInstances.get(ammo.getRegistryName());
+        RegistryObject<ItemAmmo> item = ammoItemInstances.get(ammo.getRegistryName());
+        return item == null ? null : item.get();
     }
 
     public static ItemAmmo getItem(ResourceLocation ammoRegistryName) {
-        return ammoItemInstances.get(ammoRegistryName);
+        RegistryObject<ItemAmmo> item = ammoItemInstances.get(ammoRegistryName);
+        return item == null ? null : item.get();
     }
 }

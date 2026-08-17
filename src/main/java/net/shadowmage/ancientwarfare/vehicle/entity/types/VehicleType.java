@@ -7,8 +7,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
 import net.shadowmage.ancientwarfare.vehicle.AncientWarfareVehicles;
+import net.shadowmage.ancientwarfare.vehicle.init.AWVehicleEntities;
 import net.shadowmage.ancientwarfare.vehicle.armors.IVehicleArmor;
 import net.shadowmage.ancientwarfare.vehicle.entity.IVehicleType;
 import net.shadowmage.ancientwarfare.vehicle.entity.VehicleBase;
@@ -379,9 +379,7 @@ public abstract class VehicleType implements IVehicleType {
     public static Optional<VehicleBase> getVehicleForType(@Nullable Level world, int type, int level) {
         if (world != null && type >= 0 && type < vehicleTypes.length && vehicleTypes[type] != null && vehicleTypes[type].isEnabled()) {
             IVehicleType vehType = getVehicleType(type);
-            VehicleBase vehicle = AWEntityRegistry.createEntity(
-                    new ResourceLocation(AncientWarfareVehicles.MOD_ID, AWEntityRegistry.VEHICLE),
-                    world, VehicleBase.class);
+            VehicleBase vehicle = AWVehicleEntities.VEHICLE.get().create(world);
             if (vehicle == null) {
                 return Optional.empty();
             }

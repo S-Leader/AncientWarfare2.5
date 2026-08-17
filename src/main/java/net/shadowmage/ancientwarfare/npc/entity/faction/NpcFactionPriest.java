@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.npc.entity.faction;
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -25,15 +27,11 @@ import net.shadowmage.ancientwarfare.npc.ai.faction.NpcAIFactionRangedAttack;
 import net.shadowmage.ancientwarfare.npc.entity.NoFriendlyFirePotion;
 
 public class NpcFactionPriest extends NpcFaction implements RangedAttackMob {
-    public NpcFactionPriest(Level level) {
-        super(level);
+    public NpcFactionPriest(EntityType<? extends PathfinderMob> type, Level level) {
+        super(type, level);
         addAI();
     }
 
-    public NpcFactionPriest(Level level, String factionName) {
-        super(level, factionName);
-        addAI();
-    }
 
     private void addAI() {
         goalSelector.addGoal(0, new FloatGoal(this));

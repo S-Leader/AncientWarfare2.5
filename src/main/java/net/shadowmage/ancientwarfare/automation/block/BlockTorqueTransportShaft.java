@@ -48,18 +48,6 @@ public class BlockTorqueTransportShaft extends BlockTorqueTransport implements L
         return AWAutomationBlocks.getTorqueShaftItem(tier);
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        switch (getTier(state)) {
-            case LIGHT:
-                return new TileTorqueShaftLight();
-            case MEDIUM:
-                return new TileTorqueShaftMedium();
-            case HEAVY:
-                return new TileTorqueShaftHeavy();
-        }
-        return new TileTorqueShaftLight();
-    }
 
     @Override
     protected void addProperties(StateDefinition.Builder<net.minecraft.world.level.block.Block, BlockState> builder) {

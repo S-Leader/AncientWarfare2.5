@@ -32,7 +32,7 @@ public class SpawnerHelper {
         // Idempotence: if another entity from the same spawn group has already
         // restored the one-shot spawner, this task is complete. Never search above
         // or below it and create a second stacked spawner.
-        if (originalState.is(AWStructureBlocks.ADVANCED_SPAWNER)) {
+        if (originalState.is(AWStructureBlocks.ADVANCED_SPAWNER.get())) {
             return true;
         }
 
@@ -44,7 +44,7 @@ public class SpawnerHelper {
         }
 
         BlockPos respawnPos = originalPos.immutable();
-        if (!serverLevel.setBlock(respawnPos, AWStructureBlocks.ADVANCED_SPAWNER.defaultBlockState(), 3)) {
+        if (!serverLevel.setBlock(respawnPos, AWStructureBlocks.ADVANCED_SPAWNER.get().defaultBlockState(), 3)) {
             return false;
         }
 

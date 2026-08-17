@@ -1,6 +1,8 @@
 package net.shadowmage.ancientwarfare.automation.tile.warehouse2;
 
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -25,6 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TileWarehouseInterface extends TileControlled implements IInteractableTile, IBlockBreakHandler {
+    public TileWarehouseInterface(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
     private final ItemStackHandler inventory = new ItemStackHandler(9) {
         @Override
         protected void onContentsChanged(int slot) {

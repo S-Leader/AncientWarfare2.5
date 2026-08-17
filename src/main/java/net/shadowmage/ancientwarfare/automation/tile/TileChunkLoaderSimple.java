@@ -1,5 +1,8 @@
 package net.shadowmage.ancientwarfare.automation.tile;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
 import net.shadowmage.ancientwarfare.automation.chunkloader.AWChunkLoader;
 import net.shadowmage.ancientwarfare.core.interfaces.IChunkLoaderTile;
@@ -11,7 +14,9 @@ import java.util.Set;
 public class TileChunkLoaderSimple extends TileUpdatable implements IChunkLoaderTile {
     private final Set<ChunkPos> forcedChunks = new HashSet<>();
 
-    public TileChunkLoaderSimple() {
+    public TileChunkLoaderSimple(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
     }
 
     @Override

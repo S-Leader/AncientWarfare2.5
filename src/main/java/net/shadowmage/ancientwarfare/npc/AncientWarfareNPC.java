@@ -29,9 +29,11 @@ import net.shadowmage.ancientwarfare.npc.compat.EpicSiegeCompat;
 import net.shadowmage.ancientwarfare.npc.compat.TwilightForestCompat;
 import net.shadowmage.ancientwarfare.npc.compat.ebwizardry.EBWizardryCompat;
 import net.shadowmage.ancientwarfare.npc.config.AWNPCStatics;
+import net.shadowmage.ancientwarfare.npc.crafting.AWNpcCrafting;
 import net.shadowmage.ancientwarfare.npc.container.*;
 import net.shadowmage.ancientwarfare.npc.faction.FactionTracker;
 import net.shadowmage.ancientwarfare.npc.init.AWNPCEntities;
+import net.shadowmage.ancientwarfare.npc.init.AWNPCBlocks;
 import net.shadowmage.ancientwarfare.npc.init.AWNPCItems;
 import net.shadowmage.ancientwarfare.npc.init.AWNPCSounds;
 import net.shadowmage.ancientwarfare.npc.network.*;
@@ -63,7 +65,10 @@ public final class AncientWarfareNPC {
 
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         AWNPCTab.register(modBus);
+        AWNPCBlocks.register(modBus);
+        AWNPCItems.register(modBus);
         AWNPCEntities.register(modBus);
+        AWNpcCrafting.register(modBus);
         AWNPCSounds.register(modBus);
         modBus.addListener(this::commonSetup);
         modBus.addListener(this::loadComplete);
@@ -71,14 +76,14 @@ public final class AncientWarfareNPC {
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(net.shadowmage.ancientwarfare.npc.event.EventHandler.INSTANCE);
 
-        registerLegacyScreens();
+        registerNativeMenus();
         registerPackets();
         registerCompatibility();
         registerDataParsers();
         proxy.preInit();
     }
 
-    private void registerLegacyScreens() {
+    private void registerNativeMenus() {
         NetworkHandler.registerContainer(NetworkHandler.GUI_NPC_INVENTORY, ContainerNpcInventory.class);
         NetworkHandler.registerContainer(NetworkHandler.GUI_NPC_WORK_ORDER, ContainerWorkOrder.class);
         NetworkHandler.registerContainer(NetworkHandler.GUI_NPC_UPKEEP_ORDER, ContainerUpkeepOrder.class);
@@ -93,7 +98,16 @@ public final class AncientWarfareNPC {
         NetworkHandler.registerContainer(NetworkHandler.GUI_NPC_PLAYER_OWNED_TRADE, ContainerNpcPlayerOwnedTrade.class);
         NetworkHandler.registerContainer(NetworkHandler.GUI_NPC_FACTION_BARD, ContainerNpcFactionBard.class);
         if (ModList.get().isLoaded("ebwizardry")) {
-            NetworkHandler.registerContainer(NetworkHandler.GUI_NPC_FACTION_SPELLCASTER_WIZARDRY, ContainerNpcFactionSpellcasterWizardry.class);
+            WizardryMenus.register();
+        }
+    }
+
+    /** Keep optional Wizardry menu classes out of the base mod class-loading path. */
+    private static final class WizardryMenus {
+        private static void register() {
+            NetworkHandler.registerContainer(
+                    NetworkHandler.GUI_NPC_FACTION_SPELLCASTER_WIZARDRY,
+                    ContainerNpcFactionSpellcasterWizardry.class);
         }
     }
 

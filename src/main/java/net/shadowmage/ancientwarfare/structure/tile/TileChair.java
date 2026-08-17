@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.structure.tile;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,6 +14,10 @@ import net.shadowmage.ancientwarfare.structure.util.BlockStateProperties;
 import java.util.Set;
 
 public class TileChair extends TileMulti implements BlockRotationHandler.IRotatableTile {
+    public TileChair(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
     private Direction facing = Direction.NORTH;
 
     @Override

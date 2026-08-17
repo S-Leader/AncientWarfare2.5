@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.structure.tile;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.level.Level;
@@ -10,6 +12,10 @@ import net.shadowmage.ancientwarfare.core.tile.TileUpdatable;
 import net.shadowmage.ancientwarfare.core.util.BlockTools;
 
 public class TileAdvancedSpawner extends TileUpdatable implements ITickable, IBlockBreakHandler {
+    public TileAdvancedSpawner(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
 
     private SpawnerSettings settings = new SpawnerSettings();
 

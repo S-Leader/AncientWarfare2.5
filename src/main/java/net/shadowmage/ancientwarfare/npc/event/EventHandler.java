@@ -217,7 +217,7 @@ public class EventHandler {
         }
 
         Block block = state.getBlock();
-        return !(block == Blocks.SPAWNER || block == AWStructureBlocks.ADVANCED_SPAWNER);
+        return !(block == Blocks.SPAWNER || block == AWStructureBlocks.ADVANCED_SPAWNER.get());
     }
 
     public static final String GENERATED_INVENTORY_TAG = "generatedInventory";

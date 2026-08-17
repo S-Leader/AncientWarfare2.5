@@ -12,21 +12,16 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.shadowmage.ancientwarfare.automation.AutomationInputHandler;
 import net.shadowmage.ancientwarfare.automation.block.BlockWaterwheelGenerator;
 import net.shadowmage.ancientwarfare.automation.block.TorqueTier;
-import net.shadowmage.ancientwarfare.automation.gui.*;
+import net.shadowmage.ancientwarfare.automation.init.AWAutomationBlocks;
 import net.shadowmage.ancientwarfare.automation.render.*;
-import net.shadowmage.ancientwarfare.automation.tile.torque.*;
-import net.shadowmage.ancientwarfare.automation.tile.torque.multiblock.TileFlywheelStorage;
-import net.shadowmage.ancientwarfare.automation.tile.torque.multiblock.TileWindmillBlade;
-import net.shadowmage.ancientwarfare.automation.tile.warehouse2.TileWarehouseBase;
-import net.shadowmage.ancientwarfare.automation.tile.warehouse2.TileWarehouseStockLinker;
-import net.shadowmage.ancientwarfare.automation.tile.warehouse2.TileWarehouseStockViewer;
+import net.shadowmage.ancientwarfare.automation.tile.torque.TileTorqueBase;
+import net.shadowmage.ancientwarfare.automation.tile.torque.TileTorqueSidedCell;
+import net.shadowmage.ancientwarfare.automation.tile.torque.TileWaterwheelGenerator;
 import net.shadowmage.ancientwarfare.automation.tile.worksite.TileWorksiteBase;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import net.shadowmage.ancientwarfare.core.compat.client.ClientRegistry;
-import net.shadowmage.ancientwarfare.core.network.NetworkHandler;
 import net.shadowmage.ancientwarfare.core.proxy.ClientProxyBase;
 import net.shadowmage.ancientwarfare.core.render.model.LegacyModelState;
-import net.shadowmage.ancientwarfare.vehicle.gui.GuiVehicleStats;
 
 
 @OnlyIn(Dist.CLIENT)
@@ -39,22 +34,34 @@ public class ClientProxyAutomation extends ClientProxyBase {
 
     private void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         BlockEntityRendererProvider<TileWorksiteBase> worksiteRenderer = ignored -> new WorksiteRenderer();
-        ClientRegistry.registerBlockEntityRenderer(event, TileWorksiteBase.class, worksiteRenderer);
-        ClientRegistry.registerBlockEntityRenderer(event, TileWarehouseBase.class, worksiteRenderer);
-        ClientRegistry.registerBlockEntityRenderer(event, TileWarehouseStockViewer.class, ignored -> new WarehouseStockViewerRenderer());
-        ClientRegistry.registerBlockEntityRenderer(event, TileWarehouseStockLinker.class, ignored -> new WarehouseStockLinkerRenderer());
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.QUARRY_TILE, worksiteRenderer);
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.TREE_FARM_TILE, worksiteRenderer);
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.CROP_FARM_TILE, worksiteRenderer);
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.FRUIT_FARM_TILE, worksiteRenderer);
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.ANIMAL_FARM_TILE, worksiteRenderer);
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.FISH_FARM_TILE, worksiteRenderer);
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.AUTO_CRAFTING_TILE, worksiteRenderer);
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.WAREHOUSE_CONTROL_TILE, worksiteRenderer);
 
-        ClientRegistry.registerBlockEntityRenderer(event, TileTorqueSidedCell.class,
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.WAREHOUSE_STOCK_VIEWER_TILE,
+                ignored -> new WarehouseStockViewerRenderer());
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.WAREHOUSE_STOCK_LINKER_TILE,
+                ignored -> new WarehouseStockLinkerRenderer());
+
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.TORQUE_JUNCTION_TILE,
                 ignored -> new TorqueTransportAnimationRenderer(TorqueJunctionRenderer.INSTANCE));
         BlockEntityRendererProvider<TileTorqueSidedCell> distributorRenderer =
                 ignored -> new TorqueTransportAnimationRenderer(TorqueDistributorRenderer.INSTANCE);
-        ClientRegistry.registerBlockEntityRenderer(event, TileDistributor.class, distributorRenderer);
-        ClientRegistry.registerBlockEntityRenderer(event, TileTorqueShaft.class, ignored -> new TorqueShaftAnimationRenderer());
-        ClientRegistry.registerBlockEntityRenderer(event, TileFlywheelController.class, ignored -> new FlywheelControllerAnimationRenderer());
-        ClientRegistry.registerBlockEntityRenderer(event, TileFlywheelStorage.class, ignored -> new FlywheelStorageAnimationRenderer());
-        ClientRegistry.registerBlockEntityRenderer(event, TileStirlingGenerator.class,
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.TORQUE_DISTRIBUTOR_TILE, distributorRenderer);
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.TORQUE_SHAFT_TILE,
+                ignored -> new TorqueShaftAnimationRenderer());
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.FLYWHEEL_CONTROLLER_TILE,
+                ignored -> new FlywheelControllerAnimationRenderer());
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.FLYWHEEL_STORAGE_TILE,
+                ignored -> new FlywheelStorageAnimationRenderer());
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.STIRLING_GENERATOR_TILE,
                 ignored -> new TorqueAnimationRenderer<>(StirlingGeneratorRenderer.INSTANCE));
-        ClientRegistry.registerBlockEntityRenderer(event, TileWaterwheelGenerator.class, ignored ->
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.WATERWHEEL_GENERATOR_TILE, ignored ->
                 new TorqueAnimationRenderer<TileWaterwheelGenerator>(WaterwheelGeneratorRenderer.INSTANCE) {
                     @Override
                     protected LegacyModelState updateAdditionalProperties(LegacyModelState state, TileTorqueBase tile) {
@@ -64,32 +71,17 @@ public class ClientProxyAutomation extends ClientProxyBase {
                         return state;
                     }
                 });
-        ClientRegistry.registerBlockEntityRenderer(event, TileHandCrankedGenerator.class,
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.HAND_CRANKED_GENERATOR_TILE,
                 ignored -> new TorqueAnimationRenderer<>(HandCrankedGeneratorRenderer.INSTANCE));
-        ClientRegistry.registerBlockEntityRenderer(event, TileWindmillController.class,
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.WINDMILL_GENERATOR_TILE,
                 ignored -> new TorqueAnimationRenderer<>(WindmillGeneratorRenderer.INSTANCE));
-        ClientRegistry.registerBlockEntityRenderer(event, TileWindmillBlade.class, ignored -> new WindmillBladeAnimationRenderer());
+        ClientRegistry.registerBlockEntityRenderer(event, AWAutomationBlocks.WINDMILL_BLADE_TILE,
+                ignored -> new WindmillBladeAnimationRenderer());
     }
 
     @Override
     public void preInit() {
         super.preInit();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_WORKSITE_INVENTORY_SIDE_ADJUST, GuiWorksiteInventorySideSelection.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_WORKSITE_ANIMAL_CONTROL, GuiWorksiteAnimalControl.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_WORKSITE_FISH_CONTROL, GuiWorksiteFishControl.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_WAREHOUSE_CONTROL, GuiWarehouseControl.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_WORKSITE_QUARRY, GuiWorksiteQuarry.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_WORKSITE_QUARRY_BOUNDS, GuiWorksiteQuarryBounds.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_WORKSITE_TREE_FARM, GuiWorksiteTreeFarm.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_WORKSITE_CROP_FARM, GuiWorksiteCropFarm.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_WORKSITE_FRUIT_FARM, GuiWorksiteFruitFarm.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_VEHICLE_STATS, GuiVehicleStats.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_WORKSITE_ANIMAL_FARM, GuiWorksiteAnimalFarm.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_WORKSITE_FISH_FARM, GuiWorksiteFishFarm.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_WORKSITE_BOUNDS, GuiWorksiteBoundsAdjust.class);
-
-
     }
 
     @Override

@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.automation.tile.torque.multiblock;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -42,7 +43,9 @@ public class TileWindmillBlade extends TileUpdatable implements ITickable {
     public double energy = 0;
     private Direction windmillDirection = Direction.NORTH;
 
-    public TileWindmillBlade() {
+    public TileWindmillBlade(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
 
     }
 
@@ -194,7 +197,7 @@ public class TileWindmillBlade extends TileUpdatable implements ITickable {
         if (Math.sqrt(currentPos.distSqr(pos)) < maxRadius) {
             for (Direction facing : Direction.values()) {
                 BlockPos offsetPos = currentPos.relative(facing);
-                if (!searchedPositions.contains(offsetPos) && world.getBlockState(offsetPos).getBlock() == AWAutomationBlocks.WINDMILL_BLADE) {
+                if (!searchedPositions.contains(offsetPos) && world.getBlockState(offsetPos).getBlock() == AWAutomationBlocks.WINDMILL_BLADE.get()) {
                     connectedBlocks.add(offsetPos);
                     searchedPositions.add(offsetPos);
                     getConnectedBlades(maxRadius, connectedBlocks, searchedPositions, offsetPos);

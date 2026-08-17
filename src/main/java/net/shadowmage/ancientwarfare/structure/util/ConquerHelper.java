@@ -109,7 +109,7 @@ public class ConquerHelper {
             if (!world.isLoaded(blockPos)) {
                 return false;
             }
-            if (world.getBlockState(blockPos).getBlock() == AWStructureBlocks.ADVANCED_SPAWNER
+            if (world.getBlockState(blockPos).getBlock() == AWStructureBlocks.ADVANCED_SPAWNER.get()
                     && WorldTools.getTile(world, blockPos, TileAdvancedSpawner.class)
                     .map(te -> SpawnerSettings.spawnsHostileNpcs(te.getSettings()))
                     .orElse(false)) {

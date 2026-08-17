@@ -67,7 +67,7 @@ public class GateRotatingBridge extends Gate {
                 for (int z = min.getZ(); z <= max.getZ(); z++) {
                     BlockPos posToCheck = new BlockPos(x, min.getY(), z);
                     id = gate.level().getBlockState(posToCheck).getBlock();
-                    if (!gate.level().isEmptyBlock(posToCheck) && id != AWStructureBlocks.GATE_PROXY) {
+                    if (!gate.level().isEmptyBlock(posToCheck) && id != AWStructureBlocks.GATE_PROXY.get()) {
                         return false;
                     }
 
@@ -129,7 +129,7 @@ public class GateRotatingBridge extends Gate {
                         continue;
                     }
                     id = gate.level().getBlockState(new BlockPos(x, y, z)).getBlock();
-                    if (id == AWStructureBlocks.GATE_PROXY) {
+                    if (id == AWStructureBlocks.GATE_PROXY.get()) {
                         gate.level().removeBlock(new BlockPos(x, y, z), false);
                     }
                 }

@@ -1,6 +1,8 @@
 package net.shadowmage.ancientwarfare.automation.tile.warehouse2;
 
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +23,10 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class TileWarehouseStockViewer extends TileControlled implements IOwnable, IInteractableTile {
+    public TileWarehouseStockViewer(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
 
     private static final String FILTER_LIST_TAG = "filterList";
     private final List<WarehouseStockFilter> filters = new ArrayList<>();

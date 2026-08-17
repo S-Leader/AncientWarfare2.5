@@ -1,6 +1,8 @@
 package net.shadowmage.ancientwarfare.automation.tile.worksite;
 
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -26,6 +28,10 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class TileAutoCrafting extends TileWorksiteBase {
+    public TileAutoCrafting(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
     public CraftingRecipeMemory craftingRecipeMemory = new CraftingRecipeMemory(this);
     public ItemStackHandler outputInventory = new ItemStackHandler(9) {
         @Override

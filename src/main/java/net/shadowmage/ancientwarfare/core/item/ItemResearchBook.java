@@ -44,7 +44,7 @@ public class ItemResearchBook extends ItemBaseCore {
 
     @Nullable
     public static String getResearcherName(ItemStack stack) {
-        if (!stack.isEmpty() && stack.getItem() == AWCoreItems.RESEARCH_BOOK && stack.hasTag() && stack.getTag().contains("researcherName")) {
+        if (!stack.isEmpty() && stack.getItem() == AWCoreItems.RESEARCH_BOOK.get() && stack.hasTag() && stack.getTag().contains("researcherName")) {
             return stack.getTag().getString("researcherName");
         }
         return null;
@@ -68,7 +68,5 @@ public class ItemResearchBook extends ItemBaseCore {
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_RESEARCH_BOOK, GuiResearchBook.class);
     }
 }

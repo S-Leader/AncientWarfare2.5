@@ -10,8 +10,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
-import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
 import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
+import net.shadowmage.ancientwarfare.structure.init.AWStructureEntities;
 import net.shadowmage.ancientwarfare.structure.entity.EntitySeat;
 import net.shadowmage.ancientwarfare.structure.util.RotationLimit;
 
@@ -27,9 +27,7 @@ public abstract class BlockSeat extends BlockBaseStructure {
     @Override
     public boolean onBlockActivated(Level world, BlockPos pos, BlockState state, Player playerIn, InteractionHand hand, Direction facing, float hitX, float hitY, float hitZ) {
         if (!world.isClientSide && !isOccupied(world, pos)) {
-            EntitySeat seatEntity = AWEntityRegistry.createEntity(
-                    new ResourceLocation(AncientWarfareStructure.MOD_ID, AWEntityRegistry.SEAT),
-                    world, EntitySeat.class);
+            EntitySeat seatEntity = AWStructureEntities.SEAT.get().create(world);
             if (seatEntity != null) {
                 seatEntity.configure(Vec3.atLowerCornerOf(pos).add(getSeatOffset()), pos);
                 world.addFreshEntity(seatEntity);

@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.structure.tile;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -42,7 +43,9 @@ public class TileStructureBuilder extends TileUpdatable implements IWorkSite, IO
     private double storedEnergy;
     public StructureBB clientBB;
 
-    public TileStructureBuilder() {
+    public TileStructureBuilder(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
         maxEnergyStored = AWCoreStatics.energyPerWorkUnit * 3;
         maxInput = AWCoreStatics.energyPerWorkUnit;
     }

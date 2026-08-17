@@ -21,12 +21,12 @@ public class AWStructureBlockColors {
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
 
         blockColors.register((state, world, pos, tintIndex) -> WorldTools.getTile(world, pos, TileColored.class).map(TileColored::getColor).orElse(-1)
-                , ALTAR_CANDLE, ALTAR_LONG_CLOTH, ALTAR_SHORT_CLOTH);
+                , ALTAR_CANDLE.get(), ALTAR_LONG_CLOTH.get(), ALTAR_SHORT_CLOTH.get());
 
         blockColors.register((state, world, pos, tintIndex) -> {
             BlockState disguiseState = WorldTools.getTile(world, pos, TileSoundBlock.class).filter(t -> t.getDisguiseState() != null)
                     .map(TileSoundBlock::getDisguiseState).orElse(Blocks.JUKEBOX.defaultBlockState());
             return Minecraft.getInstance().getBlockColors().getColor(disguiseState, world, pos, 0);
-        }, SOUND_BLOCK);
+        }, SOUND_BLOCK.get());
     }
 }

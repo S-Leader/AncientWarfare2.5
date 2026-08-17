@@ -60,11 +60,11 @@ public class StoneCoffinRenderer extends RenderLootInfo<TileStoneCoffin> impleme
     public void render(TileStoneCoffin te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         if (te == null || te.isRemoved() || te.getLevel() == null
                 || te.getLevel().getBlockEntity(te.getPos()) != te
-                || !te.getLevel().getBlockState(te.getPos()).is(AWStructureBlocks.STONE_COFFIN)) {
+                || !te.getLevel().getBlockState(te.getPos()).is(AWStructureBlocks.STONE_COFFIN.get())) {
             return;
         }
         BlockState state = te.getBlockState();
-        if (!state.is(AWStructureBlocks.STONE_COFFIN)
+        if (!state.is(AWStructureBlocks.STONE_COFFIN.get())
                 || !state.hasProperty(BlockMulti.INVISIBLE)
                 || Boolean.TRUE.equals(state.getValue(BlockMulti.INVISIBLE))) {
             return;

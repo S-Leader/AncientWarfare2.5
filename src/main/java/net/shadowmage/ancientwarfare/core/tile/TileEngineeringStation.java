@@ -1,5 +1,8 @@
 package net.shadowmage.ancientwarfare.core.tile;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.items.ItemStackHandler;
@@ -13,7 +16,9 @@ public class TileEngineeringStation extends TileUpdatable implements IRotatableT
     Direction facing = Direction.NORTH;
     public final ItemStackHandler extraSlots;
 
-    public TileEngineeringStation() {
+    public TileEngineeringStation(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
         extraSlots = new ItemStackHandler(18) {
             @Override
             protected void onContentsChanged(int slot) {

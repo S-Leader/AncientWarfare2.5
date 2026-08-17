@@ -83,10 +83,6 @@ public class BlockWindmillBlade extends BlockBaseAutomation implements LegacyBak
         return false;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileWindmillBlade();
-    }
 
     @Override
     public boolean hasTileEntity(BlockState state) {

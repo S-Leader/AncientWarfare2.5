@@ -73,6 +73,11 @@ public class TemplateRuleEntity<T extends Entity> extends TemplateRuleEntityBase
                 }
             });
         } catch (RuntimeException | LinkageError exception) {
+            /*
+             * Entity rules are the final structure pass. A broken legacy NBT blob
+             * or an optional-mod entity must not make the already-built town piece
+             * count as a failed structure and silently lose every later entity.
+             */
             AncientWarfareStructure.LOG.error("Unable to place structure entity {} at {}; skipping this entity",
                     registryName, pos, exception);
         }
@@ -87,6 +92,7 @@ public class TemplateRuleEntity<T extends Entity> extends TemplateRuleEntityBase
             return Optional.empty();
         }
         CompoundTag entityNBT = ComponentItemFixer.fixRecursively(getEntityNBT(pos, turns).copy());
+        // Structure templates may be placed more than once. Never reuse an entity UUID.
         entityNBT.remove("UUID");
         entityNBT.remove("UUIDMost");
         entityNBT.remove("UUIDLeast");

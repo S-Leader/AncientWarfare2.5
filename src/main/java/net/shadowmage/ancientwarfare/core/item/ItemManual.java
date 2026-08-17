@@ -38,8 +38,6 @@ public class ItemManual extends ItemBaseCore {
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_MANUAL, GuiManual.class);
     }
 
     @Override
@@ -64,10 +62,10 @@ public class ItemManual extends ItemBaseCore {
 
         Item item = evt.getCrafting().getItem();
         var itemId = ForgeRegistries.ITEMS.getKey(item);
-        if (item != AWCoreItems.MANUAL && itemId != null && itemId.getNamespace().startsWith("ancientwarfare")) {
+        if (item != AWCoreItems.MANUAL.get() && itemId != null && itemId.getNamespace().startsWith("ancientwarfare")) {
             WorldData data = AWGameData.INSTANCE.getPerWorldData(player.level(), WorldData.class);
             if (!data.wasPlayerGivenManual(player)) {
-                ItemEntity manualDrop = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), new ItemStack(AWCoreItems.MANUAL));
+                ItemEntity manualDrop = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), new ItemStack(AWCoreItems.MANUAL.get()));
                 manualDrop.setPickUpDelay(0);
                 player.level().addFreshEntity(manualDrop);
                 data.addPlayerThatWasGivenManual(player);

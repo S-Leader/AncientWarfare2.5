@@ -141,11 +141,6 @@ public class BlockTotemPart extends BlockBaseStructure {
         return true;
     }
 
-    @Nullable
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileTotemPart();
-    }
 
     @Override
     public BlockState getStateForPlacement(Level worldIn, BlockPos pos, Direction facing, float hitX, float hitY, float hitZ, int meta, LivingEntity placer) {
@@ -228,7 +223,7 @@ public class BlockTotemPart extends BlockBaseStructure {
 
             @Override
             public void placeAdditionalParts(Level world, BlockPos pos, Direction facing) {
-                world.setBlock(pos.above(), AWStructureBlocks.TOTEM_PART.defaultBlockState().setValue(VISIBLE, false), 3);
+                world.setBlock(pos.above(), AWStructureBlocks.TOTEM_PART.get().defaultBlockState().setValue(VISIBLE, false), 3);
                 WorldTools.getTile(world, pos.above(), TileTotemPart.class).ifPresent(t -> t.setMainBlockPos(pos));
             }
         },
@@ -242,7 +237,7 @@ public class BlockTotemPart extends BlockBaseStructure {
 
             @Override
             public void placeAdditionalParts(Level world, BlockPos pos, Direction facing) {
-                world.setBlock(pos.above(), AWStructureBlocks.TOTEM_PART.defaultBlockState().setValue(VISIBLE, false), 3);
+                world.setBlock(pos.above(), AWStructureBlocks.TOTEM_PART.get().defaultBlockState().setValue(VISIBLE, false), 3);
                 WorldTools.getTile(world, pos.above(), TileTotemPart.class).ifPresent(t -> t.setMainBlockPos(pos));
                 placeSideBlock(world, pos, pos.relative(facing.getClockWise()), facing.getOpposite(), Variant.WINGS);
                 placeSideBlock(world, pos, pos.relative(facing.getCounterClockWise()), facing, Variant.WINGS);
@@ -469,7 +464,7 @@ public class BlockTotemPart extends BlockBaseStructure {
         }
 
         private boolean mayPlace(Level world, BlockPos pos, Player placer) {
-            BlockState placeState = AWStructureBlocks.TOTEM_PART.defaultBlockState();
+            BlockState placeState = AWStructureBlocks.TOTEM_PART.get().defaultBlockState();
             return world.getBlockState(pos).canBeReplaced() && world.isUnobstructed(placeState, pos, CollisionContext.of(placer));
         }
 
@@ -486,7 +481,7 @@ public class BlockTotemPart extends BlockBaseStructure {
         }
 
         private static void placeInvisibleBlock(Level world, BlockPos mainPos, BlockPos sidePos, Variant variant, Direction facing) {
-            world.setBlock(sidePos, AWStructureBlocks.TOTEM_PART.defaultBlockState().setValue(VISIBLE, false).setValue(FACING, facing).setValue(VARIANT, variant), 3);
+            world.setBlock(sidePos, AWStructureBlocks.TOTEM_PART.get().defaultBlockState().setValue(VISIBLE, false).setValue(FACING, facing).setValue(VARIANT, variant), 3);
             setupTileData(world, mainPos, sidePos, variant);
         }
 
@@ -498,7 +493,7 @@ public class BlockTotemPart extends BlockBaseStructure {
         }
 
         private static void placeSideBlock(Level world, BlockPos mainPos, BlockPos sidePos, Direction sideFacing, Variant variant) {
-            world.setBlock(sidePos, AWStructureBlocks.TOTEM_PART.defaultBlockState().setValue(FACING, sideFacing).setValue(VARIANT, variant), 3);
+            world.setBlock(sidePos, AWStructureBlocks.TOTEM_PART.get().defaultBlockState().setValue(FACING, sideFacing).setValue(VARIANT, variant), 3);
             setupTileData(world, mainPos, sidePos, variant);
         }
 

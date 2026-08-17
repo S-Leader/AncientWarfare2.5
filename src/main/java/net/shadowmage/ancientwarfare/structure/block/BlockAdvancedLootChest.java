@@ -36,7 +36,7 @@ public class BlockAdvancedLootChest extends ChestBlock implements IClientRegiste
             new ResourceLocation(AncientWarfareStructure.MOD_ID, "advanced_loot_chest");
 
     public BlockAdvancedLootChest() {
-        super(BlockBehaviour.Properties.copy(Blocks.CHEST), () -> AWStructureBlocks.ADVANCED_LOOT_CHEST_TILE);
+        super(BlockBehaviour.Properties.copy(Blocks.CHEST), AWStructureBlocks.ADVANCED_LOOT_CHEST_TILE::get);
         AncientWarfareStructure.proxy.addClientRegister(this);
     }
 
@@ -51,8 +51,7 @@ public class BlockAdvancedLootChest extends ChestBlock implements IClientRegiste
     @Override
     @Nullable
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return AWStructureBlocks.ADVANCED_LOOT_CHEST_TILE == null
-                ? null : AWStructureBlocks.ADVANCED_LOOT_CHEST_TILE.create(pos, state);
+        return AWStructureBlocks.ADVANCED_LOOT_CHEST_TILE.get().create(pos, state);
     }
 
     @Override

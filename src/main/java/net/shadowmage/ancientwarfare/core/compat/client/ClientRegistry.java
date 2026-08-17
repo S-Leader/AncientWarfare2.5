@@ -9,15 +9,13 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.RegistryObject;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
-import net.shadowmage.ancientwarfare.core.tile.LegacyBlockEntityRegistry;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-/**
- * Central bridge for legacy client registrations.
- */
+/** Client-only registrations that are not themselves Forge registries. */
 @Mod.EventBusSubscriber(modid = AncientWarfareCore.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class ClientRegistry {
     private static final Set<KeyMapping> KEY_MAPPINGS = new LinkedHashSet<>();
@@ -30,21 +28,15 @@ public final class ClientRegistry {
     }
 
     /**
-     * Block entity renderer registration needs registered BlockEntityType
-     * instances, not legacy implementation classes. Calls are retained here
-     * while those types are migrated by the central registry pass.
+     * Registers a renderer against the actual DeferredRegister handle.  There is deliberately
+     * no class-to-type lookup table: the registry object is the single source of identity.
      */
-    public static void bindTileEntitySpecialRenderer(Class<?> tileClass, Object renderer) {
-        // Registered from EntityRenderersEvent after block entity types exist.
-    }
-
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T extends BlockEntity> void registerBlockEntityRenderer(
-            EntityRenderersEvent.RegisterRenderers event, Class<T> tileClass,
+            EntityRenderersEvent.RegisterRenderers event,
+            RegistryObject<? extends BlockEntityType<? extends T>> type,
             BlockEntityRendererProvider<? super T> provider) {
-        for (BlockEntityType<?> type : LegacyBlockEntityRegistry.getTypesForClass(tileClass)) {
-            event.registerBlockEntityRenderer((BlockEntityType) type, (BlockEntityRendererProvider) provider);
-        }
+        event.registerBlockEntityRenderer((BlockEntityType) type.get(), (BlockEntityRendererProvider) provider);
     }
 
     @SubscribeEvent

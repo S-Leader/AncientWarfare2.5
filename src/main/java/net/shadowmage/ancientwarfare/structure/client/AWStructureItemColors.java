@@ -15,6 +15,6 @@ public class AWStructureItemColors {
     public static void init() {
         ItemColors itemColors = Minecraft.getInstance().getItemColors();
 
-        itemColors.register((stack, tintIndex) -> ALTAR_CANDLE.getColor(stack), ALTAR_CANDLE, ALTAR_LONG_CLOTH, ALTAR_SHORT_CLOTH);
+        itemColors.register((stack, tintIndex) -> ALTAR_CANDLE.get().getColor(stack), ALTAR_CANDLE.get(), ALTAR_LONG_CLOTH.get(), ALTAR_SHORT_CLOTH.get());
     }
 }

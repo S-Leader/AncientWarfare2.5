@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.automation.tile.warehouse2;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -12,6 +14,10 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 
 public abstract class TileControlled extends TileUpdatable implements IControlledTile, ITickable {
+    protected TileControlled(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
     private static final String CONTROLLER_POSITION_TAG = "controllerPosition";
     private boolean init;
     private TileWarehouseBase controller;

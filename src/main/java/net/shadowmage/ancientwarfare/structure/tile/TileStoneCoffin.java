@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.structure.tile;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
@@ -17,6 +18,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class TileStoneCoffin extends TileCoffin {
+    public TileStoneCoffin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
     private static final int TOTAL_OPEN_TIME = 60;
     private BlockStoneCoffin.Variant variant = BlockStoneCoffin.Variant.STONE;
 

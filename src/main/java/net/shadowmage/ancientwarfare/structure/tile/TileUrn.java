@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.structure.tile;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.shadowmage.ancientwarfare.core.tile.IBlockBreakHandler;
@@ -8,6 +10,10 @@ import net.shadowmage.ancientwarfare.core.util.EntityTools;
 import net.shadowmage.ancientwarfare.structure.util.LootHelper;
 
 public class TileUrn extends TileUpdatable implements ISpecialLootContainer, IBlockBreakHandler {
+    public TileUrn(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
     private LootSettings lootSettings = new LootSettings();
 
     @Override

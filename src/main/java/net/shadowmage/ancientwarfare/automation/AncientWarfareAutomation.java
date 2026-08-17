@@ -15,6 +15,8 @@ import net.shadowmage.ancientwarfare.automation.chunkloader.AWChunkLoader;
 import net.shadowmage.ancientwarfare.automation.command.CommandWarehouse;
 import net.shadowmage.ancientwarfare.automation.compat.agricraft.AgricraftCompat;
 import net.shadowmage.ancientwarfare.automation.config.AWAutomationStatics;
+import net.shadowmage.ancientwarfare.automation.init.AWAutomationBlocks;
+import net.shadowmage.ancientwarfare.automation.init.AWAutomationItems;
 import net.shadowmage.ancientwarfare.automation.container.*;
 import net.shadowmage.ancientwarfare.automation.proxy.ClientProxyAutomation;
 import net.shadowmage.ancientwarfare.automation.proxy.RFProxy;
@@ -52,19 +54,21 @@ public final class AncientWarfareAutomation {
 
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         AWAutomationTab.register(modBus);
+        AWAutomationBlocks.register(modBus);
+        AWAutomationItems.register(modBus);
         modBus.addListener(this::commonSetup);
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(AWChunkLoader.INSTANCE);
         MinecraftForge.EVENT_BUS.register(new WarehouseDebugger());
 
-        registerLegacyScreens();
+        registerNativeMenus();
         registerDataParsers();
         CompatLoader.registerCompat(new AgricraftCompat());
         proxy.preInit();
     }
 
-    private void registerLegacyScreens() {
+    private void registerNativeMenus() {
         NetworkHandler.registerContainer(NetworkHandler.GUI_WORKSITE_INVENTORY_SIDE_ADJUST, ContainerWorksiteInventorySideSelection.class);
         NetworkHandler.registerContainer(NetworkHandler.GUI_WORKSITE_ANIMAL_CONTROL, ContainerWorksiteAnimalControl.class);
         NetworkHandler.registerContainer(NetworkHandler.GUI_WORKSITE_AUTO_CRAFT, ContainerWorksiteAutoCrafting.class);

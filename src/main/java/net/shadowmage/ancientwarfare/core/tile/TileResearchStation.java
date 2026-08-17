@@ -1,6 +1,7 @@
 package net.shadowmage.ancientwarfare.core.tile;
 
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -75,8 +76,8 @@ public class TileResearchStation extends TileOwned implements IWorkSite, ITorque
     private double maxInput = 100;
     private double storedEnergy;
 
-    public TileResearchStation() {
-        super();
+    public TileResearchStation(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     @Override

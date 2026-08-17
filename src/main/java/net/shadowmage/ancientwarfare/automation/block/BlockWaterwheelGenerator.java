@@ -42,10 +42,6 @@ public class BlockWaterwheelGenerator extends BlockTorqueGenerator implements Le
         return true;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileWaterwheelGenerator();
-    }
 
     @Override
     @OnlyIn(Dist.CLIENT)

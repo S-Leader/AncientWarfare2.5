@@ -22,14 +22,11 @@ import net.shadowmage.ancientwarfare.core.owner.IOwnable;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import static net.shadowmage.ancientwarfare.core.render.property.CoreProperties.FACING;
 
 public class BlockWorksiteBase extends BlockBaseAutomation implements IRotatableBlock {
     private static final BooleanProperty ACTIVE = BooleanProperty.create("active");
-
-    private Supplier<BlockEntity> tileFactory;
 
     public BlockWorksiteBase(String regName) {
         super(LegacyMaterial.WOOD, regName);
@@ -52,26 +49,12 @@ public class BlockWorksiteBase extends BlockBaseAutomation implements IRotatable
                 .setValue(ACTIVE, t instanceof TileWorksiteBase && ((TileWorksiteBase) t).isActive())).orElse(state);
     }
 
-    public BlockWorksiteBase setTileFactory(Supplier<BlockEntity> renderFactory) {
-        this.tileFactory = renderFactory;
-        return this;
-    }
-
     /*
      * made into a generic method so that farm blocks are easier to setup
      * returned tiles must implement IWorksite (for team reference) and IInteractableTile (for interaction callback) if they wish to receive onBlockActivated calls<br>
      * returned tiles must implement IBoundedTile if they want workbounds set from ItemBlockWorksite<br>
      * returned tiles must implement IOwnable if they want owner-name set from ItemBlockWorksite<br>
      */
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return tileFactory.get();
-    }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return tileFactory != null;
-    }
 
     @Override
     public boolean onBlockActivated(Level world, BlockPos pos, BlockState state, Player player, InteractionHand hand, Direction facing, float hitX, float hitY,

@@ -1,5 +1,8 @@
 package net.shadowmage.ancientwarfare.structure.tile;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -11,6 +14,10 @@ import net.shadowmage.ancientwarfare.core.tile.TileUpdatable;
 import javax.annotation.Nullable;
 
 public abstract class TileFlag extends TileUpdatable {
+    protected TileFlag(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
     private static final String NAME_TAG = "name";
     private String name = "";
 

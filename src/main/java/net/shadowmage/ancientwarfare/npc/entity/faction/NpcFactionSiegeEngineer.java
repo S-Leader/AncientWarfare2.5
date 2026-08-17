@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.npc.entity.faction;
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -28,16 +30,13 @@ public class NpcFactionSiegeEngineer extends NpcFaction implements IVehicleUser 
     private ITarget target = TargetFactory.NONE;
 
     @SuppressWarnings("unused")
-    public NpcFactionSiegeEngineer(Level world) {
-        super(world);
+    public NpcFactionSiegeEngineer(EntityType<? extends PathfinderMob> type, Level world) {
+        super(type, world);
         addAI();
     }
 
     @SuppressWarnings("unused")
-    public NpcFactionSiegeEngineer(Level world, String factionName) {
-        super(world, factionName);
-        addAI();
-    }
+
 
     private void addAI() {
         this.goalSelector.addGoal(0, new FloatGoal(this));

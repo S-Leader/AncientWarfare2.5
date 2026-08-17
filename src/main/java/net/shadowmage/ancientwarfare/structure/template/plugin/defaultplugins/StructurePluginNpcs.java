@@ -10,7 +10,7 @@ import net.shadowmage.ancientwarfare.structure.template.plugin.defaultplugins.en
 public class StructurePluginNpcs implements StructureContentPlugin {
     @Override
     public void addHandledBlocks(StructurePluginManager manager) {
-        manager.registerBlockHandler(TemplateRuleBlockTile.PLUGIN_NAME, AWNPCBlocks.TOWN_HALL, TemplateRuleBlockTile::new, TemplateRuleBlockTile::new);
+        manager.registerBlockHandler(TemplateRuleBlockTile.PLUGIN_NAME, AWNPCBlocks.TOWN_HALL.get(), TemplateRuleBlockTile::new, TemplateRuleBlockTile::new);
     }
 
     @Override

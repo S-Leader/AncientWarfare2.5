@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.structure.tile;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
@@ -19,6 +21,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TileDraftingStation extends TileUpdatable implements ITickable, IBlockBreakHandler {
+    public TileDraftingStation(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
     private static final String STRUCTURE_NAME_TAG = "structureName";
     private String structureName;//structure pulled from live structure list anytime a ref is needed
     private boolean isStarted;//has started compiling resources -- will need input to cancel
@@ -99,7 +105,7 @@ public class TileDraftingStation extends TileUpdatable implements ITickable, IBl
 
     private boolean tryFinish() {
         if (outputSlot.getStackInSlot(0).isEmpty()) {
-            ItemStack item = new ItemStack(AWStructureBlocks.STRUCTURE_BUILDER_TICKED);
+            ItemStack item = new ItemStack(AWStructureBlocks.STRUCTURE_BUILDER_TICKED.get());
             item.getOrCreateTag().put(STRUCTURE_NAME_TAG, StringTag.valueOf(structureName));
             outputSlot.setStackInSlot(0, item);
             return true;

@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.automation.tile;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import com.google.common.collect.Lists;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -45,7 +47,9 @@ public class TileMailbox extends TileOwned implements IRotatableTile, ITickable,
     private String mailboxName;
     private String destinationName;
 
-    public TileMailbox() {
+    public TileMailbox(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
         sendSides.add(Direction.UP);
         receivedSides.add(Direction.DOWN);
     }

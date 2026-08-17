@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.automation.tile.worksite;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -36,8 +37,8 @@ public abstract class TileWorksiteFarm extends TileWorksiteBoundedInventory {
      */
     private boolean shouldCountResources;
 
-    public TileWorksiteFarm() {
-        super();
+    public TileWorksiteFarm(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
         this.shouldCountResources = true;
         plantableInventory = new ItemStackHandler(PLANTABLE_INVENTORY_SIZE) {
             @Override

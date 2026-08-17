@@ -83,11 +83,6 @@ public class BlockGravestone extends BlockBaseStructure {
         return true;
     }
 
-    @Nullable
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileGravestone();
-    }
 
     @Override
     public void onBlockPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {

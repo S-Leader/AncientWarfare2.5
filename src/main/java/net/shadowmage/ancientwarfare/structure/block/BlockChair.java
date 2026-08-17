@@ -95,11 +95,6 @@ public class BlockChair extends BlockSeat {
         return true;
     }
 
-    @Nullable
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileChair();
-    }
 
     private static final List<AABB> AABBs = ImmutableList.of(
             new AABB(1 / 16D, 9 / 16D, 1 / 16D, 15 / 16D, 11 / 16D, 15 / 16D),

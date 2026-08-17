@@ -83,7 +83,7 @@ public class ItemSpawnerPlacer extends ItemBaseStructure implements IItemKeyInte
     }
 
     private void placeSpawner(Player player, ItemStack stack, BlockPos placePos) {
-        if (player.level().setBlock(placePos, AWStructureBlocks.ADVANCED_SPAWNER.defaultBlockState(), 3)) {
+        if (player.level().setBlock(placePos, AWStructureBlocks.ADVANCED_SPAWNER.get().defaultBlockState(), 3)) {
             WorldTools.getTile(player.level(), placePos, TileAdvancedSpawner.class)
                     .ifPresent(t -> {
                         SpawnerSettings settings = new SpawnerSettings();

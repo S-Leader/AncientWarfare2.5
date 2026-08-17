@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.structure.tile;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -17,6 +18,10 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 
 public abstract class TileCoffin extends TileMulti implements ITickable, ISpecialLootContainer {
+    protected TileCoffin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
     protected BlockCoffin.CoffinDirection direction = BlockCoffin.CoffinDirection.NORTH;
     private boolean opening = false;
     private boolean open = false;

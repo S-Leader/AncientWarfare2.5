@@ -1,5 +1,8 @@
 package net.shadowmage.ancientwarfare.automation.tile.torque;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.shadowmage.ancientwarfare.automation.config.AWAutomationStatics;
@@ -31,7 +34,9 @@ public abstract class TileTorqueShaft extends TileTorqueSingleCell {
     private int visualLinkMask;
     private int visualLinkRefreshTicks;
 
-    public TileTorqueShaft() {
+    public TileTorqueShaft(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+
+        super(type, pos, state);
         double max = getMaxTransfer();
         torqueCell = new TorqueCell(max, max, max, getEfficiency());
     }

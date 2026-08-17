@@ -2,11 +2,12 @@ package net.shadowmage.ancientwarfare.vehicle.registry;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.shadowmage.ancientwarfare.vehicle.AncientWarfareVehicles;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
 import net.shadowmage.ancientwarfare.core.config.AWCoreStatics;
-import net.shadowmage.ancientwarfare.core.util.LegacyRegistryHelper;
 import net.shadowmage.ancientwarfare.vehicle.item.ItemUpgrade;
 import net.shadowmage.ancientwarfare.vehicle.upgrades.*;
 
@@ -44,30 +45,27 @@ public class UpgradeRegistry {
         return this.upgradeInstances.values();
     }
 
-    /**
-     * called during init to register upgrade types as items
-     */
-    public static void registerUpgrades(RegisterEvent.RegisterHelper<Item> helper) {
-        speedUpgrade = registerUpgrade(new VehicleUpgradeSpeed(), helper, "" + AWCoreStatics.vehicleUpgradeMaxSpeed);
-        aimUpgrade = registerUpgrade(new VehicleUpgradeAim(), helper, Float.toString(AWCoreStatics.vehicleUpgradeAccuracy));
-        reloadUpgrade = registerUpgrade(new VehicleUpgradeReload(), helper, Integer.toString(AWCoreStatics.vehicleUpgradeReloadSpeed));
-        powerUpgrade = registerUpgrade(new VehicleUpgradePower(), helper, "" + AWCoreStatics.vehicleUpgradeProjectileSpeed);
-        pitchExtUpgrade = registerUpgrade(new VehicleUpgradeTurretPitch(), helper, "" + AWCoreStatics.vehicleUpgradePitchExtension);
-        pitchUpUpgrade = registerUpgrade(new VehicleUpgradePitchUp(), helper, "" + AWCoreStatics.vehicleUpgradePitchUp);
-        pitchDownUpgrade = registerUpgrade(new VehicleUpgradePitchDown(), helper, "" + AWCoreStatics.vehicleUpgradePitchDown);
+    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, AncientWarfareVehicles.MOD_ID);
+    private static boolean prepared;
+
+    public static synchronized void register(IEventBus modBus) {
+        if (!prepared) {
+            speedUpgrade = registerUpgrade(new VehicleUpgradeSpeed(), "" + AWCoreStatics.vehicleUpgradeMaxSpeed);
+            aimUpgrade = registerUpgrade(new VehicleUpgradeAim(), Float.toString(AWCoreStatics.vehicleUpgradeAccuracy));
+            reloadUpgrade = registerUpgrade(new VehicleUpgradeReload(), Integer.toString(AWCoreStatics.vehicleUpgradeReloadSpeed));
+            powerUpgrade = registerUpgrade(new VehicleUpgradePower(), "" + AWCoreStatics.vehicleUpgradeProjectileSpeed);
+            pitchExtUpgrade = registerUpgrade(new VehicleUpgradeTurretPitch(), "" + AWCoreStatics.vehicleUpgradePitchExtension);
+            pitchUpUpgrade = registerUpgrade(new VehicleUpgradePitchUp(), "" + AWCoreStatics.vehicleUpgradePitchUp);
+            pitchDownUpgrade = registerUpgrade(new VehicleUpgradePitchDown(), "" + AWCoreStatics.vehicleUpgradePitchDown);
+            prepared = true;
+        }
+        ITEMS.register(modBus);
     }
 
-    private static IVehicleUpgradeType registerUpgrade(IVehicleUpgradeType upgrade, RegisterEvent.RegisterHelper<Item> helper) {
-        upgradeInstances.put(upgrade.getRegistryName(), upgrade);
-        ItemUpgrade item = new ItemUpgrade(upgrade.getRegistryName(), "");
-        LegacyRegistryHelper.register(helper, item);
-        return upgrade;
-    }
-
-    private static IVehicleUpgradeType registerUpgrade(IVehicleUpgradeType upgrade, RegisterEvent.RegisterHelper<Item> helper, String dynamicInfo) {
-        upgradeInstances.put(upgrade.getRegistryName(), upgrade);
-        ItemUpgrade item = new ItemUpgrade(upgrade.getRegistryName(), dynamicInfo);
-        LegacyRegistryHelper.register(helper, item);
+    private static IVehicleUpgradeType registerUpgrade(IVehicleUpgradeType upgrade, String dynamicInfo) {
+        ResourceLocation id = upgrade.getRegistryName();
+        upgradeInstances.put(id, upgrade);
+        ITEMS.register(id.getPath(), () -> new ItemUpgrade(id, dynamicInfo));
         return upgrade;
     }
 

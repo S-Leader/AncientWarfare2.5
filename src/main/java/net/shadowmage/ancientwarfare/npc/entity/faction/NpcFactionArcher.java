@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.npc.entity.faction;
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import com.google.common.base.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -17,15 +19,11 @@ import net.shadowmage.ancientwarfare.npc.ai.faction.NpcAIFactionRangedAttack;
 import net.shadowmage.ancientwarfare.npc.entity.RangeAttackHelper;
 
 public class NpcFactionArcher extends NpcFaction implements RangedAttackMob {
-    public NpcFactionArcher(Level world) {
-        super(world);
+    public NpcFactionArcher(EntityType<? extends PathfinderMob> type, Level world) {
+        super(type, world);
         addAI();
     }
 
-    public NpcFactionArcher(Level world, String factionName) {
-        super(world, factionName);
-        addAI();
-    }
 
     private void addAI() {
         //noinspection Guava

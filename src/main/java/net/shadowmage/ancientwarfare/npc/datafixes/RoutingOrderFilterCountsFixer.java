@@ -21,7 +21,7 @@ public class RoutingOrderFilterCountsFixer implements ILegacyDataFixer {
         String id = compound.getString("id");
 
         //noinspection ConstantConditions
-        if (id.equals(RegistryTools.getRegistryName(AWNPCItems.ROUTING_ORDER).toString())) {
+        if (id.equals(RegistryTools.getRegistryName(AWNPCItems.ROUTING_ORDER.get()).toString())) {
             CompoundTag tag = compound.getCompound("tag");
             ListTag entryList = tag.getCompound("orders").getList("entryList", Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < entryList.size(); i++) {

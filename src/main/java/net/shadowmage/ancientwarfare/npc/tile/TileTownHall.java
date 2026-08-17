@@ -1,6 +1,8 @@
 package net.shadowmage.ancientwarfare.npc.tile;
 
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -59,8 +61,8 @@ public class TileTownHall extends TileOwned implements IInteractableTile, ITicka
     private final List<ContainerTownHall> viewers = new ArrayList<>();
 
 
-    public TileTownHall() {
-        super();
+    public TileTownHall(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     @Override

@@ -32,10 +32,10 @@ import java.util.Map;
 
 public class ItemCoin extends ItemBaseNPC {
     private static final Map<CoinMetal, Block> METALS_TO_BLOCKS = ImmutableMap.of(
-            CoinMetal.ANCIENT, AWStructureBlocks.COIN_STACK_ANCIENT,
-            CoinMetal.GOLD, AWStructureBlocks.COIN_STACK_GOLD,
-            CoinMetal.SILVER, AWStructureBlocks.COIN_STACK_SILVER,
-            CoinMetal.COPPER, AWStructureBlocks.COIN_STACK_COPPER
+            CoinMetal.ANCIENT, AWStructureBlocks.COIN_STACK_ANCIENT.get(),
+            CoinMetal.GOLD, AWStructureBlocks.COIN_STACK_GOLD.get(),
+            CoinMetal.SILVER, AWStructureBlocks.COIN_STACK_SILVER.get(),
+            CoinMetal.COPPER, AWStructureBlocks.COIN_STACK_COPPER.get()
     );
 
     public ItemCoin() {
@@ -55,14 +55,14 @@ public class ItemCoin extends ItemBaseNPC {
     }
 
     public static ItemStack getCoinStack(CoinMetal metal, int stackSize) {
-        ItemStack coinStack = new ItemStack(AWNPCItems.COIN);
+        ItemStack coinStack = new ItemStack(AWNPCItems.COIN.get());
         coinStack.getOrCreateTag().put("metal", StringTag.valueOf(metal.getName()));
         coinStack.setCount(stackSize);
         return coinStack;
     }
 
     public static boolean isSpecificCoin(ItemStack stack, CoinMetal coinMetal) {
-        return stack.getItem() == AWNPCItems.COIN && getMetal(stack) == coinMetal;
+        return stack.getItem() == AWNPCItems.COIN.get() && getMetal(stack) == coinMetal;
     }
 
     @Override

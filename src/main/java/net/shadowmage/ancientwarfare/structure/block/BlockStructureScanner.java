@@ -69,11 +69,6 @@ public class BlockStructureScanner extends BlockBaseStructure {
         return true;
     }
 
-    @Nullable
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileStructureScanner();
-    }
 
     @Override
     @OnlyIn(Dist.CLIENT)

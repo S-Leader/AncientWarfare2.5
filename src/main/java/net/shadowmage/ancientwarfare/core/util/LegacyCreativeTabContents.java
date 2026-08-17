@@ -22,7 +22,7 @@ public final class LegacyCreativeTabContents {
     /**
      * Registration-time-safe check: does this item (or its block) declare a legacy
      * variant supplier? Must not construct ItemStacks — registries are not ready
-     * while RegisterEvent is still dispatching.
+     * while registry population is still in progress.
      */
     public static boolean suppliesVariants(Item item) {
         if (hasMethod(item, "getSubItems")) {

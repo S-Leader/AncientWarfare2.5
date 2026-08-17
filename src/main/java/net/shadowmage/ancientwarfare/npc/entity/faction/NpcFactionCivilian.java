@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.npc.entity.faction;
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -11,15 +13,11 @@ import net.shadowmage.ancientwarfare.npc.ai.faction.NpcAIFactionPanic;
 
 public abstract class NpcFactionCivilian extends NpcFaction {
 
-    public NpcFactionCivilian(Level world) {
-        super(world);
+    public NpcFactionCivilian(EntityType<? extends PathfinderMob> type, Level world) {
+        super(type, world);
         addAI();
     }
 
-    public NpcFactionCivilian(Level world, String factionName) {
-        super(world, factionName);
-        addAI();
-    }
 
     private void addAI() {
         tasks.addTask(0, new FloatGoal(this));

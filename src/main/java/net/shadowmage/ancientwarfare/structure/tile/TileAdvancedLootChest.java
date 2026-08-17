@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.shadowmage.ancientwarfare.core.tile.LegacyBlockEntityRegistry;
 import net.shadowmage.ancientwarfare.core.util.EntityTools;
 import net.shadowmage.ancientwarfare.structure.util.LootHelper;
 
@@ -23,13 +22,7 @@ public class TileAdvancedLootChest extends ChestBlockEntity implements ISpecialL
 
     private LootSettings lootSettings = new LootSettings();
 
-    @SuppressWarnings("unchecked")
-    public TileAdvancedLootChest() {
-        this((BlockEntityType<? extends ChestBlockEntity>) LegacyBlockEntityRegistry.currentType(),
-                LegacyBlockEntityRegistry.currentPos(), LegacyBlockEntityRegistry.currentState());
-    }
-
-    protected TileAdvancedLootChest(BlockEntityType<? extends ChestBlockEntity> type, BlockPos pos, BlockState state) {
+    public TileAdvancedLootChest(BlockEntityType<? extends ChestBlockEntity> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 

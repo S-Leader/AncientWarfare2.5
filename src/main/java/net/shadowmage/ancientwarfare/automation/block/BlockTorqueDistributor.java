@@ -41,18 +41,6 @@ public class BlockTorqueDistributor extends BlockTorqueTransportSided implements
         return TorqueDistributorRenderer.INSTANCE.handleState(LegacyModelState.of(state), world, pos);
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        switch (getTier(state)) {
-            case LIGHT:
-                return new TileDistributorLight();
-            case MEDIUM:
-                return new TileDistributorMedium();
-            case HEAVY:
-                return new TileDistributorHeavy();
-        }
-        return new TileDistributorLight();
-    }
 
     @Override
     @OnlyIn(Dist.CLIENT)

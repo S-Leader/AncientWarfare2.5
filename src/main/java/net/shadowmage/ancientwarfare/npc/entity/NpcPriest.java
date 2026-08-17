@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.npc.entity;
 
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -10,8 +12,8 @@ import net.shadowmage.ancientwarfare.npc.ai.owned.*;
 
 public class NpcPriest extends NpcPlayerOwned {
 
-    public NpcPriest(Level par1World) {
-        super(par1World);
+    public NpcPriest(EntityType<? extends PathfinderMob> type, Level par1World) {
+        super(type, par1World);
 
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(0, new NpcAIRestrictOpenDoor(this));

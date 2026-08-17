@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.structure.tile;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
@@ -13,6 +14,10 @@ import java.util.Set;
 import static net.shadowmage.ancientwarfare.core.render.property.CoreProperties.FACING;
 
 public class TileTotemPart extends TileMulti {
+    public TileTotemPart(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
     private static final String VARIANT_TAG = "variant";
     private Variant variant = Variant.BASE;
     private Variant dropVariant = Variant.BASE;

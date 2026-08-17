@@ -56,10 +56,6 @@ public final class BlockGateProxy extends BlockBaseStructure implements IClientR
         return true;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TEGateProxy();
-    }
 
     @Override
     public void getDrops(NonNullList<ItemStack> drops, BlockGetter world, BlockPos pos, BlockState state, int fortune) {

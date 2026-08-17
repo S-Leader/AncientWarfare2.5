@@ -23,12 +23,12 @@ public class StakeRenderer extends LegacyBlockEntityRenderer<TileStake> {
         // returns AIR, which has no FACING property and used to crash the client.
         if (te == null || te.isRemoved() || te.getLevel() == null
                 || te.getLevel().getBlockEntity(te.getPos()) != te
-                || !te.getLevel().getBlockState(te.getPos()).is(AWStructureBlocks.STAKE)) {
+                || !te.getLevel().getBlockState(te.getPos()).is(AWStructureBlocks.STAKE.get())) {
             return;
         }
 
         BlockState state = te.getBlockState();
-        if (!state.is(AWStructureBlocks.STAKE) || !state.hasProperty(FACING)) {
+        if (!state.is(AWStructureBlocks.STAKE.get()) || !state.hasProperty(FACING)) {
             return;
         }
 

@@ -1,6 +1,8 @@
 package net.shadowmage.ancientwarfare.automation.tile.warehouse2;
 
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -16,6 +18,10 @@ import net.shadowmage.ancientwarfare.core.util.WorldTools;
 import javax.annotation.Nullable;
 
 public class TileWarehouseCraftingStation extends TileUpdatable implements IInteractableTile, IBlockBreakHandler {
+    public TileWarehouseCraftingStation(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
 
     public CraftingRecipeMemory craftingRecipeMemory = new CraftingRecipeMemory(this);
 

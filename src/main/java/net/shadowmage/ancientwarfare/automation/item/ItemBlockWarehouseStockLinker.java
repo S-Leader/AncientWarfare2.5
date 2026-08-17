@@ -54,7 +54,7 @@ public class ItemBlockWarehouseStockLinker extends ItemBlockOwnedRotatable {
         }
         if (player.isShiftKeyDown() && !world.isClientSide) {
             HitResult hit = RayTraceUtils.getPlayerTarget(player, 5, 0);
-            if (hit instanceof BlockHitResult blockHit && world.getBlockState(blockHit.getBlockPos()).getBlock() == AWAutomationBlocks.WAREHOUSE_CONTROL) {
+            if (hit instanceof BlockHitResult blockHit && world.getBlockState(blockHit.getBlockPos()).getBlock() == AWAutomationBlocks.WAREHOUSE_CONTROL.get()) {
                 ItemStack stack = player.getItemInHand(hand);
                 stack.getOrCreateTag().put(WAREHOUSE_POS_TAG, NbtUtils.writeBlockPos(blockHit.getBlockPos()));
                 addMessage(player, blockHit.getBlockPos());

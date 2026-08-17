@@ -35,18 +35,11 @@ public class BlockStatue extends BlockBaseStructure {
         return true;
     }
 
-    @Nullable
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileStatue();
-    }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_STATUE, GuiStatue.class);
         ModelLoaderHelper.registerItem(this, "structure", "inventory");
     }
 

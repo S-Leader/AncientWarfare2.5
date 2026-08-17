@@ -39,10 +39,10 @@ public class AWJEIPlugin implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(@Nonnull ISubtypeRegistration subtypeRegistry) {
-        subtypeRegistry.useNbtForSubtypes(AWNPCItems.NPC_SPAWNER);
-        subtypeRegistry.useNbtForSubtypes(AWStructureBlocks.FIRE_PIT.asItem());
-        subtypeRegistry.useNbtForSubtypes(AWNPCItems.COIN);
-        subtypeRegistry.useNbtForSubtypes(AWStructureItems.TOTEM_PART);
+        subtypeRegistry.useNbtForSubtypes(AWNPCItems.NPC_SPAWNER.get());
+        subtypeRegistry.useNbtForSubtypes(AWStructureBlocks.FIRE_PIT.get().asItem());
+        subtypeRegistry.useNbtForSubtypes(AWNPCItems.COIN.get());
+        subtypeRegistry.useNbtForSubtypes(AWStructureItems.TOTEM_PART.get());
         AWVehicleItems.getVehicleItems().forEach(subtypeRegistry::useNbtForSubtypes);
     }
 
@@ -85,20 +85,20 @@ public class AWJEIPlugin implements IModPlugin {
     @Override
     public void registerRecipeCatalysts(@Nonnull IRecipeCatalystRegistration registry) {
         if (AWCraftingManager.getRecipes().stream().anyMatch(r -> r instanceof ShapedResearchRecipe)) {
-            registry.addRecipeCatalyst(new ItemStack(AWAutomationBlocks.AUTO_CRAFTING), ShapedResearchRecipeCategory.TYPE);
-            registry.addRecipeCatalyst(new ItemStack(AWAutomationBlocks.WAREHOUSE_CRAFTING), ShapedResearchRecipeCategory.TYPE);
-            registry.addRecipeCatalyst(new ItemStack(AWCoreBlocks.ENGINEERING_STATION), ShapedResearchRecipeCategory.TYPE);
+            registry.addRecipeCatalyst(new ItemStack(AWAutomationBlocks.AUTO_CRAFTING.get()), ShapedResearchRecipeCategory.TYPE);
+            registry.addRecipeCatalyst(new ItemStack(AWAutomationBlocks.WAREHOUSE_CRAFTING.get()), ShapedResearchRecipeCategory.TYPE);
+            registry.addRecipeCatalyst(new ItemStack(AWCoreBlocks.ENGINEERING_STATION.get()), ShapedResearchRecipeCategory.TYPE);
         }
 
         if (AWCraftingManager.getRecipes().stream().anyMatch(r -> r instanceof ShapelessResearchRecipe)) {
-            registry.addRecipeCatalyst(new ItemStack(AWAutomationBlocks.AUTO_CRAFTING), ShapelessResearchRecipeCategory.TYPE);
-            registry.addRecipeCatalyst(new ItemStack(AWAutomationBlocks.WAREHOUSE_CRAFTING), ShapelessResearchRecipeCategory.TYPE);
-            registry.addRecipeCatalyst(new ItemStack(AWCoreBlocks.ENGINEERING_STATION), ShapelessResearchRecipeCategory.TYPE);
+            registry.addRecipeCatalyst(new ItemStack(AWAutomationBlocks.AUTO_CRAFTING.get()), ShapelessResearchRecipeCategory.TYPE);
+            registry.addRecipeCatalyst(new ItemStack(AWAutomationBlocks.WAREHOUSE_CRAFTING.get()), ShapelessResearchRecipeCategory.TYPE);
+            registry.addRecipeCatalyst(new ItemStack(AWCoreBlocks.ENGINEERING_STATION.get()), ShapelessResearchRecipeCategory.TYPE);
         }
 
-        registry.addRecipeCatalyst(new ItemStack(AWAutomationBlocks.AUTO_CRAFTING), RecipeTypes.CRAFTING);
-        registry.addRecipeCatalyst(new ItemStack(AWAutomationBlocks.WAREHOUSE_CRAFTING), RecipeTypes.CRAFTING);
-        registry.addRecipeCatalyst(new ItemStack(AWCoreBlocks.ENGINEERING_STATION), RecipeTypes.CRAFTING);
+        registry.addRecipeCatalyst(new ItemStack(AWAutomationBlocks.AUTO_CRAFTING.get()), RecipeTypes.CRAFTING);
+        registry.addRecipeCatalyst(new ItemStack(AWAutomationBlocks.WAREHOUSE_CRAFTING.get()), RecipeTypes.CRAFTING);
+        registry.addRecipeCatalyst(new ItemStack(AWCoreBlocks.ENGINEERING_STATION.get()), RecipeTypes.CRAFTING);
     }
 
     private <C extends AbstractContainerMenu & ICraftingContainer, R> void registerMultiRecipeTransferHandler(Class<C> containerClass, RecipeType<R> recipeType, IRecipeTransferRegistration transferRegistry) {

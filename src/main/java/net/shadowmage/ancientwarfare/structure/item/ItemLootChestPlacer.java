@@ -187,8 +187,6 @@ public class ItemLootChestPlacer extends ItemBaseStructure implements IItemKeyIn
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_LOOT_CHEST_PLACER, GuiLootChestPlacer.class);
     }
 
     @Override

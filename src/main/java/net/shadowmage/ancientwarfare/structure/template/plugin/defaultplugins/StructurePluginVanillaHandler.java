@@ -64,18 +64,18 @@ public class StructurePluginVanillaHandler implements StructureContentPlugin {
         manager.registerBlockHandler(TemplateRuleFluid.PLUGIN_NAME, Blocks.WATER, TemplateRuleFluid::new, TemplateRuleFluid::new);
         manager.registerBlockHandler(TemplateRuleFluid.PLUGIN_NAME, Blocks.LAVA, TemplateRuleFluid::new, TemplateRuleFluid::new);
 
-        manager.registerBlockHandler(TemplateRuleBlockTile.PLUGIN_NAME, AWStructureBlocks.ADVANCED_SPAWNER, TemplateRuleBlockTile::new, TemplateRuleBlockTile::new);
-        manager.registerBlockHandler(TemplateRuleTotemPart.PLUGIN_NAME, AWStructureBlocks.TOTEM_PART, TemplateRuleTotemPart::new, TemplateRuleTotemPart::new);
-        manager.registerBlockHandler(TemplateRuleCoffin.PLUGIN_NAME, AWStructureBlocks.WOODEN_COFFIN, TemplateRuleCoffin::new, TemplateRuleCoffin::new);
-        manager.registerBlockHandler(TemplateRuleCoffin.PLUGIN_NAME, AWStructureBlocks.STONE_COFFIN, TemplateRuleCoffin::new, TemplateRuleCoffin::new);
-        manager.registerBlockHandler(TemplateRuleBlockTile.PLUGIN_NAME, AWCoreBlocks.ENGINEERING_STATION, TemplateRuleBlockTile::new, TemplateRuleBlockTile::new);
-        manager.registerBlockHandler(TemplateRuleBlockTile.PLUGIN_NAME, AWCoreBlocks.RESEARCH_STATION, TemplateRuleBlockTile::new, TemplateRuleBlockTile::new);
-        manager.registerBlockHandler(TemplateRuleBlockTile.PLUGIN_NAME, AWStructureBlocks.DRAFTING_STATION, TemplateRuleBlockTile::new, TemplateRuleBlockTile::new);
-        manager.registerBlockHandler(TemplateRuleStructureBuilder.PLUGIN_NAME, AWStructureBlocks.STRUCTURE_BUILDER_TICKED, TemplateRuleStructureBuilder::new, TemplateRuleStructureBuilder::new);
-        manager.registerBlockHandler(TemplateRuleBlockTile.PLUGIN_NAME, AWStructureBlocks.SOUND_BLOCK, TemplateRuleBlockTile::new, TemplateRuleBlockTile::new);
-        manager.registerBlockHandler(TemplateRuleBlockTile.PLUGIN_NAME, AWStructureBlocks.ADVANCED_LOOT_CHEST, TemplateRuleBlockTile::new, TemplateRuleBlockTile::new);
-        manager.registerBlockHandler(TemplateRuleFlag.PLUGIN_NAME, AWStructureBlocks.PROTECTION_FLAG, TemplateRuleFlag::new, TemplateRuleFlag::new);
-        manager.registerBlockHandler(TemplateRuleFlag.PLUGIN_NAME, AWStructureBlocks.DECORATIVE_FLAG, TemplateRuleFlag::new, TemplateRuleFlag::new);
+        manager.registerBlockHandler(TemplateRuleBlockTile.PLUGIN_NAME, AWStructureBlocks.ADVANCED_SPAWNER.get(), TemplateRuleBlockTile::new, TemplateRuleBlockTile::new);
+        manager.registerBlockHandler(TemplateRuleTotemPart.PLUGIN_NAME, AWStructureBlocks.TOTEM_PART.get(), TemplateRuleTotemPart::new, TemplateRuleTotemPart::new);
+        manager.registerBlockHandler(TemplateRuleCoffin.PLUGIN_NAME, AWStructureBlocks.WOODEN_COFFIN.get(), TemplateRuleCoffin::new, TemplateRuleCoffin::new);
+        manager.registerBlockHandler(TemplateRuleCoffin.PLUGIN_NAME, AWStructureBlocks.STONE_COFFIN.get(), TemplateRuleCoffin::new, TemplateRuleCoffin::new);
+        manager.registerBlockHandler(TemplateRuleBlockTile.PLUGIN_NAME, AWCoreBlocks.ENGINEERING_STATION.get(), TemplateRuleBlockTile::new, TemplateRuleBlockTile::new);
+        manager.registerBlockHandler(TemplateRuleBlockTile.PLUGIN_NAME, AWCoreBlocks.RESEARCH_STATION.get(), TemplateRuleBlockTile::new, TemplateRuleBlockTile::new);
+        manager.registerBlockHandler(TemplateRuleBlockTile.PLUGIN_NAME, AWStructureBlocks.DRAFTING_STATION.get(), TemplateRuleBlockTile::new, TemplateRuleBlockTile::new);
+        manager.registerBlockHandler(TemplateRuleStructureBuilder.PLUGIN_NAME, AWStructureBlocks.STRUCTURE_BUILDER_TICKED.get(), TemplateRuleStructureBuilder::new, TemplateRuleStructureBuilder::new);
+        manager.registerBlockHandler(TemplateRuleBlockTile.PLUGIN_NAME, AWStructureBlocks.SOUND_BLOCK.get(), TemplateRuleBlockTile::new, TemplateRuleBlockTile::new);
+        manager.registerBlockHandler(TemplateRuleBlockTile.PLUGIN_NAME, AWStructureBlocks.ADVANCED_LOOT_CHEST.get(), TemplateRuleBlockTile::new, TemplateRuleBlockTile::new);
+        manager.registerBlockHandler(TemplateRuleFlag.PLUGIN_NAME, AWStructureBlocks.PROTECTION_FLAG.get(), TemplateRuleFlag::new, TemplateRuleFlag::new);
+        manager.registerBlockHandler(TemplateRuleFlag.PLUGIN_NAME, AWStructureBlocks.DECORATIVE_FLAG.get(), TemplateRuleFlag::new, TemplateRuleFlag::new);
     }
 
     @Override

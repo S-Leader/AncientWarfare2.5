@@ -1,6 +1,7 @@
 package net.shadowmage.ancientwarfare.automation.tile.worksite.cropfarm;
 
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -35,8 +36,8 @@ public class WorkSiteCropFarm extends TileWorksiteFarm {
 
     private final IItemHandler inventoryForDrops;
 
-    public WorkSiteCropFarm() {
-        super();
+    public WorkSiteCropFarm(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
         inventoryForDrops = new CombinedInvWrapper(plantableInventory, mainInventory);
     }
 

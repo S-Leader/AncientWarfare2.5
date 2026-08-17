@@ -21,7 +21,7 @@ public final class AWVehicleTab {
     public static final RegistryObject<CreativeModeTab> TAB = TABS.register("vehicles", () ->
             CreativeModeTab.builder()
                     .title(Component.translatable("tabs.vehicles"))
-                    .icon(() -> AWVehicleItems.SPAWNER == null ? ItemStack.EMPTY : new ItemStack(AWVehicleItems.SPAWNER))
+                    .icon(() -> AWVehicleItems.SPAWNER == null ? ItemStack.EMPTY : new ItemStack(AWVehicleItems.SPAWNER.get()))
                     .displayItems((parameters, output) -> ForgeRegistries.ITEMS.getValues().stream()
                             .filter(item -> {
                                 var id = ForgeRegistries.ITEMS.getKey(item);

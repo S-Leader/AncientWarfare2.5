@@ -21,7 +21,7 @@ public final class AWStructureTab {
     public static final RegistryObject<CreativeModeTab> TAB = TABS.register("structures", () ->
             CreativeModeTab.builder()
                     .title(Component.translatable("tabs.structures"))
-                    .icon(() -> new ItemStack(AWStructureItems.STRUCTURE_SCANNER))
+                    .icon(() -> new ItemStack(AWStructureItems.STRUCTURE_SCANNER.get()))
                     .displayItems((parameters, output) -> ForgeRegistries.ITEMS.getValues().stream()
                             .filter(item -> {
                                 var id = ForgeRegistries.ITEMS.getKey(item);

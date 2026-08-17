@@ -12,7 +12,7 @@ public class ContainerInfoTool extends ContainerBase {
     public ContainerInfoTool(Player player, int x, int y, int z) {
         super(player);
 
-        infoTool = player.getItemInHand(EntityTools.getHandHoldingItem(player, AWCoreItems.INFO_TOOL));
+        infoTool = player.getItemInHand(EntityTools.getHandHoldingItem(player, AWCoreItems.INFO_TOOL.get()));
 
         addPlayerSlots(8);
     }
@@ -21,7 +21,7 @@ public class ContainerInfoTool extends ContainerBase {
         if (slotId >= 0 && slotId < inventoryItemStacks.size()) {
             ItemStack stack = inventorySlots.get(slotId).getItem();
             if (!stack.isEmpty()) {
-                AWCoreItems.INFO_TOOL.printItemInfo(player, infoTool, stack);
+                AWCoreItems.INFO_TOOL.get().printItemInfo(player, infoTool, stack);
             }
         }
     }

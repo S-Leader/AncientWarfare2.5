@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.structure.tile;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -17,6 +18,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class TileMulti extends TileUpdatable implements IBlockBreakHandler {
+    protected TileMulti(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
     private static final String MAIN_BLOCK_POS_TAG = "mainBlockPos";
     private BlockPos mainBlockPos = null;
 

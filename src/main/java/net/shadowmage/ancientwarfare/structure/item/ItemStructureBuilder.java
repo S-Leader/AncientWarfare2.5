@@ -189,8 +189,6 @@ public class ItemStructureBuilder extends ItemBaseStructure implements IItemKeyI
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
         super.registerClient();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_BUILDER, GuiStructureSelection.class);
     }
 
 }

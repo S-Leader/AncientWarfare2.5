@@ -223,7 +223,7 @@ public class Navigator implements IPathableCallback {
             hasDoor = true;
             return true;
         }
-        if (block == AWStructureBlocks.GATE_PROXY) {
+        if (block == AWStructureBlocks.GATE_PROXY.get()) {
             WorldTools.getTile(entity.level(), entityPos, TEGateProxy.class).ifPresent(proxy -> {
                 interactWithGate(false);
                 gate = proxy.getOwner().orElse(null);
@@ -263,7 +263,7 @@ public class Navigator implements IPathableCallback {
             hasDoor = true;
             return true;
         }
-        if (block == AWStructureBlocks.GATE_PROXY) {
+        if (block == AWStructureBlocks.GATE_PROXY.get()) {
             WorldTools.getTile(entity.level(), new BlockPos(x, y, z), TEGateProxy.class).ifPresent(proxy -> {
                 interactWithGate(false);
                 gate = proxy.getOwner().orElse(null);

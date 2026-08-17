@@ -18,15 +18,18 @@ public class SortItemsFirstComparator implements Comparator<ItemStack> {
             Object element = firstElements[i];
 
             Predicate<ItemStack> matches;
-            if (element instanceof Item) {
-                matches = s -> s.getItem() == element;
-            } else if (element instanceof Block) {
-                matches = s -> s.getItem() instanceof BlockItem && ((BlockItem) s.getItem()).getBlock() == element;
-            } else if (Block.class.isAssignableFrom((Class<?>) element)) {
-                matches = s -> s.getItem() instanceof BlockItem && ((Class<?>) element).isAssignableFrom(((BlockItem) s.getItem()).getBlock().getClass());
-            } else if (Item.class.isAssignableFrom((Class<?>) element)) {
-                matches = s -> ((Class<?>) element).isAssignableFrom(s.getItem().getClass());
+            if (element instanceof Item item) {
+                matches = s -> s.getItem() == item;
+            } else if (element instanceof Block block) {
+                matches = s -> s.getItem() instanceof BlockItem blockItem && blockItem.getBlock() == block;
+            } else if (element instanceof Class<?> type && Block.class.isAssignableFrom(type)) {
+                matches = s -> s.getItem() instanceof BlockItem blockItem
+                        && type.isAssignableFrom(blockItem.getBlock().getClass());
+            } else if (element instanceof Class<?> type && Item.class.isAssignableFrom(type)) {
+                matches = s -> type.isAssignableFrom(s.getItem().getClass());
             } else {
+                // RegistryObject/Supplier/etc. are not sort keys. Callers using DeferredRegister
+                // must pass the resolved registered value (RegistryObject#get()).
                 continue;
             }
 

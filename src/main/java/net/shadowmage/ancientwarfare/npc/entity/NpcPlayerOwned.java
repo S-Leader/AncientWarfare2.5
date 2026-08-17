@@ -51,10 +51,7 @@ public abstract class NpcPlayerOwned extends NpcBase implements IKeepFood, Npc {
     private BlockPos townHallPosition;
     private BlockPos upkeepAutoBlock;
 
-    public NpcPlayerOwned(Level level) {
-        super(level);
-        initializeOwnedNpc();
-    }
+
 
     public NpcPlayerOwned(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);

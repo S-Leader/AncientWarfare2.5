@@ -23,8 +23,10 @@ import net.shadowmage.ancientwarfare.core.compat.ftb.FTBCompat;
 import net.shadowmage.ancientwarfare.core.config.AWCoreStatics;
 import net.shadowmage.ancientwarfare.core.container.*;
 import net.shadowmage.ancientwarfare.core.crafting.AWCraftingManager;
+import net.shadowmage.ancientwarfare.core.crafting.AWWorkbenchCrafting;
 import net.shadowmage.ancientwarfare.core.datafixes.AWDataFixes;
 import net.shadowmage.ancientwarfare.core.entity.AWFakePlayer;
+import net.shadowmage.ancientwarfare.core.init.AWCoreBlocks;
 import net.shadowmage.ancientwarfare.core.init.AWCoreItems;
 import net.shadowmage.ancientwarfare.core.init.AWCoreLoot;
 import net.shadowmage.ancientwarfare.core.init.AWMenuTypes;
@@ -58,6 +60,9 @@ public final class AncientWarfareCore {
 
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         AWCoreTab.register(modBus);
+        AWCoreBlocks.register(modBus);
+        AWCoreItems.register(modBus);
+        AWWorkbenchCrafting.register(modBus);
         AWMenuTypes.register(modBus);
         modBus.addListener(this::commonSetup);
         modBus.addListener(this::loadComplete);
@@ -65,14 +70,14 @@ public final class AncientWarfareCore {
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(ResearchTracker.INSTANCE);
 
-        registerLegacyScreens();
+        registerNativeMenus();
         RegistryLoader.registerParser(new ResearchRegistry.ResearchParser());
         CompatLoader.registerCompat(new FTBCompat());
         AWCraftingManager.init();
         proxy.preInit();
     }
 
-    private void registerLegacyScreens() {
+    private void registerNativeMenus() {
         NetworkHandler.registerContainer(NetworkHandler.GUI_CRAFTING, ContainerEngineeringStation.class);
         NetworkHandler.registerContainer(NetworkHandler.GUI_RESEARCH_STATION, ContainerResearchStation.class);
         NetworkHandler.registerContainer(NetworkHandler.GUI_BACKPACK, ContainerBackpack.class);

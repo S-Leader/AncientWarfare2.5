@@ -27,7 +27,7 @@ public class TreeFarmRegistry {
     }
 
     private static final ITreeScanner DEFAULT_TREE_SCANNER =
-            new DefaultTreeScanner(st -> LegacyMaterial.of(st) == LegacyMaterial.WOOD && st.getBlock() != AWAutomationBlocks.TREE_FARM
+            new DefaultTreeScanner(st -> LegacyMaterial.of(st) == LegacyMaterial.WOOD && st.getBlock() != AWAutomationBlocks.TREE_FARM.get()
                     , sl -> LegacyMaterial.of(sl) == LegacyMaterial.LEAVES);
 
     private static Set<ISapling> saplings = new HashSet<>();

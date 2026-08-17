@@ -29,7 +29,7 @@ public final class AWAutomationTab {
     public static final RegistryObject<CreativeModeTab> TAB = TABS.register("automation", () ->
             CreativeModeTab.builder()
                     .title(Component.translatable("tabs.automation"))
-                    .icon(() -> new ItemStack(AWCoreItems.IRON_HAMMER))
+                    .icon(() -> new ItemStack(AWCoreItems.IRON_HAMMER.get()))
                     .displayItems((parameters, output) -> {
                         List<ItemStack> stacks = new ArrayList<>();
                         ForgeRegistries.ITEMS.getValues().stream()
@@ -43,10 +43,10 @@ public final class AWAutomationTab {
                                 .flatMap(item -> LegacyCreativeTabContents.stacksFor(item).stream())
                                 .forEach(stacks::add);
                         stacks.sort(new SortItemsFirstComparator(
-                                TREE_FARM, CROP_FARM, FRUIT_FARM, ANIMAL_FARM, FISH_FARM,
-                                QUARRY, AUTO_CRAFTING, WAREHOUSE_CONTROL, WAREHOUSE_INTERFACE,
-                                WAREHOUSE_CRAFTING, WAREHOUSE_STOCK_VIEWER, WAREHOUSE_STOCK_LINKER,
-                                MAILBOX, WINDMILL_BLADE));
+                                TREE_FARM.get(), CROP_FARM.get(), FRUIT_FARM.get(), ANIMAL_FARM.get(), FISH_FARM.get(),
+                                QUARRY.get(), AUTO_CRAFTING.get(), WAREHOUSE_CONTROL.get(), WAREHOUSE_INTERFACE.get(),
+                                WAREHOUSE_CRAFTING.get(), WAREHOUSE_STOCK_VIEWER.get(), WAREHOUSE_STOCK_LINKER.get(),
+                                MAILBOX.get(), WINDMILL_BLADE.get()));
                         stacks.forEach(output::accept);
                     })
                     .build());

@@ -1,5 +1,7 @@
 package net.shadowmage.ancientwarfare.structure.tile;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -24,6 +26,10 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class TileProtectionFlag extends TileFlag {
+    public TileProtectionFlag(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
     private static final String PLAYER_PROFILE_TAG = "playerProfile";
     private static final String OWNER_TAG = "owner";
     private static final float UNBREAKABLE = -1F;
@@ -81,7 +87,7 @@ public class TileProtectionFlag extends TileFlag {
 
     @Override
     public ItemStack getItemStack() {
-        ItemStack stack = new ItemStack(AWStructureBlocks.PROTECTION_FLAG);
+        ItemStack stack = new ItemStack(AWStructureBlocks.PROTECTION_FLAG.get());
         CompoundTag tag = new CompoundTag();
         writeNBT(tag);
         stack.setTag(tag);
@@ -116,7 +122,7 @@ public class TileProtectionFlag extends TileFlag {
 
     private void turnOffSoundBlocks(StructureEntry structure) {
         for (BlockPos blockPos : BlockPos.betweenClosed(structure.getBB().min, structure.getBB().max)) {
-            if (world.getBlockState(blockPos).getBlock() == AWStructureBlocks.SOUND_BLOCK) {
+            if (world.getBlockState(blockPos).getBlock() == AWStructureBlocks.SOUND_BLOCK.get()) {
                 WorldTools.getTile(world, blockPos, TileSoundBlock.class).ifPresent(TileSoundBlock::turnOffByProtectionFlag);
             }
         }

@@ -57,6 +57,10 @@ public class BlockWarehouseStorage extends BlockBaseAutomation {
         return fixedSize;
     }
 
+    public static EnumProperty<Size> sizeProperty() {
+        return SIZE;
+    }
+
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(SIZE);
@@ -85,17 +89,6 @@ public class BlockWarehouseStorage extends BlockBaseAutomation {
         return true;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        switch (fixedSize == null ? state.getValue(SIZE) : fixedSize) {
-            case MEDIUM:
-                return new TileWarehouseStorageMedium();
-            case LARGE:
-                return new TileWarehouseStorageLarge();
-            default:
-                return new TileWarehouseStorage();
-        }
-    }
 
     public void getSubBlocks(CreativeModeTab itemIn, NonNullList<ItemStack> items) {
         if (fixedSize == null) {
@@ -182,7 +175,5 @@ public class BlockWarehouseStorage extends BlockBaseAutomation {
             ModelLoaderHelper.registerItem(this,
                     new ModelResourceLocation(assetLocation, "size=" + fixedSize.getSerializedName()));
         }
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_WAREHOUSE_STORAGE, GuiWarehouseStorage.class);
     }
 }

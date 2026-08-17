@@ -10,11 +10,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
 import net.shadowmage.ancientwarfare.core.owner.Owner;
 import net.shadowmage.ancientwarfare.core.util.BlockTools;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
+import net.shadowmage.ancientwarfare.structure.init.AWStructureEntities;
 import net.shadowmage.ancientwarfare.structure.config.AWStructureStatics;
 import net.shadowmage.ancientwarfare.structure.entity.DualBoundingBox;
 import net.shadowmage.ancientwarfare.structure.entity.EntityGate;
@@ -313,11 +313,11 @@ public class Gate implements IGateType {
     private void placeProxyIfNotPresent(EntityGate gate, BlockPos pos) {
         BlockState state = gate.level().getBlockState(pos);
         Block block = state.getBlock();
-        if (block != AWStructureBlocks.GATE_PROXY) {
+        if (block != AWStructureBlocks.GATE_PROXY.get()) {
             if (!gate.level().isEmptyBlock(pos)) {
                 Block.dropResources(state, gate.level(), pos);
             }
-            gate.level().setBlock(pos, AWStructureBlocks.GATE_PROXY.defaultBlockState(), 3);
+            gate.level().setBlock(pos, AWStructureBlocks.GATE_PROXY.get().defaultBlockState(), 3);
         }
         WorldTools.getTile(gate.level(), pos, TEGateProxy.class).ifPresent(t -> {
             t.setOwner(gate);
@@ -351,9 +351,7 @@ public class Gate implements IGateType {
             rotatedFacing = facing.getClockWise();
         }
 
-        EntityGate ent = AWEntityRegistry.createEntity(
-                new ResourceLocation(AncientWarfareStructure.MOD_ID, AWEntityRegistry.AW_GATES),
-                world, EntityGate.class);
+        EntityGate ent = AWStructureEntities.GATE.get().create(world);
         if (ent == null) {
             return Optional.empty();
         }

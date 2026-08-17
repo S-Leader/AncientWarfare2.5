@@ -52,11 +52,6 @@ public class BlockAltarCandle extends BlockAltarTop {
         return true;
     }
 
-    @Nullable
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileAltarCandle();
-    }
 
     @Override
     public ItemStack getPickBlock(BlockState state, HitResult target, Level world, BlockPos pos, Player player) {

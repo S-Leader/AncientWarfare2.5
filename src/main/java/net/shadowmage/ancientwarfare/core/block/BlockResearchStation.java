@@ -61,10 +61,6 @@ public class BlockResearchStation extends BlockBaseCore {
         return true;
     }
 
-    @Override
-    public BlockEntity createTileEntity(Level world, BlockState state) {
-        return new TileResearchStation();
-    }
 
     @Override
     public boolean onBlockActivated(Level world, BlockPos pos, BlockState state, Player player, InteractionHand hand, Direction facing, float hitX, float hitY, float hitZ) {
@@ -96,6 +92,5 @@ public class BlockResearchStation extends BlockBaseCore {
     public void registerClient() {
         super.registerClient();
 
-        NetworkHandler.registerGui(NetworkHandler.GUI_RESEARCH_STATION, GuiResearchStation.class);
     }
 }

@@ -6,19 +6,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.shadowmage.ancientwarfare.core.datafixes.ComponentItemFixer;
-import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
 import net.shadowmage.ancientwarfare.core.util.BlockTools;
 import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
 import net.shadowmage.ancientwarfare.structure.api.IStructureBuilder;
 import net.shadowmage.ancientwarfare.vehicle.AncientWarfareVehicles;
+import net.shadowmage.ancientwarfare.vehicle.init.AWVehicleEntities;
 import net.shadowmage.ancientwarfare.vehicle.entity.IVehicleType;
 import net.shadowmage.ancientwarfare.vehicle.entity.VehicleBase;
 import net.shadowmage.ancientwarfare.vehicle.entity.types.VehicleType;
 
 public class TemplateRuleVehicle extends TemplateRuleEntity {
     public static final String PLUGIN_NAME = "AWVehicle";
-    private static final ResourceLocation VEHICLE_ENTITY_ID =
-            new ResourceLocation(AncientWarfareVehicles.MOD_ID, AWEntityRegistry.VEHICLE);
 
     private float turretRotation;
 
@@ -103,7 +101,7 @@ public class TemplateRuleVehicle extends TemplateRuleEntity {
     }
 
     private VehicleBase createRawVehicle(Level world) {
-        return AWEntityRegistry.createEntity(VEHICLE_ENTITY_ID, world, VehicleBase.class);
+        return AWVehicleEntities.VEHICLE.get().create(world);
     }
 
     private boolean restoreLegacyVehicleState(VehicleBase vehicle, CompoundTag vehicleNbt,

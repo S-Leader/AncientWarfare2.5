@@ -13,11 +13,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import net.shadowmage.ancientwarfare.core.config.ConfigManager;
-import net.shadowmage.ancientwarfare.core.entity.AWEntityRegistry;
 import net.shadowmage.ancientwarfare.core.network.NetworkHandler;
 import net.shadowmage.ancientwarfare.core.proxy.IClientRegister;
 import net.shadowmage.ancientwarfare.core.render.model.LegacyModelRegistryHelper;
@@ -26,6 +24,7 @@ import net.shadowmage.ancientwarfare.npc.AncientWarfareNPC;
 import net.shadowmage.ancientwarfare.npc.client.NPCItemColors;
 import net.shadowmage.ancientwarfare.npc.config.AWNPCStatics;
 import net.shadowmage.ancientwarfare.npc.gui.*;
+import net.shadowmage.ancientwarfare.npc.init.AWNPCEntities;
 import net.shadowmage.ancientwarfare.npc.item.IExtendedReachWeapon;
 import net.shadowmage.ancientwarfare.npc.render.RenderCommandOverlay;
 import net.shadowmage.ancientwarfare.npc.render.RenderNpcBase;
@@ -41,7 +40,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Supplier;
 
 @OnlyIn(Dist.CLIENT)
 public class NpcClientProxy extends NpcCommonProxy {
@@ -54,29 +52,29 @@ public class NpcClientProxy extends NpcCommonProxy {
     }
 
     private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        registerOwnedRenderer(event, AWEntityRegistry.NPC_WORKER);
-        registerOwnedRenderer(event, AWEntityRegistry.NPC_COMBAT);
-        registerOwnedRenderer(event, AWEntityRegistry.NPC_COURIER);
-        registerOwnedRenderer(event, AWEntityRegistry.NPC_TRADER);
-        registerOwnedRenderer(event, AWEntityRegistry.NPC_PRIEST);
-        registerOwnedRenderer(event, AWEntityRegistry.NPC_BARD);
-        registerOwnedRenderer(event, AWEntityRegistry.NPC_SIEGE_ENGINEER);
+        registerOwnedRenderer(event, AWNPCEntities.NPC_WORKER);
+        registerOwnedRenderer(event, AWNPCEntities.NPC_COMBAT);
+        registerOwnedRenderer(event, AWNPCEntities.NPC_COURIER);
+        registerOwnedRenderer(event, AWNPCEntities.NPC_TRADER);
+        registerOwnedRenderer(event, AWNPCEntities.NPC_PRIEST);
+        registerOwnedRenderer(event, AWNPCEntities.NPC_BARD);
+        registerOwnedRenderer(event, AWNPCEntities.NPC_SIEGE_ENGINEER);
 
-        registerFactionRenderer(event, AWEntityRegistry.NPC_FACTION_ARCHER);
-        registerFactionRenderer(event, AWEntityRegistry.NPC_FACTION_SOLDIER);
-        registerFactionRenderer(event, AWEntityRegistry.NPC_FACTION_PRIEST);
-        registerFactionRenderer(event, AWEntityRegistry.NPC_FACTION_TRADER);
-        registerFactionRenderer(event, AWEntityRegistry.NPC_FACTION_COMMANDER);
-        registerFactionRenderer(event, AWEntityRegistry.NPC_FACTION_CAVALRY);
-        registerFactionRenderer(event, AWEntityRegistry.NPC_FACTION_MOUNTED_ARCHER);
-        registerFactionRenderer(event, AWEntityRegistry.NPC_FACTION_CIVILIAN_MALE);
-        registerFactionRenderer(event, AWEntityRegistry.NPC_FACTION_ARCHER_ELITE);
-        registerFactionRenderer(event, AWEntityRegistry.NPC_FACTION_SOLDIER_ELITE);
-        registerFactionRenderer(event, AWEntityRegistry.NPC_FACTION_LEADER_ELITE);
-        registerFactionRenderer(event, AWEntityRegistry.NPC_FACTION_CIVILIAN_FEMALE);
-        registerFactionRenderer(event, AWEntityRegistry.NPC_FACTION_BARD);
-        registerFactionRenderer(event, AWEntityRegistry.NPC_FACTION_SIEGE_ENGINEER);
-        registerFactionRenderer(event, AWEntityRegistry.NPC_FACTION_SPELLCASTER);
+        registerFactionRenderer(event, AWNPCEntities.NPC_FACTION_ARCHER);
+        registerFactionRenderer(event, AWNPCEntities.NPC_FACTION_SOLDIER);
+        registerFactionRenderer(event, AWNPCEntities.NPC_FACTION_PRIEST);
+        registerFactionRenderer(event, AWNPCEntities.NPC_FACTION_TRADER);
+        registerFactionRenderer(event, AWNPCEntities.NPC_FACTION_COMMANDER);
+        registerFactionRenderer(event, AWNPCEntities.NPC_FACTION_CAVALRY);
+        registerFactionRenderer(event, AWNPCEntities.NPC_FACTION_MOUNTED_ARCHER);
+        registerFactionRenderer(event, AWNPCEntities.NPC_FACTION_CIVILIAN_MALE);
+        registerFactionRenderer(event, AWNPCEntities.NPC_FACTION_ARCHER_ELITE);
+        registerFactionRenderer(event, AWNPCEntities.NPC_FACTION_SOLDIER_ELITE);
+        registerFactionRenderer(event, AWNPCEntities.NPC_FACTION_LEADER_ELITE);
+        registerFactionRenderer(event, AWNPCEntities.NPC_FACTION_CIVILIAN_FEMALE);
+        registerFactionRenderer(event, AWNPCEntities.NPC_FACTION_BARD);
+        registerFactionRenderer(event, AWNPCEntities.NPC_FACTION_SIEGE_ENGINEER);
+        registerFactionRenderer(event, AWNPCEntities.NPC_FACTION_SPELLCASTER);
     }
 
     private static void registerOwnedRenderer(EntityRenderersEvent.RegisterRenderers event, String name) {
@@ -89,7 +87,7 @@ public class NpcClientProxy extends NpcCommonProxy {
 
     @SuppressWarnings("unchecked")
     private static <T extends Entity> EntityType<T> entityType(String name) {
-        EntityType<?> type = AWEntityRegistry.getType(new ResourceLocation(AncientWarfareNPC.MOD_ID, name));
+        EntityType<?> type = AWNPCEntities.getEntityType(name);
         if (type == null) {
             throw new IllegalStateException("Missing registered NPC entity type: " + name);
         }
@@ -111,32 +109,6 @@ public class NpcClientProxy extends NpcCommonProxy {
     @Override
     public void preInit() {
         super.preInit();
-
-        NetworkHandler.registerGui(NetworkHandler.GUI_NPC_INVENTORY, GuiNpcInventory.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_NPC_FACTION_TRADE_SETUP, GuiNpcFactionTradeSetup.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_NPC_FACTION_TRADE_VIEW, GuiNpcFactionTradeView.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_NPC_WORK_ORDER, GuiWorkOrder.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_NPC_UPKEEP_ORDER, GuiUpkeepOrder.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_NPC_COMBAT_ORDER, GuiCombatOrder.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_NPC_ROUTING_ORDER, GuiRoutingOrder.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_NPC_TOWN_HALL, GuiTownHallInventory.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_NPC_BARD, GuiNpcBard.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_NPC_CREATIVE, GuiNpcCreativeControls.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_NPC_TRADE_ORDER, GuiTradeOrder.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_NPC_PLAYER_OWNED_TRADE, GuiNpcPlayerOwnedTrade.class);
-        NetworkHandler.registerGui(NetworkHandler.GUI_NPC_FACTION_BARD, GuiNpcFactionBard.class);
-
-        /* optional dependency for EBWizardry spell casters
-         * References to the EBWizardry specific class can only be here, to avoid class loading if the mod is no present.
-         * Any reference outside of the lambdas will crash the game if EBWizardry is not present */
-        Supplier<Runnable> registerGuiNpcFactionSpellcasterWizardry = () -> () -> {
-            NetworkHandler.registerGui(NetworkHandler.GUI_NPC_FACTION_SPELLCASTER_WIZARDRY, GuiNpcFactionSpellcasterWizardry.class);
-        };
-
-        if (ModList.get().isLoaded("ebwizardry")) {
-            registerGuiNpcFactionSpellcasterWizardry.get().run();
-        }
-
 
         MinecraftForge.EVENT_BUS.register(RenderWorkLines.INSTANCE);
         MinecraftForge.EVENT_BUS.register(RenderCommandOverlay.INSTANCE);
