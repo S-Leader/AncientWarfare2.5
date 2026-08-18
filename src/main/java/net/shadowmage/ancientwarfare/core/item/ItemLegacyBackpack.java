@@ -20,7 +20,6 @@ import net.shadowmage.ancientwarfare.core.compat.CapabilityItemHandler;
 import net.shadowmage.ancientwarfare.core.init.AWCoreItems;
 import net.shadowmage.ancientwarfare.core.inventory.ItemHandlerBackpack;
 import net.shadowmage.ancientwarfare.core.proxy.IClientRegister;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,9 +46,7 @@ public final class ItemLegacyBackpack extends ItemBase implements IClientRegiste
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        for (int meta = 0; meta < 4; meta++) {
-            ModelLoaderHelper.registerItem(this, meta, "core/backpack#inventory");
-        }
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 
     @Override

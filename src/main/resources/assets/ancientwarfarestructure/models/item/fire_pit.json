@@ -1,3 +1,35 @@
 {
-  "parent": "ancientwarfare:block/structure/fire_pit"
+  "parent": "ancientwarfare:block/structure/fire_pit",
+  "overrides": [
+    {
+      "predicate": {
+        "ancientwarfarestructure:fire_pit_model": 1.0
+      },
+      "model": "ancientwarfare:block/structure/fire_pit_unlit"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:fire_pit_model": 2.0
+      },
+      "model": "ancientwarfare:block/structure/fire_pit_log"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:fire_pit_model": 3.0
+      },
+      "model": "ancientwarfare:block/structure/fire_pit_log_unlit"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:fire_pit_model": 4.0
+      },
+      "model": "ancientwarfare:block/structure/fire_pit_square"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:fire_pit_model": 5.0
+      },
+      "model": "ancientwarfare:block/structure/fire_pit_square_unlit"
+    }
+  ]
 }

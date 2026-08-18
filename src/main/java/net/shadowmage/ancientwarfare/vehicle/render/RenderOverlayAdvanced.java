@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -32,28 +33,31 @@ public class RenderOverlayAdvanced {
         }
         Player player = Minecraft.getInstance().player;
         if (AWVehicleStatics.clientSettings.renderAdvOverlay && player.getVehicle() instanceof VehicleBase && Minecraft.getInstance().screen == null) {
-            RenderOverlayAdvanced.renderAdvancedVehicleOverlay((VehicleBase) player.getVehicle(), player, event.getPartialTick());
+            RenderOverlayAdvanced.renderAdvancedVehicleOverlay((VehicleBase) player.getVehicle(), player, event.getCamera().getPosition(), event.getPartialTick());
         }
     }
 
-    private static void renderAdvancedVehicleOverlay(VehicleBase vehicle, Player player, float partialTick) {
+    private static void renderAdvancedVehicleOverlay(VehicleBase vehicle, Player player, Vec3 cameraPos, float partialTick) {
         if (vehicle.vehicleType == VehicleRegistry.BATTERING_RAM) {
-            renderBatteringRamOverlay(vehicle, player, partialTick);
+            renderBatteringRamOverlay(vehicle, player, cameraPos, partialTick);
         } else if (vehicle.ammoHelper.isCurrentAmmoRocket()) {
-            renderOverlay(vehicle, player, partialTick,
-                    (buffer, rOffset, speed, accVec, gravity) -> drawRocketFlightPath(vehicle, player, buffer, rOffset, speed, accVec, gravity));
+            renderOverlay(vehicle, player, cameraPos, partialTick,
+                    (buffer, rOffset, speed, accVec, gravity) -> drawRocketFlightPath(vehicle, cameraPos, buffer, rOffset, speed, accVec, gravity));
         } else {
-            renderOverlay(vehicle, player, partialTick, (buffer, rOffset, speed, accVec, gravity) -> drawNormalTrajectory(vehicle, player, buffer, rOffset, gravity, accVec));
+            renderOverlay(vehicle, player, cameraPos, partialTick, (buffer, rOffset, speed, accVec, gravity) -> drawNormalTrajectory(vehicle, cameraPos, buffer, rOffset, gravity, accVec));
         }
     }
 
-    private static void renderOverlay(VehicleBase vehicle, Player player, float partialTick, IDynamicOverlayPartRenderer dynamicRenderer) {
+    private static void renderOverlay(VehicleBase vehicle, Player player, Vec3 cameraPos, float partialTick, IDynamicOverlayPartRenderer dynamicRenderer) {
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         //1.12 glColor/texture toggles are handled per-vertex + by shader selection in the draw methods below
 
-        Vec3 renderOffset = new Vec3(vehicle.getX() - player.getX(), vehicle.getY() - player.getY(), vehicle.getZ() - player.getZ());
+        double vehicleX = Mth.lerp(partialTick, vehicle.xOld, vehicle.getX());
+        double vehicleY = Mth.lerp(partialTick, vehicle.yOld, vehicle.getY());
+        double vehicleZ = Mth.lerp(partialTick, vehicle.zOld, vehicle.getZ());
+        Vec3 renderOffset = new Vec3(vehicleX - cameraPos.x, vehicleY - cameraPos.y, vehicleZ - cameraPos.z);
 
         drawStraightLine(vehicle, partialTick, renderOffset);
 
@@ -65,8 +69,9 @@ public class RenderOverlayAdvanced {
     }
 
     private static void drawStraightLine(VehicleBase vehicle, float partialTick, Vec3 renderOffset) {
-        double x2 = renderOffset.x - 20 * Trig.sinDegrees(vehicle.getYRot() + partialTick * vehicle.moveHelper.getRotationSpeed());
-        double z2 = renderOffset.z - 20 * Trig.cosDegrees(vehicle.getYRot() + partialTick * vehicle.moveHelper.getRotationSpeed());
+        float bodyYaw = Mth.rotLerp(partialTick, vehicle.yRotO, vehicle.getYRot());
+        double x2 = renderOffset.x - 20 * Trig.sinDegrees(bodyYaw);
+        double z2 = renderOffset.z - 20 * Trig.cosDegrees(bodyYaw);
         GlStateManager.glLineWidth(3f);
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
@@ -84,8 +89,10 @@ public class RenderOverlayAdvanced {
 
         double gravity = 9.81d * 0.05d * 0.05d;
         double speed = vehicle.localLaunchPower * 0.05d;
-        double angle = 90 - vehicle.localTurretPitch - vehicle.getXRot();
-        double yaw = vehicle.localTurretRotation + partialTick * vehicle.moveHelper.getRotationSpeed();
+        float bodyPitch = Mth.lerp(partialTick, vehicle.xRotO, vehicle.getXRot());
+        float turretYaw = vehicle.localTurretRotation - (1.0F - partialTick) * vehicle.currentTurretYawSpeed;
+        double angle = 90 - vehicle.localTurretPitch - bodyPitch;
+        double yaw = turretYaw;
 
         double vH = -Trig.sinDegrees((float) angle) * speed;
         Vec3 accelerationVector = new Vec3(Trig.sinDegrees((float) yaw) * vH, Trig.cosDegrees((float) angle) * speed, Trig.cosDegrees((float) yaw) * vH);
@@ -94,7 +101,7 @@ public class RenderOverlayAdvanced {
         BufferUploader.drawWithShader(buffer.end());
     }
 
-    private static void drawRocketFlightPath(VehicleBase vehicle, Player player, BufferBuilder buffer, Vec3 renderOffset, double speed, Vec3 accelerationVector,
+    private static void drawRocketFlightPath(VehicleBase vehicle, Vec3 cameraPos, BufferBuilder buffer, Vec3 renderOffset, double speed, Vec3 accelerationVector,
                                              double gravity) {
         int rocketBurnTime = (int) (speed * 20.f * AmmoHwachaRocket.BURN_TIME_FACTOR);
 
@@ -108,7 +115,7 @@ public class RenderOverlayAdvanced {
         Vec3 adjustedAccelerationVector = accelerationVector;
         if (vehicle.vehicleType.getMovementType() == VehicleMovementType.AIR1 || vehicle.vehicleType.getMovementType() == VehicleMovementType.AIR2) {
             adjustedAccelerationVector = adjustedAccelerationVector.add(vehicle.getDeltaMovement());
-            floorY = -player.getY();
+            floorY = -cameraPos.y;
         }
 
         float xAcc = (float) (adjustedAccelerationVector.x / speed) * AmmoHwachaRocket.ACCELERATION_FACTOR;
@@ -131,7 +138,7 @@ public class RenderOverlayAdvanced {
         }
     }
 
-    private static void drawNormalTrajectory(VehicleBase vehicle, Player player, BufferBuilder buffer, Vec3 renderOffset, double gravity, Vec3 accelerationVector) {
+    private static void drawNormalTrajectory(VehicleBase vehicle, Vec3 cameraPos, BufferBuilder buffer, Vec3 renderOffset, double gravity, Vec3 accelerationVector) {
         Vec3 offset = vehicle.getMissileOffset();
         double x2 = renderOffset.x + offset.x;
         double y2 = renderOffset.y + offset.y;
@@ -142,7 +149,7 @@ public class RenderOverlayAdvanced {
         Vec3 adjustedAccelerationVector = accelerationVector;
         if (vehicle.vehicleType.getMovementType() == VehicleMovementType.AIR1 || vehicle.vehicleType.getMovementType() == VehicleMovementType.AIR2) {
             adjustedAccelerationVector = adjustedAccelerationVector.add(vehicle.getDeltaMovement());
-            floorY = -player.getY();
+            floorY = -cameraPos.y;
         }
 
         while (y2 >= floorY) {
@@ -155,21 +162,22 @@ public class RenderOverlayAdvanced {
         }
     }
 
-    private static void renderBatteringRamOverlay(VehicleBase vehicle, Player player, float partialTick) {
+    private static void renderBatteringRamOverlay(VehicleBase vehicle, Player player, Vec3 cameraPos, float partialTick) {
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         //1.12 glColor/texture toggles are handled per-vertex + by shader selection below
 
-        double x1 = vehicle.getX() - player.getX();
-        double y1 = vehicle.getY() - player.getY();
-        double z1 = vehicle.getZ() - player.getZ();
+        double x1 = Mth.lerp(partialTick, vehicle.xOld, vehicle.getX()) - cameraPos.x;
+        double y1 = Mth.lerp(partialTick, vehicle.yOld, vehicle.getY()) - cameraPos.y;
+        double z1 = Mth.lerp(partialTick, vehicle.zOld, vehicle.getZ()) - cameraPos.z;
 
         /*
          * vectors for a straight line
          */
-        double x2 = x1 - 20 * Trig.sinDegrees(vehicle.getYRot());
-        double z2 = z1 - 20 * Trig.cosDegrees(vehicle.getYRot());
+        float bodyYaw = Mth.rotLerp(partialTick, vehicle.yRotO, vehicle.getYRot());
+        double x2 = x1 - 20 * Trig.sinDegrees(bodyYaw);
+        double z2 = z1 - 20 * Trig.cosDegrees(bodyYaw);
         GlStateManager.glLineWidth(3f);
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
@@ -185,13 +193,13 @@ public class RenderOverlayAdvanced {
         BlockPos blockHit = BlockPos.containing(bx, by, bz);
         AABB bb = new AABB(blockHit.getX() - 1, blockHit.getY(), blockHit.getZ(), blockHit.getX() + 2, blockHit.getY() + 1,
                 blockHit.getZ() + 1);
-        bb = adjustBBForPlayerPos(bb, player, partialTick);
+        bb = adjustBBForCameraPos(bb, cameraPos);
         RenderTools.drawOutlinedBoundingBox(bb, 1.f, 0.2f, 0.2f);
         bb = new AABB(blockHit.getX(), blockHit.getY(), blockHit.getZ() - 1, blockHit.getX() + 1, blockHit.getY() + 1, blockHit.getZ() + 2);
-        bb = adjustBBForPlayerPos(bb, player, partialTick);
+        bb = adjustBBForCameraPos(bb, cameraPos);
         RenderTools.drawOutlinedBoundingBox(bb, 1.f, 0.2f, 0.2f);
         bb = new AABB(blockHit.getX(), blockHit.getY() - 1, blockHit.getZ(), blockHit.getX() + 1, blockHit.getY() + 2, blockHit.getZ() + 1);
-        bb = adjustBBForPlayerPos(bb, player, partialTick);
+        bb = adjustBBForCameraPos(bb, cameraPos);
         RenderTools.drawOutlinedBoundingBox(bb, 1.f, 0.2f, 0.2f);
         GlStateManager.popMatrix();
 
@@ -200,11 +208,8 @@ public class RenderOverlayAdvanced {
         GlStateManager.disableBlend();
     }
 
-    private static AABB adjustBBForPlayerPos(AABB bb, Player player, float partialTick) {
-        double x = player.xOld + (player.getX() - player.xOld) * partialTick;
-        double y = player.yOld + (player.getY() - player.yOld) * partialTick;
-        double z = player.zOld + (player.getZ() - player.zOld) * partialTick;
-        return bb.move(-x, -y, -z);
+    private static AABB adjustBBForCameraPos(AABB bb, Vec3 cameraPos) {
+        return bb.move(-cameraPos.x, -cameraPos.y, -cameraPos.z);
     }
 
     private interface IDynamicOverlayPartRenderer {

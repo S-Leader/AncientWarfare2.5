@@ -1,4 +1,44 @@
 {
   "parent": "minecraft:item/generated",
-  "textures": { "layer0": "ancientwarfare:items/structure/gates/gate_wood_basic" }
+  "textures": {
+    "layer0": "ancientwarfare:items/structure/gates/gate_wood_basic"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "ancientwarfarestructure:gate_variant": 1.0
+      },
+      "model": "ancientwarfarestructure:item/gate_vertical_iron"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:gate_variant": 2.0
+      },
+      "model": "ancientwarfarestructure:item/gate_single_wood"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:gate_variant": 3.0
+      },
+      "model": "ancientwarfarestructure:item/gate_single_iron"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:gate_variant": 4.0
+      },
+      "model": "ancientwarfarestructure:item/gate_double_wood"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:gate_variant": 5.0
+      },
+      "model": "ancientwarfarestructure:item/gate_double_iron"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:gate_variant": 6.0
+      },
+      "model": "ancientwarfarestructure:item/gate_drawbridge"
+    }
+  ]
 }

@@ -16,9 +16,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.proxy.IClientRegister;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelLoader;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelRegistryHelper;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyStateMapperBase;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
 import net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks;
@@ -70,15 +67,6 @@ public class BlockAdvancedLootChest extends ChestBlock implements IClientRegiste
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        ModelResourceLocation modelLocation = new ModelResourceLocation(ID, "normal");
-        LegacyModelRegistryHelper.registerItemRenderer(this.asItem(), new RenderItemAdvancedLootChest());
-        LegacyModelRegistryHelper.register(modelLocation, ParticleOnlyModel.INSTANCE);
-        LegacyModelLoader.setCustomStateMapper(this, new LegacyStateMapperBase() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            protected ModelResourceLocation getModelResourceLocation(BlockState state) {
-                return modelLocation;
-            }
-        });
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 }

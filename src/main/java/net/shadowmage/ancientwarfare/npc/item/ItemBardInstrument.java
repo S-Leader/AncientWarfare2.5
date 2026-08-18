@@ -14,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 
 /**
  * Bard instrument item. 1.20 recipes must distinguish the instruments by
@@ -106,12 +105,6 @@ public class ItemBardInstrument extends ItemBaseNPC {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        if (fixedInstrument != null) {
-            ModelLoaderHelper.registerItem(this, 0, "ancientwarfare:npc/bard_instrument",
-                    "variant=" + fixedInstrument.serializedName());
-            return;
-        }
-        ModelLoaderHelper.registerItem(this, "npc", false,
-                meta -> "variant=" + Instrument.byLegacyMeta(meta).serializedName());
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 }

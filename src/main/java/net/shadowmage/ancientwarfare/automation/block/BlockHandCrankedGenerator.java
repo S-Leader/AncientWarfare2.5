@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.automation.block;
 
+import net.shadowmage.ancientwarfare.core.render.model.DynamicModelRegistry;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
@@ -40,23 +41,8 @@ public class BlockHandCrankedGenerator extends BlockTorqueBase implements Legacy
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        super.registerClient();
-
-        LegacyModelLoader.setCustomStateMapper(this, new LegacyStateMapperBase() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            protected ModelResourceLocation getModelResourceLocation(BlockState state) {
-                return HandCrankedGeneratorRenderer.MODEL_LOCATION;
-            }
-        });
-
-        LegacyModelRegistryHelper.register(HandCrankedGeneratorRenderer.MODEL_LOCATION, new LegacyBakeryModel() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            public TextureAtlasSprite getParticleTexture() {
-                return HandCrankedGeneratorRenderer.INSTANCE.sprite;
-            }
-        });
+        DynamicModelRegistry.registerBlock(this, getBakery(), state -> HandCrankedGeneratorRenderer.INSTANCE.sprite);
+        DynamicModelRegistry.registerItem(this.asItem(), getBakery(), () -> HandCrankedGeneratorRenderer.INSTANCE.sprite);
     }
 
     @Override

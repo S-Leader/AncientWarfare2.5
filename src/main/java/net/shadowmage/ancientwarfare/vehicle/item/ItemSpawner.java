@@ -22,7 +22,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelLoader;
 import net.shadowmage.ancientwarfare.vehicle.config.AWVehicleStatics;
 import net.shadowmage.ancientwarfare.vehicle.entity.IVehicleType;
 import net.shadowmage.ancientwarfare.vehicle.entity.VehicleBase;
@@ -93,7 +92,7 @@ public class ItemSpawner extends ItemBaseVehicle {
         return stack.getOrCreateTag().getCompound(SPAWN_DATA_TAG);
     }
 
-    private int getMaterialLevel(ItemStack stack) {
+    public int getMaterialLevel(ItemStack stack) {
         int maxLevel = Math.max(0, vehicleType.getMaterialType().getNumOfLevels() - 1);
         return Mth.clamp(getSpawnData(stack).getInt(LEVEL_TAG), 0, maxLevel);
     }
@@ -165,17 +164,6 @@ public class ItemSpawner extends ItemBaseVehicle {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        String modelPath = "vehicle/%s";
-        LegacyModelLoader.setCustomMeshDefinition(this, stack -> {
-            String variant = vehicleType.getConfigName() + "_" + getMaterialLevel(stack);
-            return new ModelResourceLocation(new ResourceLocation(AncientWarfareCore.MOD_ID,
-                    String.format(modelPath, variant)), "inventory");
-        });
-
-        for (int level = 0; level < vehicleType.getMaterialType().getNumOfLevels(); level++) {
-            LegacyModelLoader.registerItemVariants(this,
-                    new ModelResourceLocation(new ResourceLocation(AncientWarfareCore.MOD_ID,
-                            String.format(modelPath, vehicleType.getConfigName() + "_" + level)), "inventory"));
-        }
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 }

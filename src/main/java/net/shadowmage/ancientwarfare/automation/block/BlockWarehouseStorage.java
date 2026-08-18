@@ -23,9 +23,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.automation.init.AWAutomationBlocks;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelLoader;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyStateMapperBase;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 
 public class BlockWarehouseStorage extends BlockBaseAutomation {
@@ -142,25 +139,6 @@ public class BlockWarehouseStorage extends BlockBaseAutomation {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        final ResourceLocation assetLocation = new ResourceLocation(AncientWarfareCore.MOD_ID, "automation/warehouse_storage");
-
-        LegacyModelLoader.setCustomStateMapper(this, new LegacyStateMapperBase() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            protected ModelResourceLocation getModelResourceLocation(BlockState state) {
-                return new ModelResourceLocation(assetLocation, getPropertyString(state.getValues()));
-            }
-        });
-
-        if (fixedSize == null) {
-            ModelLoaderHelper.registerItem(this.asItem(), "automation", false,
-                    meta -> "size=" + Size.byMetadata(meta).getSerializedName());
-        } else {
-            // The fixed-id block still uses the original warehouse model.  Register
-            // its item directly against that model instead of looking for a new
-            // automation/warehouse_storage_<size> model that does not exist.
-            ModelLoaderHelper.registerItem(this,
-                    new ModelResourceLocation(assetLocation, "size=" + fixedSize.getSerializedName()));
-        }
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 }

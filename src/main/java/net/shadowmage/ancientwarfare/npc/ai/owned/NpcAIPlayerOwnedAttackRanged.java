@@ -25,6 +25,9 @@ public class NpcAIPlayerOwnedAttackRanged extends NpcAIAttack<NpcBase> {
         if (npc.doNotPursue) {
             return (dist < 0);
         }
+        if (specialWeaponController.isTridentMeleeMode(npc, dist)) {
+            return specialWeaponController.shouldCloseForTridentMelee(npc, getTarget(), dist);
+        }
         return (dist > ATTACK_DISTANCE || !npc.getSensing().hasLineOfSight(getTarget()));
     }
 
@@ -32,6 +35,10 @@ public class NpcAIPlayerOwnedAttackRanged extends NpcAIAttack<NpcBase> {
     protected void doAttack(double dist) {
         npc.removeAITask(TASK_MOVE);
         npc.getNavigation().stop();
+        if (specialWeaponController.tickTridentMelee(npc, getTarget(), dist,
+                getAttackDelay(), this::setAttackDelay)) {
+            return;
+        }
         float pwr = (float) (ATTACK_DISTANCE / dist);
         //noinspection UnstableApiUsage
         pwr = Floats.constrainToRange(pwr, 0.1f, 1f);

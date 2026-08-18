@@ -4,7 +4,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import net.shadowmage.ancientwarfare.core.proxy.IClientRegister;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 
 /**
  * A single, registry-backed machine component. 1.20 no longer has item
@@ -22,6 +21,6 @@ public final class ItemComponent extends ItemBase implements IClientRegister {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        ModelLoaderHelper.registerItem(this, 0, "automation/" + modelName + "#inventory");
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 }

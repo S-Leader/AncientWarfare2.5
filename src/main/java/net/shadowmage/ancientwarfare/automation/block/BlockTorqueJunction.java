@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.automation.block;
 
+import net.shadowmage.ancientwarfare.core.render.model.DynamicModelRegistry;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
@@ -17,10 +18,8 @@ import net.shadowmage.ancientwarfare.automation.render.property.AutomationProper
 import net.shadowmage.ancientwarfare.automation.tile.torque.TileConduitHeavy;
 import net.shadowmage.ancientwarfare.automation.tile.torque.TileConduitLight;
 import net.shadowmage.ancientwarfare.automation.tile.torque.TileConduitMedium;
-import net.shadowmage.ancientwarfare.core.render.BlockStateKeyGenerator;
 import net.shadowmage.ancientwarfare.core.render.model.*;
 import net.shadowmage.ancientwarfare.core.render.property.CoreProperties;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 
 public class BlockTorqueJunction extends BlockTorqueTransportSided implements LegacyBakeryProvider {
     public BlockTorqueJunction(String regName) {
@@ -59,52 +58,10 @@ public class BlockTorqueJunction extends BlockTorqueTransportSided implements Le
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        if (getFixedTier() == null) {
-            ModelLoaderHelper.registerItem(this, "automation", "light", false);
-        } else {
-            ModelLoaderHelper.registerItem(this, modelLocation(getFixedTier()));
-        }
-
-        LegacyModelBakery.registerBlockKeyGenerator(this, new BlockStateKeyGenerator.Builder().addKeyProperties(AutomationProperties.TIER, CoreProperties.UNLISTED_FACING).addKeyProperties(AutomationProperties.DYNAMIC).addKeyProperties(BlockTorqueTransportSided.CONNECTIONS).addKeyProperties(o -> String.format("%.6f", o), AutomationProperties.ROTATIONS).build());
-
-        LegacyModelLoader.setCustomStateMapper(this, new LegacyStateMapperBase() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            protected ModelResourceLocation getModelResourceLocation(BlockState state) {
-                switch (getTier(state)) {
-                    case LIGHT:
-                        return TorqueJunctionRenderer.LIGHT_MODEL_LOCATION;
-                    case MEDIUM:
-                        return TorqueJunctionRenderer.MEDIUM_MODEL_LOCATION;
-                    default:
-                        return TorqueJunctionRenderer.HEAVY_MODEL_LOCATION;
-                }
-            }
-        });
-
-        LegacyModelRegistryHelper.register(TorqueJunctionRenderer.LIGHT_MODEL_LOCATION, new LegacyBakeryModel() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            public TextureAtlasSprite getParticleTexture() {
-                return TorqueJunctionRenderer.INSTANCE.getSprite(TorqueTier.LIGHT);
-            }
-        });
-
-        LegacyModelRegistryHelper.register(TorqueJunctionRenderer.MEDIUM_MODEL_LOCATION, new LegacyBakeryModel() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            public TextureAtlasSprite getParticleTexture() {
-                return TorqueJunctionRenderer.INSTANCE.getSprite(TorqueTier.MEDIUM);
-            }
-        });
-
-        LegacyModelRegistryHelper.register(TorqueJunctionRenderer.HEAVY_MODEL_LOCATION, new LegacyBakeryModel() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            public TextureAtlasSprite getParticleTexture() {
-                return TorqueJunctionRenderer.INSTANCE.getSprite(TorqueTier.HEAVY);
-            }
-        });
+        DynamicModelRegistry.registerBlock(this, getBakery(),
+                state -> TorqueJunctionRenderer.INSTANCE.getSprite(getTier(state)));
+        DynamicModelRegistry.registerItem(this.asItem(), getBakery(),
+                () -> TorqueJunctionRenderer.INSTANCE.getSprite(getFixedTier() == null ? TorqueTier.LIGHT : getFixedTier()));
     }
 
     private static ModelResourceLocation modelLocation(TorqueTier tier) {

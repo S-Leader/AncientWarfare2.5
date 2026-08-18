@@ -18,7 +18,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
 import net.shadowmage.ancientwarfare.core.init.AWMenuTypes;
 import net.shadowmage.ancientwarfare.core.network.NetworkHandler;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 import net.shadowmage.ancientwarfare.structure.gui.GuiStatue;
 import net.shadowmage.ancientwarfare.structure.tile.TileStatue;
@@ -39,8 +38,7 @@ public class BlockStatue extends BlockBaseStructure {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        super.registerClient();
-        ModelLoaderHelper.registerItem(this, "structure", "inventory");
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 
     @Override

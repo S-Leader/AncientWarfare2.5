@@ -1,3 +1,47 @@
 {
-  "parent": "ancientwarfarestructure:block/structure/coin_stack_gold_8"
+  "parent": "ancientwarfarestructure:block/structure/coin_stack_gold_8",
+  "overrides": [
+    {
+      "predicate": {
+        "ancientwarfarestructure:coin_size": 1.0
+      },
+      "model": "ancientwarfarestructure:block/structure/coin_stack_gold_16"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:coin_size": 2.0
+      },
+      "model": "ancientwarfarestructure:block/structure/coin_stack_gold_24"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:coin_size": 3.0
+      },
+      "model": "ancientwarfarestructure:block/structure/coin_stack_gold_32"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:coin_size": 4.0
+      },
+      "model": "ancientwarfarestructure:block/structure/coin_stack_gold_40"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:coin_size": 5.0
+      },
+      "model": "ancientwarfarestructure:block/structure/coin_stack_gold_48"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:coin_size": 6.0
+      },
+      "model": "ancientwarfarestructure:block/structure/coin_stack_gold_56"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:coin_size": 7.0
+      },
+      "model": "ancientwarfarestructure:block/structure/coin_stack_gold_64"
+    }
+  ]
 }

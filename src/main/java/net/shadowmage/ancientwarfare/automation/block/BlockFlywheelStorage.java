@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.automation.block;
 
+import net.shadowmage.ancientwarfare.core.render.model.DynamicModelRegistry;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -21,9 +22,7 @@ import net.shadowmage.ancientwarfare.automation.render.FlywheelStorageRenderer;
 import net.shadowmage.ancientwarfare.automation.render.property.AutomationProperties;
 import net.shadowmage.ancientwarfare.automation.tile.torque.multiblock.TileFlywheelStorage;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
-import net.shadowmage.ancientwarfare.core.render.BlockStateKeyGenerator;
 import net.shadowmage.ancientwarfare.core.render.model.*;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 
 import java.util.Optional;
@@ -144,53 +143,10 @@ public class BlockFlywheelStorage extends BlockBaseAutomation implements LegacyB
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        LegacyModelRegistryHelper.registerDirectItemBakery(this.asItem(), FlywheelStorageRenderer.INSTANCE,
+        DynamicModelRegistry.registerBlock(this, getBakery(),
+                state -> FlywheelStorageRenderer.INSTANCE.getSprite(state.getValue(AutomationProperties.TIER)));
+        DynamicModelRegistry.registerItem(this.asItem(), getBakery(),
                 () -> FlywheelStorageRenderer.INSTANCE.getSprite(fixedTier == null ? TorqueTier.LIGHT : fixedTier));
-        ModelLoaderHelper.registerItem(this, fixedTier == null
-                ? FlywheelStorageRenderer.LIGHT_MODEL_LOCATION
-                : modelLocation(fixedTier));
-
-        LegacyModelBakery.registerBlockKeyGenerator(this, new BlockStateKeyGenerator.Builder().addKeyProperties(TIER).addKeyProperties(DYNAMIC, IS_CONTROL, WIDTH, HEIGHT).addKeyProperties(o -> String.format("%.6f", o), ROTATION).build());
-
-        LegacyModelLoader.setCustomStateMapper(this, new LegacyStateMapperBase() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            protected ModelResourceLocation getModelResourceLocation(BlockState state) {
-                switch (state.getValue(AutomationProperties.TIER)) {
-                    case LIGHT:
-                        return FlywheelStorageRenderer.LIGHT_MODEL_LOCATION;
-                    case MEDIUM:
-                        return FlywheelStorageRenderer.MEDIUM_MODEL_LOCATION;
-                    default:
-                        return FlywheelStorageRenderer.HEAVY_MODEL_LOCATION;
-                }
-            }
-        });
-
-        LegacyModelRegistryHelper.register(FlywheelStorageRenderer.LIGHT_MODEL_LOCATION, new LegacyBakeryModel() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            public TextureAtlasSprite getParticleTexture() {
-                return FlywheelStorageRenderer.INSTANCE.getSprite(TorqueTier.LIGHT);
-            }
-        });
-
-        LegacyModelRegistryHelper.register(FlywheelStorageRenderer.MEDIUM_MODEL_LOCATION, new LegacyBakeryModel() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            public TextureAtlasSprite getParticleTexture() {
-                return FlywheelStorageRenderer.INSTANCE.getSprite(TorqueTier.MEDIUM);
-            }
-        });
-
-        LegacyModelRegistryHelper.register(FlywheelStorageRenderer.HEAVY_MODEL_LOCATION, new LegacyBakeryModel() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            public TextureAtlasSprite getParticleTexture() {
-                return FlywheelStorageRenderer.INSTANCE.getSprite(TorqueTier.HEAVY);
-            }
-        });
-
     }
 
     private static ModelResourceLocation modelLocation(TorqueTier tier) {

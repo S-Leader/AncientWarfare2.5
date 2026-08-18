@@ -1,3 +1,71 @@
 {
-  "parent": "ancientwarfare:block/structure/totem_part_base"
+  "parent": "ancientwarfare:block/structure/totem_part_base",
+  "overrides": [
+    {
+      "predicate": {
+        "ancientwarfarestructure:totem_variant": 1.0
+      },
+      "model": "ancientwarfare:block/structure/totem_part_mid"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:totem_variant": 2.0
+      },
+      "model": "ancientwarfare:block/structure/totem_part_mid_alt"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:totem_variant": 3.0
+      },
+      "model": "ancientwarfare:block/structure/totem_part_top"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:totem_variant": 4.0
+      },
+      "model": "ancientwarfare:block/structure/totem_part_wings"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:totem_variant": 5.0
+      },
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_base"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:totem_variant": 6.0
+      },
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_mid"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:totem_variant": 7.0
+      },
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_top"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:totem_variant": 8.0
+      },
+      "model": "ancientwarfare:block/structure/totem_part_irminsul_side"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:totem_variant": 9.0
+      },
+      "model": "ancientwarfare:block/structure/totem_part_elephant_left"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:totem_variant": 10.0
+      },
+      "model": "ancientwarfare:block/structure/totem_part_elephant_right"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:totem_variant": 11.0
+      },
+      "model": "ancientwarfare:block/structure/totem_part_elephant_body"
+    }
+  ]
 }

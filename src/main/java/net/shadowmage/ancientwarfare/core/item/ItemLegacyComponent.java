@@ -9,7 +9,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.proxy.IClientRegister;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import net.shadowmage.ancientwarfare.core.init.AWCoreItems;
 
@@ -33,14 +32,7 @@ public final class ItemLegacyComponent extends ItemBase implements IClientRegist
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        String[] models = {
-                "component_wooden_gear", "component_iron_gear", "component_steel_gear",
-                "component_wooden_bearings", "component_iron_bearings", "component_steel_bearings",
-                "component_wooden_shaft", "component_iron_shaft", "component_steel_shaft"
-        };
-        for (int meta = 0; meta < models.length; meta++) {
-            ModelLoaderHelper.registerItem(this, meta, "automation/" + models[meta] + "#inventory");
-        }
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 
     @Override

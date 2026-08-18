@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -16,6 +17,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -33,11 +35,21 @@ import net.shadowmage.ancientwarfare.structure.gui.GuiGateControl;
 import net.shadowmage.ancientwarfare.structure.gui.GuiGateControlCreative;
 import net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks;
 import net.shadowmage.ancientwarfare.structure.init.AWStructureEntities;
+import net.shadowmage.ancientwarfare.structure.init.AWStructureItems;
+import net.shadowmage.ancientwarfare.structure.block.BlockBrazierEmber;
+import net.shadowmage.ancientwarfare.structure.block.BlockBrazierFlame;
+import net.shadowmage.ancientwarfare.structure.block.BlockCoinStack;
+import net.shadowmage.ancientwarfare.structure.block.BlockFirePit;
+import net.shadowmage.ancientwarfare.structure.block.BlockTotemPart;
+import net.shadowmage.ancientwarfare.structure.item.ItemBlockGravestone;
+import net.shadowmage.ancientwarfare.structure.item.ItemGateSpawner;
+import net.shadowmage.ancientwarfare.structure.util.WoodVariantHelper;
 import net.shadowmage.ancientwarfare.structure.render.*;
 import net.shadowmage.ancientwarfare.structure.render.statue.StatueRenderer;
 import net.shadowmage.ancientwarfare.structure.tile.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -58,6 +70,7 @@ public class ClientProxyStructure extends CommonProxyStructure {
 
     private void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
+            registerItemProperties();
             ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_CANDLE.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_LONG_CLOTH.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ALTAR_SHORT_CLOTH.get(), RenderType.cutout());
@@ -72,6 +85,45 @@ public class ClientProxyStructure extends CommonProxyStructure {
             ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.STAKE.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(net.shadowmage.ancientwarfare.structure.init.AWStructureBlocks.ADVANCED_SPAWNER.get(), RenderType.cutout());
         });
+    }
+
+    private static void registerItemProperties() {
+        ResourceLocation unlit = new ResourceLocation(AncientWarfareStructure.MOD_ID, "unlit");
+        ResourceLocation coinSize = new ResourceLocation(AncientWarfareStructure.MOD_ID, "coin_size");
+        ResourceLocation firePitModel = new ResourceLocation(AncientWarfareStructure.MOD_ID, "fire_pit_model");
+        ResourceLocation gravestoneVariant = new ResourceLocation(AncientWarfareStructure.MOD_ID, "gravestone_variant");
+        ResourceLocation totemVariant = new ResourceLocation(AncientWarfareStructure.MOD_ID, "totem_variant");
+        ResourceLocation woodVariant = new ResourceLocation(AncientWarfareStructure.MOD_ID, "wood_variant");
+        ResourceLocation gateVariant = new ResourceLocation(AncientWarfareStructure.MOD_ID, "gate_variant");
+
+        ItemProperties.register(AWStructureBlocks.BRAZIER_EMBER.get().asItem(), unlit,
+                (stack, level, entity, seed) -> BlockBrazierEmber.getItemModelProperty(stack));
+        ItemProperties.register(AWStructureBlocks.BRAZIER_FLAME.get().asItem(), unlit,
+                (stack, level, entity, seed) -> BlockBrazierFlame.getItemModelProperty(stack));
+
+        for (Block block : List.of(
+                AWStructureBlocks.COIN_STACK_COPPER.get(), AWStructureBlocks.COIN_STACK_SILVER.get(),
+                AWStructureBlocks.COIN_STACK_GOLD.get(), AWStructureBlocks.COIN_STACK_ANCIENT.get())) {
+            ItemProperties.register(block.asItem(), coinSize,
+                    (stack, level, entity, seed) -> BlockCoinStack.getItemModelProperty(stack));
+        }
+
+        ItemProperties.register(AWStructureBlocks.FIRE_PIT.get().asItem(), firePitModel,
+                (stack, level, entity, seed) -> BlockFirePit.getItemModelProperty(stack));
+        ItemProperties.register(AWStructureBlocks.GRAVESTONE.get().asItem(), gravestoneVariant,
+                (stack, level, entity, seed) -> stack.hasTag() ? ItemBlockGravestone.getVariant(stack) : 8.0F);
+        ItemProperties.register(AWStructureBlocks.TOTEM_PART.get().asItem(), totemVariant,
+                (stack, level, entity, seed) -> BlockTotemPart.getItemModelProperty(stack));
+
+        for (Block block : List.of(
+                AWStructureBlocks.TABLE.get(), AWStructureBlocks.STOOL.get(),
+                AWStructureBlocks.CHAIR.get(), AWStructureBlocks.BENCH.get())) {
+            ItemProperties.register(block.asItem(), woodVariant,
+                    (stack, level, entity, seed) -> WoodVariantHelper.getVariant(stack).getMeta());
+        }
+
+        ItemProperties.register(AWStructureItems.GATE_SPAWNER.get(), gateVariant,
+                (stack, level, entity, seed) -> AWStructureItems.GATE_SPAWNER.get().getItemModelProperty(stack));
     }
 
     private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {

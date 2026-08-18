@@ -50,6 +50,7 @@ public abstract class NpcPlayerOwned extends NpcBase implements IKeepFood, Npc {
     NpcAIPlayerOwnedRideHorse horseAI;
     private BlockPos townHallPosition;
     private BlockPos upkeepAutoBlock;
+    private boolean keepInventoryForResurrection;
 
 
 
@@ -97,12 +98,15 @@ public abstract class NpcPlayerOwned extends NpcBase implements IKeepFood, Npc {
 
     @Override
     public void die(DamageSource source) {
+        keepInventoryForResurrection = false;
         if (!level().isClientSide) {
             if (horseAI != null) {
                 horseAI.onKilled();
             }
             validateTownHallPosition();
-            getTownHall().ifPresent(townHall -> townHall.handleNpcDeath(this, source));
+            keepInventoryForResurrection = getTownHall()
+                    .map(townHall -> townHall.handleNpcDeath(this, source))
+                    .orElse(false);
         }
         super.die(source);
     }
@@ -316,6 +320,12 @@ public abstract class NpcPlayerOwned extends NpcBase implements IKeepFood, Npc {
 
     @Override
     protected void dropEquipment() {
+        // Resurrectable town-hall deaths already store the NPC's complete inventory
+        // in the death entry. Keep it there instead of dropping duplicate items.
+        if (keepInventoryForResurrection) {
+            return;
+        }
+
         if (!npcKeepEquipment) {
             for (EquipmentSlot slot : EquipmentSlot.values()) {
                 ItemStack stack = getItemBySlot(slot);
@@ -392,9 +402,27 @@ public abstract class NpcPlayerOwned extends NpcBase implements IKeepFood, Npc {
     @Override
     public void tick() {
         super.tick();
-        if (!level().isClientSide && foodValueRemaining > 0 && !isSleeping()) {
-            foodValueRemaining--;
+        if (!level().isClientSide && !isSleeping()) {
+            if (foodValueRemaining > 0) {
+                foodValueRemaining--;
+            }
+            if (foodValueRemaining <= 0) {
+                tryEatOffhandFood();
+            }
         }
+    }
+
+    private void tryEatOffhandFood() {
+        ItemStack offhand = getOffhandItem();
+        int foodValue = AncientWarfareNPC.statics.getFoodValue(offhand);
+        if (foodValue <= 0) {
+            return;
+        }
+
+        ItemStack remaining = offhand.copy();
+        remaining.shrink(1);
+        setItemSlot(EquipmentSlot.OFFHAND, remaining);
+        setFoodRemaining(getFoodRemaining() + foodValue);
     }
 
     @Nullable

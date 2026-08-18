@@ -8,7 +8,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 import net.shadowmage.ancientwarfare.vehicle.armors.IVehicleArmor;
 
 import javax.annotation.Nullable;
@@ -36,8 +35,6 @@ public class ItemArmor extends ItemBaseVehicle {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        ModelLoaderHelper.registerItem(this, (i, m) -> new ModelResourceLocation(getRegistryName(), "inventory"));
-
         defenseTooltip = I18n.get("item.armor_defense.tooltip", armor.getGeneralDamageReduction());
         fireTooltip = I18n.get("item.armor_fire.tooltip", armor.getFireDamageReduction());
         explosiveTooltip = I18n.get("item.armor_explosive.tooltip", armor.getExplosiveDamageReduction());

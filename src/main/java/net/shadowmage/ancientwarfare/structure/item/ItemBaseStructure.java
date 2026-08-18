@@ -4,7 +4,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.item.ItemBase;
 import net.shadowmage.ancientwarfare.core.proxy.IClientRegister;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
 
 public class ItemBaseStructure extends ItemBase implements IClientRegister {
@@ -17,6 +16,6 @@ public class ItemBaseStructure extends ItemBase implements IClientRegister {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        ModelLoaderHelper.registerItem(this, "structure");
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 }

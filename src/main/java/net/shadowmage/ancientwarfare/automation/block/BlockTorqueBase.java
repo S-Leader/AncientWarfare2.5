@@ -18,11 +18,8 @@ import net.shadowmage.ancientwarfare.core.block.BlockRotationHandler;
 import net.shadowmage.ancientwarfare.core.block.BlockRotationHandler.IRotatableBlock;
 import net.shadowmage.ancientwarfare.core.block.BlockRotationHandler.IRotatableTile;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
-import net.shadowmage.ancientwarfare.core.render.BlockStateKeyGenerator;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelBakery;
 import net.shadowmage.ancientwarfare.core.render.model.LegacyModelState;
 import net.shadowmage.ancientwarfare.core.render.property.CoreProperties;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 
 public abstract class BlockTorqueBase extends BlockBaseAutomation implements IRotatableBlock {
@@ -133,8 +130,6 @@ public abstract class BlockTorqueBase extends BlockBaseAutomation implements IRo
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        ModelLoaderHelper.registerItem(this, "automation", "normal");
-
-        LegacyModelBakery.registerBlockKeyGenerator(this, new BlockStateKeyGenerator.Builder().addKeyProperties(CoreProperties.UNLISTED_FACING).addKeyProperties(AutomationProperties.DYNAMIC).addKeyProperties(o -> String.format("%.6f", o), AutomationProperties.ROTATIONS).build());
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 }

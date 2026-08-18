@@ -29,6 +29,9 @@ public class NpcAIFactionRangedAttack extends NpcAIAttack<NpcBase> {
 
     @Override
     protected boolean shouldCloseOnTarget(double dist) {
+        if (specialWeaponController.isTridentMeleeMode(npc, dist)) {
+            return specialWeaponController.shouldCloseForTridentMelee(npc, getTarget(), dist);
+        }
         return (dist > getAttackDistanceSq() || !npc.getSensing().hasLineOfSight(getTarget()));
     }
 
@@ -42,6 +45,10 @@ public class NpcAIFactionRangedAttack extends NpcAIAttack<NpcBase> {
 
     @Override
     protected void doAttack(double dist) {
+        if (specialWeaponController.tickTridentMelee(npc, getTarget(), dist,
+                getAttackDelay(), this::setAttackDelay)) {
+            return;
+        }
         float pwr = (float) (getAttackDistanceSq() / dist);
         pwr = Math.min(Math.max(pwr, 0.1F), 1F);
         if (specialWeaponController.tickSpecial(npc, rangedAttacker, getTarget(), pwr,

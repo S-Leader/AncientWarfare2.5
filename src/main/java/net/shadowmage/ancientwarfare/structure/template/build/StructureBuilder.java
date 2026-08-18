@@ -57,6 +57,7 @@ public class StructureBuilder implements IStructureBuilder {
     private Holder<Biome> biome;
     private Map<BlockPos, BlockState> statesToSetAgain = new HashMap<>();
     private Map<BlockPos, BlockState> positionsToUpdate = new HashMap<>();
+    private final Set<BlockPos> placedBlockPositions = new LinkedHashSet<>();
 
     public StructureBuilder(Level world, StructureTemplate template, Direction face, BlockPos pos) {
         this(world, template, face, pos, new StructureBB(pos, face, template));
@@ -224,6 +225,7 @@ public class StructureBuilder implements IStructureBuilder {
             return;
         }
         setStateAgainForSpecialBlocks();
+        updatePlacedBlockShapes();
         updateNeighbors();
         changeBiome();
         this.placeEntities();
@@ -241,6 +243,7 @@ public class StructureBuilder implements IStructureBuilder {
             return;
         }
         setStateAgainForSpecialBlocks();
+        updatePlacedBlockShapes();
         updateNeighbors();
         this.placeEntities();
         isFinalized = true;
@@ -282,6 +285,24 @@ public class StructureBuilder implements IStructureBuilder {
             }
         }
         return false;
+    }
+
+    /**
+     * Recomputes neighbour-dependent block states only after the entire structure
+     * has been placed. Structure placement intentionally uses UPDATE_CLIENTS to
+     * avoid thousands of cascading neighbour updates while a large template is
+     * still incomplete; without this final pass panes, fences, walls and fence
+     * gates can keep the connection state they had when only half of their
+     * neighbours existed.
+     */
+    private void updatePlacedBlockShapes() {
+        for (BlockPos pos : placedBlockPositions) {
+            BlockState current = world.getBlockState(pos);
+            BlockState updated = Block.updateFromNeighbourShapes(current, world, pos);
+            if (!updated.equals(current)) {
+                world.setBlock(pos, updated, Block.UPDATE_ALL);
+            }
+        }
     }
 
     private void updateNeighbors() {
@@ -336,8 +357,9 @@ public class StructureBuilder implements IStructureBuilder {
             adjustedState = getBiomeSpecificBlockState(biome, state);
         }
 
-        boolean result = world.setBlock(pos, adjustedState, 2);
+        boolean result = world.setBlock(pos, adjustedState, Block.UPDATE_CLIENTS);
         if (result) {
+            placedBlockPositions.add(pos.immutable());
             if (DOUBLE_SET_BLOCKS.contains(adjustedState.getBlock())) {
                 statesToSetAgain.put(pos, adjustedState);
             }

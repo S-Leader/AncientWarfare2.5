@@ -3,12 +3,15 @@ package net.shadowmage.ancientwarfare.npc.ai;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.shadowmage.ancientwarfare.core.config.AWCoreStatics;
+import net.shadowmage.ancientwarfare.npc.config.AWNPCStatics;
 import net.shadowmage.ancientwarfare.npc.entity.NpcBase;
 
 import java.util.function.IntConsumer;
@@ -24,6 +27,54 @@ public final class NpcRangedWeaponAttackController {
     private CrossbowState crossbowState = CrossbowState.UNCHARGED;
     private int crossbowTicks;
     private int tridentChargeTicks;
+
+    private static final double TRIDENT_MELEE_SWITCH_DISTANCE_SQ = 25.0D;
+    private static final float TRIDENT_MELEE_REACH = 2.5F + AWCoreStatics.meleeReachModifier;
+
+
+    /**
+     * Tridents are hybrid weapons for NPCs. Once an enemy gets within five blocks,
+     * stop treating the trident as a stationary ranged weapon and use normal melee
+     * closing/attack behaviour until the target moves back out of that radius.
+     */
+    public boolean isTridentMeleeMode(NpcBase npc, double distanceSq) {
+        return npc.getMainHandItem().getItem() instanceof TridentItem
+                && distanceSq <= TRIDENT_MELEE_SWITCH_DISTANCE_SQ;
+    }
+
+    public boolean shouldCloseForTridentMelee(NpcBase npc, LivingEntity target, double distanceSq) {
+        if (!isTridentMeleeMode(npc, distanceSq)) {
+            return false;
+        }
+        double attackDistance = (npc.getBbWidth() / 2.0D) + (target.getBbWidth() / 2.0D) + TRIDENT_MELEE_REACH;
+        return distanceSq > attackDistance * attackDistance || !npc.getSensing().hasLineOfSight(target);
+    }
+
+    public boolean tickTridentMelee(NpcBase npc, LivingEntity target, double distanceSq,
+                                    int currentAttackDelay, IntConsumer setAttackDelay) {
+        if (!isTridentMeleeMode(npc, distanceSq)) {
+            return false;
+        }
+        double attackDistance = (npc.getBbWidth() / 2.0D) + (target.getBbWidth() / 2.0D) + TRIDENT_MELEE_REACH;
+        if (distanceSq > attackDistance * attackDistance) {
+            // Normally the goal will keep closing until this is false.  Returning
+            // false here also preserves do-not-pursue behaviour without granting
+            // an out-of-reach melee hit.
+            return false;
+        }
+
+        // Cancel a throw that was charging before the target entered melee range.
+        reset(npc);
+        if (currentAttackDelay <= 0) {
+            npc.triggerAttackAnimation();
+            npc.doHurtTarget(target);
+            double attackSpeed = npc.getAttributeValue(Attributes.ATTACK_SPEED);
+            int cooldown = attackSpeed > 0.0D ? (int) (20.0D / attackSpeed) : 20;
+            setAttackDelay.accept(Math.max(1, cooldown));
+            npc.addExperience(AWNPCStatics.npcXpFromAttack);
+        }
+        return true;
+    }
 
     public boolean tickSpecial(NpcBase npc, RangedAttackMob rangedAttacker, LivingEntity target,
                                float power, int currentAttackDelay, int cooldown,

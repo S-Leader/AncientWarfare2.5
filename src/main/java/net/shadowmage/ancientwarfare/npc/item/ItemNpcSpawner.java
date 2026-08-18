@@ -21,7 +21,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelLoader;
 import net.shadowmage.ancientwarfare.core.util.BlockTools;
 import net.shadowmage.ancientwarfare.npc.entity.NpcBase;
 import net.shadowmage.ancientwarfare.npc.entity.NpcPlayerOwned;
@@ -215,30 +214,32 @@ public class ItemNpcSpawner extends ItemBaseNPC {
         return Optional.empty();
     }
 
+
+    private static final List<String> MODEL_VARIANTS = List.of(
+            "archer", "bard", "civilian_female", "civilian_male", "commander", "courier",
+            "craftsman", "engineer", "farmer", "lumberjack", "medic", "miner", "priest",
+            "researcher", "siege_engineer", "soldier", "spellcaster", "trader");
+
+    /** Returns 0 for the generic icon and 1..N for JSON override models. */
+    public static float getModelVariantProperty(ItemStack stack) {
+        String npcType = getNpcType(stack);
+        if (npcType == null) {
+            npcType = "worker";
+        }
+        AWNPCEntities.NpcDeclaration<?> declaration = AWNPCEntities.getNpcDeclaration(npcType);
+        if (declaration == null) {
+            return 0.0F;
+        }
+        String variant = declaration.getItemModelVariant(getNpcSubtype(stack));
+        int index = MODEL_VARIANTS.indexOf(variant);
+        return index < 0 ? 0.0F : index + 1.0F;
+    }
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-
-        final Map<String, ModelResourceLocation> modelLocations = Maps.newHashMap();
-
-        AWNPCEntities.getNpcMap().values().stream().map(AWNPCEntities.NpcDeclaration::getItemModelVariants).flatMap(Collection::stream).distinct()
-                .forEach(v -> {
-                    modelLocations.put(v, getModelLocation(v));
-                    LegacyModelLoader.registerItemVariants(this, modelLocations.get(v));
-                });
-
-        LegacyModelLoader.setCustomMeshDefinition(this, stack -> {
-            String npcType = getNpcType(stack);
-            if (npcType == null) {
-                npcType = "worker";
-            }
-            AWNPCEntities.NpcDeclaration<?> dec = AWNPCEntities.getNpcDeclaration(npcType);
-            return dec == null ? null : modelLocations.get(dec.getItemModelVariant(getNpcSubtype(stack)));
-        });
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 
-    private ModelResourceLocation getModelLocation(String modelVariant) {
-        return new ModelResourceLocation(new ResourceLocation(AncientWarfareCore.MOD_ID,
-                "npc_spawner/" + modelVariant), "inventory");
-    }
+
 }

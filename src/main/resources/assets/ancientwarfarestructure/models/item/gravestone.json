@@ -1,3 +1,53 @@
 {
-  "parent": "ancientwarfare:block/structure/gravestone_1"
+  "parent": "ancientwarfare:block/structure/gravestone_1",
+  "overrides": [
+    {
+      "predicate": {
+        "ancientwarfarestructure:gravestone_variant": 1.0
+      },
+      "model": "ancientwarfare:block/structure/gravestone_1"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:gravestone_variant": 2.0
+      },
+      "model": "ancientwarfarestructure:block/structure/gravestone_2"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:gravestone_variant": 3.0
+      },
+      "model": "ancientwarfare:block/structure/gravestone_3"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:gravestone_variant": 4.0
+      },
+      "model": "ancientwarfarestructure:block/structure/gravestone_4"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:gravestone_variant": 5.0
+      },
+      "model": "ancientwarfare:block/structure/gravestone_5"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:gravestone_variant": 6.0
+      },
+      "model": "ancientwarfare:block/structure/gravestone_6"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:gravestone_variant": 7.0
+      },
+      "model": "ancientwarfare:block/structure/gravestone_7"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:gravestone_variant": 8.0
+      },
+      "model": "ancientwarfare:block/structure/gravestone_8"
+    }
+  ]
 }

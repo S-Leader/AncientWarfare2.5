@@ -134,12 +134,12 @@
             "translation": [-0.25, 0.75, 0]
         }
     },
-      "overrides": [
+    "overrides": [
     {
       "predicate": {
-        "blocking": 1.0
+        "ancientwarfarenpc:blocking": 1.0
       },
-      "model": "ancientwarfare:item/npc/wooden_shield_blocking"
+      "model": "ancientwarfarenpc:item/wooden_shield_blocking"
     }
   ]
 }

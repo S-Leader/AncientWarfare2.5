@@ -1,12 +1,10 @@
 package net.shadowmage.ancientwarfare.structure.item;
 
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -18,11 +16,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import net.shadowmage.ancientwarfare.core.input.IItemKeyInterface;
 import net.shadowmage.ancientwarfare.core.input.InputHandler;
 import net.shadowmage.ancientwarfare.core.owner.Owner;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelLoader;
 import net.shadowmage.ancientwarfare.core.util.BlockTools;
 import net.shadowmage.ancientwarfare.structure.entity.EntityGate;
 import net.shadowmage.ancientwarfare.structure.event.IBoxRenderer;
@@ -231,46 +227,21 @@ public class ItemGateSpawner extends ItemBaseStructure implements IItemKeyInterf
         Util.renderBoundingBox(player, BlockTools.getMin(p1, p2), BlockTools.getMax(p1, p2), delta);
     }
 
+    public float getItemModelProperty(ItemStack stack) {
+        return switch (getGate(stack).getVariant()) {
+            case WOOD_BASIC -> 0.0F;
+            case IRON_BASIC -> 1.0F;
+            case WOOD_SINGLE -> 2.0F;
+            case IRON_SINGLE -> 3.0F;
+            case WOOD_DOUBLE -> 4.0F;
+            case IRON_DOUBLE -> 5.0F;
+            case WOOD_ROTATING -> 6.0F;
+        };
+    }
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        ResourceLocation basePath = new ResourceLocation(AncientWarfareCore.MOD_ID, "structure/gate_spawner");
-        ModelResourceLocation ironBasic = new ModelResourceLocation(basePath, "variant=gate_iron_basic");
-        ModelResourceLocation ironDouble = new ModelResourceLocation(basePath, "variant=gate_iron_double");
-        ModelResourceLocation ironSingle = new ModelResourceLocation(basePath, "variant=gate_iron_single");
-        ModelResourceLocation woodBasic = new ModelResourceLocation(basePath, "variant=gate_wood_basic");
-        ModelResourceLocation woodDouble = new ModelResourceLocation(basePath, "variant=gate_wood_double");
-        ModelResourceLocation woodRotating = new ModelResourceLocation(basePath, "variant=gate_wood_rotating");
-        ModelResourceLocation woodSingle = new ModelResourceLocation(basePath, "variant=gate_wood_single");
-
-        if (fixedGateId >= 0) {
-            ModelResourceLocation model = modelForVariant(getGate(new ItemStack(this)).getVariant(),
-                    ironBasic, ironDouble, ironSingle, woodBasic, woodDouble, woodRotating, woodSingle);
-            LegacyModelLoader.setCustomModelResourceLocation(this, 0, model);
-            LegacyModelLoader.registerItemVariants(this, model);
-            return;
-        }
-
-        LegacyModelLoader.setCustomMeshDefinition(this, stack -> modelForVariant(getGate(stack).getVariant(),
-                ironBasic, ironDouble, ironSingle, woodBasic, woodDouble, woodRotating, woodSingle));
-        LegacyModelLoader.registerItemVariants(this, ironBasic, ironDouble, ironSingle, woodBasic, woodDouble, woodRotating, woodSingle);
-    }
-    private static ModelResourceLocation modelForVariant(Gate.Variant variant,
-                                                         ModelResourceLocation ironBasic,
-                                                         ModelResourceLocation ironDouble,
-                                                         ModelResourceLocation ironSingle,
-                                                         ModelResourceLocation woodBasic,
-                                                         ModelResourceLocation woodDouble,
-                                                         ModelResourceLocation woodRotating,
-                                                         ModelResourceLocation woodSingle) {
-        return switch (variant) {
-            case IRON_BASIC -> ironBasic;
-            case IRON_DOUBLE -> ironDouble;
-            case IRON_SINGLE -> ironSingle;
-            case WOOD_DOUBLE -> woodDouble;
-            case WOOD_ROTATING -> woodRotating;
-            case WOOD_SINGLE -> woodSingle;
-            case WOOD_BASIC -> woodBasic;
-        };
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 }

@@ -1,3 +1,35 @@
 {
-  "parent": "ancientwarfare:block/structure/stool"
+  "parent": "ancientwarfare:block/structure/stool",
+  "overrides": [
+    {
+      "predicate": {
+        "ancientwarfarestructure:wood_variant": 1.0
+      },
+      "model": "ancientwarfarestructure:block/structure/stool_spruce"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:wood_variant": 2.0
+      },
+      "model": "ancientwarfarestructure:block/structure/stool_birch"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:wood_variant": 3.0
+      },
+      "model": "ancientwarfarestructure:block/structure/stool_jungle"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:wood_variant": 4.0
+      },
+      "model": "ancientwarfarestructure:block/structure/stool_acacia"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:wood_variant": 5.0
+      },
+      "model": "ancientwarfarestructure:block/structure/stool_dark_oak"
+    }
+  ]
 }

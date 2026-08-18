@@ -31,8 +31,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelLoader;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyStateMapperBase;
 import net.shadowmage.ancientwarfare.core.util.InventoryTools;
 import net.shadowmage.ancientwarfare.core.util.NBTBuilder;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
@@ -177,36 +175,14 @@ public class BlockTotemPart extends BlockBaseStructure {
         return false;
     }
 
+    public static float getItemModelProperty(ItemStack stack) {
+        return ItemBlockTotemPart.getVariant(stack).getId();
+    }
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        //noinspection ConstantConditions
-        ResourceLocation baseLocation = new ResourceLocation(AncientWarfareCore.MOD_ID, "structure/" + getRegistryName().getPath());
-
-        LegacyModelLoader.setCustomStateMapper(this, new LegacyStateMapperBase() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            protected ModelResourceLocation getModelResourceLocation(BlockState state) {
-                return new ModelResourceLocation(baseLocation, getPropertyString(state.getValues()));
-            }
-        });
-
-        String modelPropString = "facing=west,variant=%s,visible=true";
-
-        LegacyModelLoader.setCustomMeshDefinition(this.asItem(), stack -> {
-            if (!stack.hasTag()) {
-                return new ModelResourceLocation(baseLocation, String.format(modelPropString, Variant.BASE.getName().toLowerCase(Locale.ENGLISH)));
-            }
-            CompoundTag tag = stack.getTag();
-            //noinspection ConstantConditions
-            Variant variant = Variant.fromId(tag.getByte(VARIANT_TAG));
-            return new ModelResourceLocation(baseLocation, String.format(modelPropString, variant.getName().toLowerCase(Locale.ENGLISH)));
-        });
-
-        for (Variant variant : Variant.values()) {
-            LegacyModelLoader.registerItemVariants(this.asItem(),
-                    new ModelResourceLocation(baseLocation, String.format(modelPropString, variant.getName().toLowerCase(Locale.ENGLISH))));
-        }
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 
     @Override

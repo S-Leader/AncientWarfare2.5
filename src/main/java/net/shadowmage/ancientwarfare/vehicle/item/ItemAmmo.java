@@ -8,7 +8,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 import net.shadowmage.ancientwarfare.vehicle.missiles.IAmmo;
 
 import javax.annotation.Nullable;
@@ -41,6 +40,6 @@ public class ItemAmmo extends ItemBaseVehicle {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        ModelLoaderHelper.registerItem(this, (i, m) -> new ModelResourceLocation(getRegistryName(), "inventory"));
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 }

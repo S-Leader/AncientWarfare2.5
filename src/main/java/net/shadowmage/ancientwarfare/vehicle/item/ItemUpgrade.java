@@ -8,7 +8,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -33,8 +32,6 @@ public class ItemUpgrade extends ItemBaseVehicle {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        ModelLoaderHelper.registerItem(this, (i, m) -> new ModelResourceLocation(getRegistryName(), "inventory"));
-
         // Some upgrades include their actual effect in their tooltip.
         // Now that these effects are configurable, the tooltip needs to adjust dynamically.
         if (dynamicInfo.isEmpty()) {

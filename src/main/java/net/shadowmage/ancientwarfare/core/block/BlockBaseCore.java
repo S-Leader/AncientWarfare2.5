@@ -8,9 +8,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
 import net.shadowmage.ancientwarfare.core.proxy.IClientRegister;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelLoader;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyStateMapperBase;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 
 public abstract class BlockBaseCore extends BlockBase implements IClientRegister, BlockRotationHandler.IRotatableBlock {
     public BlockBaseCore(LegacyMaterial material, String regName) {
@@ -30,16 +27,6 @@ public abstract class BlockBaseCore extends BlockBase implements IClientRegister
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        final ResourceLocation assetLocation = new ResourceLocation(AncientWarfareCore.MOD_ID, "core/" + getRegistryName().getPath());
-
-        LegacyModelLoader.setCustomStateMapper(this, new LegacyStateMapperBase() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            protected ModelResourceLocation getModelResourceLocation(BlockState state) {
-                return new ModelResourceLocation(assetLocation, getPropertyString(state.getValues()));
-            }
-        });
-
-        ModelLoaderHelper.registerItem(this, "core", "normal");
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 }

@@ -11,8 +11,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelLoader;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyStateMapperBase;
 import net.shadowmage.ancientwarfare.structure.block.WoodVariant;
 
 import java.util.Locale;
@@ -55,35 +53,11 @@ public class WoodVariantHelper {
 
     @OnlyIn(Dist.CLIENT)
     public static void registerClient(Block block) {
-        registerClient(block, propString -> propString);
+        // Standard blockstate/item JSONs handle these models in 1.20.
     }
 
     @OnlyIn(Dist.CLIENT)
     public static void registerClient(Block block, UnaryOperator<String> updatePropertyString) {
-        //noinspection ConstantConditions
-        ResourceLocation baseLocation = new ResourceLocation(AncientWarfareCore.MOD_ID, "structure/" + ForgeRegistries.BLOCKS.getKey(block).getPath());
-
-        LegacyModelLoader.setCustomStateMapper(block, new LegacyStateMapperBase() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            protected ModelResourceLocation getModelResourceLocation(BlockState state) {
-                return new ModelResourceLocation(baseLocation, getPropertyString(state.getValues()));
-            }
-        });
-
-        String modelPropString = updatePropertyString.apply("variant=%s");
-
-        LegacyModelLoader.setCustomMeshDefinition(block.asItem(), stack -> {
-            if (!stack.hasTag()) {
-                return new ModelResourceLocation(baseLocation, String.format(modelPropString, WoodVariant.OAK.getName().toLowerCase(Locale.ENGLISH)));
-            }
-            WoodVariant variant = getVariant(stack);
-            return new ModelResourceLocation(baseLocation, String.format(modelPropString, variant.getName().toLowerCase(Locale.ENGLISH)));
-        });
-
-        for (WoodVariant variant : WoodVariant.values()) {
-            LegacyModelLoader.registerItemVariants(block.asItem(),
-                    new ModelResourceLocation(baseLocation, String.format(modelPropString, variant.getName().toLowerCase(Locale.ENGLISH))));
-        }
+        // Standard blockstate/item JSONs handle these models in 1.20.
     }
 }

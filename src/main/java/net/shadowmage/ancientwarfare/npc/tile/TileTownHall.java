@@ -25,7 +25,6 @@ import net.shadowmage.ancientwarfare.core.network.NetworkHandler;
 import net.shadowmage.ancientwarfare.core.tile.IBlockBreakHandler;
 import net.shadowmage.ancientwarfare.core.tile.TileOwned;
 import net.shadowmage.ancientwarfare.core.util.Constants;
-import net.shadowmage.ancientwarfare.core.util.InventoryTools;
 import net.shadowmage.ancientwarfare.npc.config.AWNPCStatics;
 import net.shadowmage.ancientwarfare.npc.container.ContainerTownHall;
 import net.shadowmage.ancientwarfare.npc.entity.NpcPlayerOwned;
@@ -112,11 +111,12 @@ public class TileTownHall extends TileOwned implements IInteractableTile, ITicka
         }
     }
 
-    public void handleNpcDeath(NpcPlayerOwned npc, DamageSource source) {
+    public boolean handleNpcDeath(NpcPlayerOwned npc, DamageSource source) {
         boolean canRes = npc.getDistanceSq(pos) <= (double) broadcastRange * broadcastRange;
         NpcDeathEntry entry = new NpcDeathEntry(npc, source, canRes);
         deathNotices.add(entry);
         informViewers();
+        return canRes;
     }
 
     @Override
@@ -164,7 +164,8 @@ public class TileTownHall extends TileOwned implements IInteractableTile, ITicka
 
     @Override
     public void onBlockBroken(BlockState state) {
-        InventoryTools.dropItemsInWorld(world, inventory, pos);
+        // Contents and all other persistent town-hall data are carried by the
+        // dropped block item through BlockEntityTag, like a shulker box.
     }
 
     public static class NpcDeathEntry {

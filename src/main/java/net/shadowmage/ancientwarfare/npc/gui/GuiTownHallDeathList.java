@@ -24,8 +24,11 @@ public class GuiTownHallDeathList extends GuiContainerBase<ContainerTownHall> {
 
     @Override
     public void initElements() {
+        getContainer().removeSlots();
+
         area = new CompositeScrolled(this, 0, 40, xSize, ySize - 40);
         addGuiElement(area);
+
         Button button = new Button(8, 8, 55, 12, "guistrings.npc.clear_death_list") {
             @Override
             protected void onPressed() {

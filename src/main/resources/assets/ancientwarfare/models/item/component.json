@@ -1,4 +1,62 @@
 {
   "parent": "minecraft:item/generated",
-  "textures": { "layer0": "ancientwarfare:items/automation/iron_gear" }
+  "textures": {
+    "layer0": "ancientwarfare:items/automation/iron_gear"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "ancientwarfare:legacy_component": 0.0
+      },
+      "model": "ancientwarfare:item/component_wooden_gear"
+    },
+    {
+      "predicate": {
+        "ancientwarfare:legacy_component": 1.0
+      },
+      "model": "ancientwarfare:item/component_iron_gear"
+    },
+    {
+      "predicate": {
+        "ancientwarfare:legacy_component": 2.0
+      },
+      "model": "ancientwarfare:item/component_steel_gear"
+    },
+    {
+      "predicate": {
+        "ancientwarfare:legacy_component": 3.0
+      },
+      "model": "ancientwarfare:item/component_wooden_bearings"
+    },
+    {
+      "predicate": {
+        "ancientwarfare:legacy_component": 4.0
+      },
+      "model": "ancientwarfare:item/component_iron_bearings"
+    },
+    {
+      "predicate": {
+        "ancientwarfare:legacy_component": 5.0
+      },
+      "model": "ancientwarfare:item/component_steel_bearings"
+    },
+    {
+      "predicate": {
+        "ancientwarfare:legacy_component": 6.0
+      },
+      "model": "ancientwarfare:item/component_wooden_shaft"
+    },
+    {
+      "predicate": {
+        "ancientwarfare:legacy_component": 7.0
+      },
+      "model": "ancientwarfare:item/component_iron_shaft"
+    },
+    {
+      "predicate": {
+        "ancientwarfare:legacy_component": 8.0
+      },
+      "model": "ancientwarfare:item/component_steel_shaft"
+    }
+  ]
 }

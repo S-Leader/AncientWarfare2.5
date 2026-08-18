@@ -52,7 +52,7 @@ public class NpcAIMedicBase<T extends NpcBase> extends NpcAI<T> {
         }
         injuredRecheckDelay = INJURED_RECHECK_DELAY_MAX;
         double dist = npc.getAttribute(Attributes.FOLLOW_RANGE).getValue();
-        AABB bb = npc.getBoundingBox().expandTowards(dist, dist / 2, dist);
+        AABB bb = npc.getBoundingBox().inflate(dist, dist / 2, dist);
         List<LivingEntity> potentialTargets = npc.level().getEntitiesOfClass(LivingEntity.class, bb, selector);
         if (potentialTargets.isEmpty()) {
             return false;
@@ -74,7 +74,7 @@ public class NpcAIMedicBase<T extends NpcBase> extends NpcAI<T> {
     }
 
     private boolean validateTarget() {
-        return targetToHeal != null && targetToHeal.isAlive() && targetToHeal.getHealth() < targetToHeal.getMaxHealth();
+        return targetToHeal != null && selector.apply(targetToHeal);
     }
 
     protected boolean isProperSubtype() {

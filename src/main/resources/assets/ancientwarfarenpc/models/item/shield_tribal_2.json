@@ -6,7 +6,7 @@
     "overrides": [
         {
             "predicate": {
-                "blocking": 1.0
+                "ancientwarfarenpc:blocking": 1.0
             },
             "model": "ancientwarfare:item/npc/shield_tribal_2_blocking"
         }

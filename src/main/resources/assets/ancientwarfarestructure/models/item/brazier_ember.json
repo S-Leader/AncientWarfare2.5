@@ -1,3 +1,11 @@
 {
-  "parent": "ancientwarfare:block/structure/brazier_ember_on"
+  "parent": "ancientwarfare:block/structure/brazier_ember_on",
+  "overrides": [
+    {
+      "predicate": {
+        "ancientwarfarestructure:unlit": 1.0
+      },
+      "model": "ancientwarfare:block/structure/brazier_ember_off"
+    }
+  ]
 }

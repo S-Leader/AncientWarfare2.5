@@ -19,10 +19,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
 import net.shadowmage.ancientwarfare.core.proxy.IClientRegister;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelLoader;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelRegistryHelper;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyStateMapperBase;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 import net.shadowmage.ancientwarfare.structure.AncientWarfareStructure;
 import net.shadowmage.ancientwarfare.structure.tile.TEGateProxy;
@@ -139,17 +135,7 @@ public final class BlockGateProxy extends BlockBaseStructure implements IClientR
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        //noinspection ConstantConditions
-        ModelResourceLocation modelLocation = new ModelResourceLocation(getRegistryName(), "normal");
-        ModelLoaderHelper.registerItem(this, modelLocation);
-        LegacyModelLoader.setCustomStateMapper(this, new LegacyStateMapperBase() {
-            @Override
-            protected ModelResourceLocation getModelResourceLocation(BlockState state) {
-                return modelLocation;
-            }
-        });
-        LegacyModelRegistryHelper.register(modelLocation, new DummyBakedModel());
-
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 
     @Override

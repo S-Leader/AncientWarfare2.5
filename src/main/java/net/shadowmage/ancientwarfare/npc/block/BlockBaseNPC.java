@@ -9,9 +9,6 @@ import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import net.shadowmage.ancientwarfare.core.block.BlockBase;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
 import net.shadowmage.ancientwarfare.core.proxy.IClientRegister;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelLoader;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyStateMapperBase;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 import net.shadowmage.ancientwarfare.npc.AncientWarfareNPC;
 
 public class BlockBaseNPC extends BlockBase implements IClientRegister {
@@ -24,14 +21,6 @@ public class BlockBaseNPC extends BlockBase implements IClientRegister {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        final ModelResourceLocation modelLocation = new ModelResourceLocation(new ResourceLocation(AncientWarfareCore.MOD_ID, "npc/" + getRegistryName().getPath()), "normal");
-        LegacyModelLoader.setCustomStateMapper(this, new LegacyStateMapperBase() {
-            @Override
-            protected ModelResourceLocation getModelResourceLocation(BlockState state) {
-                return modelLocation;
-            }
-        });
-
-        ModelLoaderHelper.registerItem(this, "npc", "normal");
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 }

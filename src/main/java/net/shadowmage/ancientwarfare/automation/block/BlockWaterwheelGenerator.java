@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.automation.block;
 
+import net.shadowmage.ancientwarfare.core.render.model.DynamicModelRegistry;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
@@ -14,10 +15,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.automation.render.WaterwheelGeneratorRenderer;
 import net.shadowmage.ancientwarfare.automation.render.property.AutomationProperties;
 import net.shadowmage.ancientwarfare.automation.tile.torque.TileWaterwheelGenerator;
-import net.shadowmage.ancientwarfare.core.render.BlockStateKeyGenerator;
 import net.shadowmage.ancientwarfare.core.render.model.*;
 import net.shadowmage.ancientwarfare.core.render.property.CoreProperties;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 
 public class BlockWaterwheelGenerator extends BlockTorqueGenerator implements LegacyBakeryProvider {
     public static final BooleanProperty VALID_SETUP = BooleanProperty.create("valid_setup");
@@ -46,25 +45,8 @@ public class BlockWaterwheelGenerator extends BlockTorqueGenerator implements Le
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        ModelLoaderHelper.registerItem(this, WaterwheelGeneratorRenderer.MODEL_LOCATION);
-
-        LegacyModelBakery.registerBlockKeyGenerator(this, new BlockStateKeyGenerator.Builder().addKeyProperties(VALID_SETUP, CoreProperties.UNLISTED_FACING).addKeyProperties(AutomationProperties.DYNAMIC).addKeyProperties(o -> String.format("%.6f", o), AutomationProperties.ROTATIONS).build());
-
-        LegacyModelLoader.setCustomStateMapper(this, new LegacyStateMapperBase() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            protected ModelResourceLocation getModelResourceLocation(BlockState state) {
-                return WaterwheelGeneratorRenderer.MODEL_LOCATION;
-            }
-        });
-
-        LegacyModelRegistryHelper.register(WaterwheelGeneratorRenderer.MODEL_LOCATION, new LegacyBakeryModel() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            public TextureAtlasSprite getParticleTexture() {
-                return WaterwheelGeneratorRenderer.INSTANCE.sprite;
-            }
-        });
+        DynamicModelRegistry.registerBlock(this, getBakery(), state -> WaterwheelGeneratorRenderer.INSTANCE.sprite);
+        DynamicModelRegistry.registerItem(this.asItem(), getBakery(), () -> WaterwheelGeneratorRenderer.INSTANCE.sprite);
     }
 
     @Override

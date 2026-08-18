@@ -7,7 +7,6 @@ import net.minecraft.world.item.Tier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.proxy.IClientRegister;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 import net.shadowmage.ancientwarfare.npc.AncientWarfareNPC;
 
 public class ItemShield extends ShieldItem implements IClientRegister {
@@ -32,6 +31,6 @@ public class ItemShield extends ShieldItem implements IClientRegister {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        ModelLoaderHelper.registerItem(this, "npc");
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 }

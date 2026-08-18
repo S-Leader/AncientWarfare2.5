@@ -1,3 +1,35 @@
 {
-  "parent": "ancientwarfare:block/structure/table_top"
+  "parent": "ancientwarfare:block/structure/table_top",
+  "overrides": [
+    {
+      "predicate": {
+        "ancientwarfarestructure:wood_variant": 1.0
+      },
+      "model": "ancientwarfarestructure:block/structure/table_top_spruce"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:wood_variant": 2.0
+      },
+      "model": "ancientwarfarestructure:block/structure/table_top_birch"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:wood_variant": 3.0
+      },
+      "model": "ancientwarfarestructure:block/structure/table_top_jungle"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:wood_variant": 4.0
+      },
+      "model": "ancientwarfarestructure:block/structure/table_top_acacia"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:wood_variant": 5.0
+      },
+      "model": "ancientwarfarestructure:block/structure/table_top_dark_oak"
+    }
+  ]
 }

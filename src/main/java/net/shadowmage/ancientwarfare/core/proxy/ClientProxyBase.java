@@ -9,7 +9,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * Client-side compatibility collector for legacy model registration hooks.
+ * Collects client-side model-data declarations after registries are ready.
+ * Static blocks/items use normal JSON models; runtime geometry is installed by
+ * DynamicModelRegistry during the standard Forge model-bake event.
  */
 @OnlyIn(Dist.CLIENT)
 public class ClientProxyBase extends CommonProxyBase {

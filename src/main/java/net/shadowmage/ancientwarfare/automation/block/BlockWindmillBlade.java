@@ -1,5 +1,6 @@
 package net.shadowmage.ancientwarfare.automation.block;
 
+import net.shadowmage.ancientwarfare.core.render.model.DynamicModelRegistry;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
@@ -17,9 +18,7 @@ import net.shadowmage.ancientwarfare.automation.render.WindmillBladeRenderer;
 import net.shadowmage.ancientwarfare.automation.render.property.AutomationProperties;
 import net.shadowmage.ancientwarfare.automation.tile.torque.multiblock.TileWindmillBlade;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
-import net.shadowmage.ancientwarfare.core.render.BlockStateKeyGenerator;
 import net.shadowmage.ancientwarfare.core.render.model.*;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 
 import java.util.Optional;
@@ -102,26 +101,8 @@ public class BlockWindmillBlade extends BlockBaseAutomation implements LegacyBak
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        ModelLoaderHelper.registerItem(this, WindmillBladeRenderer.MODEL_LOCATION);
-
-        LegacyModelBakery.registerBlockKeyGenerator(this, new BlockStateKeyGenerator.Builder().addKeyProperties(UNLISTED_HORIZONTAL_FACING).addKeyProperties(FORMED, AutomationProperties.IS_CONTROL, AutomationProperties.HEIGHT, AutomationProperties.DYNAMIC).addKeyProperties(o -> String.format("%.6f", o), AutomationProperties.ROTATION).build());
-
-        LegacyModelLoader.setCustomStateMapper(this, new LegacyStateMapperBase() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            protected ModelResourceLocation getModelResourceLocation(BlockState state) {
-                return WindmillBladeRenderer.MODEL_LOCATION;
-            }
-        });
-
-        LegacyModelRegistryHelper.register(WindmillBladeRenderer.MODEL_LOCATION, new LegacyBakeryModel() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            public TextureAtlasSprite getParticleTexture() {
-                return WindmillBladeRenderer.INSTANCE.cubeSprite;
-            }
-        });
-
+        DynamicModelRegistry.registerBlock(this, getBakery(), state -> WindmillBladeRenderer.INSTANCE.cubeSprite);
+        DynamicModelRegistry.registerItem(this.asItem(), getBakery(), () -> WindmillBladeRenderer.INSTANCE.sprite);
     }
 
     @Override

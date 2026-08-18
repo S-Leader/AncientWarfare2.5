@@ -1,3 +1,35 @@
 {
-  "parent": "ancientwarfare:block/structure/chair"
+  "parent": "ancientwarfare:block/structure/chair",
+  "overrides": [
+    {
+      "predicate": {
+        "ancientwarfarestructure:wood_variant": 1.0
+      },
+      "model": "ancientwarfarestructure:block/structure/chair_spruce"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:wood_variant": 2.0
+      },
+      "model": "ancientwarfarestructure:block/structure/chair_birch"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:wood_variant": 3.0
+      },
+      "model": "ancientwarfarestructure:block/structure/chair_jungle"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:wood_variant": 4.0
+      },
+      "model": "ancientwarfarestructure:block/structure/chair_acacia"
+    },
+    {
+      "predicate": {
+        "ancientwarfarestructure:wood_variant": 5.0
+      },
+      "model": "ancientwarfarestructure:block/structure/chair_dark_oak"
+    }
+  ]
 }

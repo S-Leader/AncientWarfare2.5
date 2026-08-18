@@ -32,8 +32,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelLoader;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyStateMapperBase;
 import net.shadowmage.ancientwarfare.core.util.NBTBuilder;
 
 public class BlockBrazierEmber extends BlockBaseStructure {
@@ -195,34 +193,14 @@ public class BlockBrazierEmber extends BlockBaseStructure {
         }
     }
 
+    public static float getItemModelProperty(ItemStack stack) {
+        return stack.hasTag() && !stack.getTag().getBoolean(LIT_TAG) ? 1.0F : 0.0F;
+    }
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        //noinspection ConstantConditions
-        ResourceLocation baseLocation = new ResourceLocation(AncientWarfareCore.MOD_ID, "structure/" + getRegistryName().getPath());
-
-        LegacyModelLoader.setCustomStateMapper(this, new LegacyStateMapperBase() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            protected ModelResourceLocation getModelResourceLocation(BlockState state) {
-                return new ModelResourceLocation(baseLocation, getPropertyString(state.getValues()));
-            }
-        });
-
-        String modelPropString = "lit=%b";
-
-        LegacyModelLoader.setCustomMeshDefinition(this.asItem(), stack -> {
-            if (!stack.hasTag()) {
-                return new ModelResourceLocation(baseLocation, String.format(modelPropString, true));
-            }
-            CompoundTag tag = stack.getTag();
-            //noinspection ConstantConditions
-            boolean lit = tag.getBoolean(LIT_TAG);
-            return new ModelResourceLocation(baseLocation, String.format(modelPropString, lit));
-        });
-
-        LegacyModelLoader.registerItemVariants(this.asItem(),
-                new ModelResourceLocation(baseLocation, String.format(modelPropString, true)));
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 
 }

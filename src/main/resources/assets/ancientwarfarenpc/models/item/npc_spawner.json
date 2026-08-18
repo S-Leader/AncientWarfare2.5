@@ -4,5 +4,115 @@
     "layer0": "ancientwarfare:items/npc/spawner_base",
     "layer1": "ancientwarfare:items/npc/spawner_overlay_bottom",
     "layer2": "ancientwarfare:items/npc/spawner_overlay_top"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 1.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/archer"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 2.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/bard"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 3.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/civilian_female"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 4.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/civilian_male"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 5.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/commander"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 6.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/courier"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 7.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/craftsman"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 8.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/engineer"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 9.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/farmer"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 10.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/lumberjack"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 11.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/medic"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 12.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/miner"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 13.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/priest"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 14.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/researcher"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 15.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/siege_engineer"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 16.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/soldier"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 17.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/spellcaster"
+    },
+    {
+      "predicate": {
+        "ancientwarfarenpc:npc_variant": 18.0
+      },
+      "model": "ancientwarfare:item/npc_spawner/trader"
+    }
+  ]
 }

@@ -2,6 +2,8 @@ package net.shadowmage.ancientwarfare.core.proxy;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -11,6 +13,7 @@ import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import net.shadowmage.ancientwarfare.core.config.AWCoreStatics;
 import net.shadowmage.ancientwarfare.core.gui.options.OptionsGuiFactory;
 import net.shadowmage.ancientwarfare.core.input.InputHandler;
+import net.shadowmage.ancientwarfare.core.init.AWCoreItems;
 import net.shadowmage.ancientwarfare.core.manual.ManualContentRegistry;
 import net.shadowmage.ancientwarfare.core.network.ClientNetworkScreens;
 import net.shadowmage.ancientwarfare.core.registry.RegistryLoader;
@@ -25,7 +28,12 @@ public class ClientProxy extends ClientProxyBase {
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(ClientNetworkScreens::register);
+        event.enqueueWork(() -> {
+            ClientNetworkScreens.register();
+            ItemProperties.register(AWCoreItems.LEGACY_COMPONENT.get(),
+                    new ResourceLocation(AncientWarfareCore.MOD_ID, "legacy_component"),
+                    (stack, level, entity, seed) -> stack.getDamageValue());
+        });
     }
 
     public static Font getUnicodeFontRenderer() {

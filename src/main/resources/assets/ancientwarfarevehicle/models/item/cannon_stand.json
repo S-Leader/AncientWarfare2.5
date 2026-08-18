@@ -1,6 +1,32 @@
 {
-    "parent": "minecraft:item/generated",
-    "textures": {
-        "layer0": "ancientwarfare:items/vehicle/cannon_stand_0"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ancientwarfare:items/vehicle/cannon_stand_0"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "ancientwarfarevehicle:material_level": 1.0
+      },
+      "model": "ancientwarfare:item/vehicle/cannon_stand_1"
+    },
+    {
+      "predicate": {
+        "ancientwarfarevehicle:material_level": 2.0
+      },
+      "model": "ancientwarfare:item/vehicle/cannon_stand_2"
+    },
+    {
+      "predicate": {
+        "ancientwarfarevehicle:material_level": 3.0
+      },
+      "model": "ancientwarfare:item/vehicle/cannon_stand_3"
+    },
+    {
+      "predicate": {
+        "ancientwarfarevehicle:material_level": 4.0
+      },
+      "model": "ancientwarfare:item/vehicle/cannon_stand_4"
     }
+  ]
 }

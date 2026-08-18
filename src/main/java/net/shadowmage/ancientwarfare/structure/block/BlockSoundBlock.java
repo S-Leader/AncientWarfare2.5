@@ -1,6 +1,7 @@
 package net.shadowmage.ancientwarfare.structure.block;
 
 
+import net.shadowmage.ancientwarfare.core.render.model.DynamicModelRegistry;
 import codechicken.lib.texture.TextureUtils;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -20,9 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
 import net.shadowmage.ancientwarfare.core.init.AWMenuTypes;
 import net.shadowmage.ancientwarfare.core.network.NetworkHandler;
-import net.shadowmage.ancientwarfare.core.render.BlockStateKeyGenerator;
 import net.shadowmage.ancientwarfare.core.render.model.*;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 import net.shadowmage.ancientwarfare.structure.gui.GuiSoundBlock;
 import net.shadowmage.ancientwarfare.structure.render.SoundBlockRenderer;
@@ -68,23 +67,8 @@ public class BlockSoundBlock extends BlockBaseStructure implements LegacyBakeryP
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        LegacyModelLoader.setCustomStateMapper(this, new LegacyStateMapperBase() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            protected ModelResourceLocation getModelResourceLocation(BlockState state) {
-                return SoundBlockRenderer.MODEL_LOCATION;
-            }
-        });
-        LegacyModelRegistryHelper.register(SoundBlockRenderer.MODEL_LOCATION, new LegacyBakeryModel() {
-            @Override
-            public TextureAtlasSprite getParticleTexture() {
-                return TextureUtils.getTexture("minecraft:blocks/jukebox_side");
-            }
-        });
-
-        ModelLoaderHelper.registerItem(this, SoundBlockRenderer.MODEL_LOCATION);
-
-        LegacyModelBakery.registerBlockKeyGenerator(this, new BlockStateKeyGenerator.Builder().addKeyProperties(DISGUISE_BLOCK).build());
+        DynamicModelRegistry.registerBlock(this, getBakery(),
+                state -> TextureUtils.getTexture("minecraft:blocks/jukebox_side"));
     }
 
     @Override

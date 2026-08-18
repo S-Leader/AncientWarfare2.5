@@ -17,9 +17,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelLoader;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyModelRegistryHelper;
-import net.shadowmage.ancientwarfare.core.render.model.LegacyStateMapperBase;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 import net.shadowmage.ancientwarfare.structure.item.ItemBlockWoodenCoffin;
 import net.shadowmage.ancientwarfare.structure.render.ParticleOnlyModel;
@@ -74,22 +71,7 @@ public class BlockWoodenCoffin extends BlockCoffin<TileWoodenCoffin> {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        Map<Variant, ModelResourceLocation> variantModels = new EnumMap<>(Variant.class);
-        for (Variant variant : Variant.values()) {
-            ModelResourceLocation modelLocation = new ModelResourceLocation(new ResourceLocation(AncientWarfareCore.MOD_ID, "structure/wooden_coffin"), variant.getName());
-            variantModels.put(variant, modelLocation);
-            LegacyModelRegistryHelper.register(modelLocation, new ParticleOnlyModel(variant.getBlockTexture()));
-        }
-
-        LegacyModelLoader.setCustomStateMapper(this, new LegacyStateMapperBase() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            protected ModelResourceLocation getModelResourceLocation(BlockState state) {
-                return variantModels.get(state.getValue(VARIANT));
-            }
-        });
-
-        LegacyModelRegistryHelper.registerItemRenderer(this.asItem(), new WoodenCoffinRenderer());
+        // Models are loaded normally from 1.20 blockstates/models JSON.
     }
 
     public enum Variant implements IVariant {

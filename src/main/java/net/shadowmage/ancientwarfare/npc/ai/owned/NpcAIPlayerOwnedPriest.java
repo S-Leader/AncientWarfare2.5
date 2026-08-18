@@ -83,7 +83,7 @@ public class NpcAIPlayerOwnedPriest extends NpcAI<NpcPlayerOwned> {
         NpcBase resdNpc = ItemNpcSpawner.createNpcFromItem(npc.level(), entryToRes.stackToSpawn);
         entryToRes.beingResurrected = false;
         if (resdNpc != null) {
-            if (!npcKeepEquipment) {
+            if (!npcKeepEquipment && !entryToRes.canRes) {
                 for (EquipmentSlot slot : EquipmentSlot.values()) {
                     resdNpc.setItemSlot(slot, ItemStack.EMPTY);
                 }

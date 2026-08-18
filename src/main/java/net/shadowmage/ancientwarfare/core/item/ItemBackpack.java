@@ -20,7 +20,6 @@ import net.shadowmage.ancientwarfare.core.gui.GuiBackpack;
 import net.shadowmage.ancientwarfare.core.init.AWMenuTypes;
 import net.shadowmage.ancientwarfare.core.inventory.ItemHandlerBackpack;
 import net.shadowmage.ancientwarfare.core.network.NetworkHandler;
-import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -78,7 +77,6 @@ public class ItemBackpack extends ItemBaseCore {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        ModelLoaderHelper.registerItem(this, "core", false);
         if (!guiRegistered) {
             guiRegistered = true;
         }
