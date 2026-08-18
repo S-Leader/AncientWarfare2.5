@@ -15,23 +15,16 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.shadowmage.ancientwarfare.automation.gui.GuiWarehouseStorage;
 import net.shadowmage.ancientwarfare.automation.init.AWAutomationBlocks;
-import net.shadowmage.ancientwarfare.automation.tile.warehouse2.TileWarehouseStorage;
-import net.shadowmage.ancientwarfare.automation.tile.warehouse2.TileWarehouseStorageLarge;
-import net.shadowmage.ancientwarfare.automation.tile.warehouse2.TileWarehouseStorageMedium;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
-import net.shadowmage.ancientwarfare.core.network.NetworkHandler;
 import net.shadowmage.ancientwarfare.core.render.model.LegacyModelLoader;
 import net.shadowmage.ancientwarfare.core.render.model.LegacyStateMapperBase;
-import net.shadowmage.ancientwarfare.core.util.LegacyItemStack;
 import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 
@@ -91,13 +84,7 @@ public class BlockWarehouseStorage extends BlockBaseAutomation {
 
 
     public void getSubBlocks(CreativeModeTab itemIn, NonNullList<ItemStack> items) {
-        if (fixedSize == null) {
-            items.add(LegacyItemStack.of(this, 1, 0));
-            items.add(LegacyItemStack.of(this, 1, 1));
-            items.add(LegacyItemStack.of(this, 1, 2));
-        } else {
-            items.add(new ItemStack(this));
-        }
+        items.add(new ItemStack(this));
     }
 
     @Override

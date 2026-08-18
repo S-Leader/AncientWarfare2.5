@@ -42,11 +42,6 @@ public final class ItemWorksiteUpgrade extends ItemBase {
         if (stack.getItem() instanceof ItemWorksiteUpgrade fixedUpgrade) {
             return fixedUpgrade.getUpgrade();
         }
-        if (stack.getItem() instanceof ItemLegacyWorksiteUpgrade) {
-            int metadata = stack.getDamageValue();
-            WorksiteUpgrade[] values = WorksiteUpgrade.values();
-            return metadata >= 0 && metadata < values.length ? values[metadata] : null;
-        }
         return null;
     }
 

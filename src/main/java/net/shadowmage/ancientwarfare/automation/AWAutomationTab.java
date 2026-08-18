@@ -36,9 +36,7 @@ public final class AWAutomationTab {
                                 .filter(item -> {
                                     var id = ForgeRegistries.ITEMS.getKey(item);
                                     return id != null
-                                            && AncientWarfareAutomation.MOD_ID.equals(id.getNamespace())
-                                            && !AWAutomationBlocks.isLegacyVariantItem(item)
-                                            && !AWAutomationItems.isLegacyVariantItem(item);
+                                            && AncientWarfareAutomation.MOD_ID.equals(id.getNamespace());
                                 })
                                 .flatMap(item -> LegacyCreativeTabContents.stacksFor(item).stream())
                                 .forEach(stacks::add);

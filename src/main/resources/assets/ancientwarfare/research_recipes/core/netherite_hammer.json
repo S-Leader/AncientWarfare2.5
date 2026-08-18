@@ -1,0 +1,10 @@
+{
+    "type": "ancientwarfare:research_recipe",
+    "research": "engineering",
+    "pattern": ["MSM", " S ", " S "],
+    "key": {
+        "S": {"item": "#STICKWOOD"},
+        "M": {"item": "minecraft:netherite_ingot"}
+    },
+    "result": {"item": "ancientwarfare:netherite_hammer"}
+}

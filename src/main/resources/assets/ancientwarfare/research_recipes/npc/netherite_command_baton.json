@@ -1,0 +1,11 @@
+{
+    "type": "ancientwarfare:research_recipe",
+    "research": "command",
+    "pattern": ["  M", " I ", "S  "],
+    "key": {
+        "S": {"item": "#STICKWOOD"},
+        "I": {"item": "#INGOTIRON"},
+        "M": {"item": "minecraft:netherite_ingot"}
+    },
+    "result": {"item": "ancientwarfarenpc:netherite_command_baton"}
+}

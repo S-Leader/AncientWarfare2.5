@@ -36,6 +36,7 @@ public final class AWCoreItems {
     public static final RegistryObject<ItemHammer> IRON_HAMMER = ITEMS.register("iron_hammer", () -> new ItemHammer("iron_hammer", Tiers.IRON));
     public static final RegistryObject<ItemHammer> GOLD_HAMMER = ITEMS.register("gold_hammer", () -> new ItemHammer("gold_hammer", Tiers.GOLD));
     public static final RegistryObject<ItemHammer> DIAMOND_HAMMER = ITEMS.register("diamond_hammer", () -> new ItemHammer("diamond_hammer", Tiers.DIAMOND));
+    public static final RegistryObject<ItemHammer> NETHERITE_HAMMER = ITEMS.register("netherite_hammer", () -> new ItemHammer("netherite_hammer", Tiers.NETHERITE));
 
     public static final RegistryObject<ItemManual> MANUAL = ITEMS.register("manual", ItemManual::new);
     public static final RegistryObject<ItemLegacyComponent> LEGACY_COMPONENT = ITEMS.register("component", ItemLegacyComponent::new);

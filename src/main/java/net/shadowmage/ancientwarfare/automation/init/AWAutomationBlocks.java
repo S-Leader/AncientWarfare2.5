@@ -10,7 +10,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.shadowmage.ancientwarfare.automation.AncientWarfareAutomation;
 import net.shadowmage.ancientwarfare.automation.block.*;
-import net.shadowmage.ancientwarfare.automation.item.*;
+import net.shadowmage.ancientwarfare.automation.item.ItemBlockTorqueTile;
+import net.shadowmage.ancientwarfare.automation.item.ItemBlockWarehouseStockLinker;
+import net.shadowmage.ancientwarfare.automation.item.ItemBlockWorksiteStatic;
 import net.shadowmage.ancientwarfare.automation.tile.TileChunkLoaderDeluxe;
 import net.shadowmage.ancientwarfare.automation.tile.TileChunkLoaderSimple;
 import net.shadowmage.ancientwarfare.automation.tile.TileMailbox;
@@ -18,7 +20,10 @@ import net.shadowmage.ancientwarfare.automation.tile.torque.*;
 import net.shadowmage.ancientwarfare.automation.tile.torque.multiblock.TileFlywheelStorage;
 import net.shadowmage.ancientwarfare.automation.tile.torque.multiblock.TileWindmillBlade;
 import net.shadowmage.ancientwarfare.automation.tile.warehouse2.*;
-import net.shadowmage.ancientwarfare.automation.tile.worksite.*;
+import net.shadowmage.ancientwarfare.automation.tile.worksite.TileAutoCrafting;
+import net.shadowmage.ancientwarfare.automation.tile.worksite.WorkSiteAnimalFarm;
+import net.shadowmage.ancientwarfare.automation.tile.worksite.WorkSiteFishFarm;
+import net.shadowmage.ancientwarfare.automation.tile.worksite.WorkSiteQuarry;
 import net.shadowmage.ancientwarfare.automation.tile.worksite.cropfarm.WorkSiteCropFarm;
 import net.shadowmage.ancientwarfare.automation.tile.worksite.fruitfarm.WorkSiteFruitFarm;
 import net.shadowmage.ancientwarfare.automation.tile.worksite.treefarm.WorkSiteTreeFarm;
@@ -40,7 +45,6 @@ public final class AWAutomationBlocks {
     public static final RegistryObject<BlockWorksiteBase> FISH_FARM = block("fish_farm", () -> new BlockWorksiteBase("fish_farm").setBlockEntityType(AWAutomationBlocks.FISH_FARM_TILE));
     public static final RegistryObject<BlockWorksiteBase> WAREHOUSE_CONTROL = block("warehouse_control", () -> new BlockWorksiteBase("warehouse_control").setBlockEntityType(AWAutomationBlocks.WAREHOUSE_CONTROL_TILE));
 
-    public static final RegistryObject<BlockWarehouseStorage> WAREHOUSE_STORAGE = block("warehouse_storage", () -> new BlockWarehouseStorage("warehouse_storage").setBlockEntityType(AWAutomationBlocks.WAREHOUSE_STORAGE_TILE));
     public static final RegistryObject<BlockWarehouseStorage> WAREHOUSE_STORAGE_SMALL = block("warehouse_storage_small", () -> new BlockWarehouseStorage("warehouse_storage_small", BlockWarehouseStorage.Size.SMALL).setBlockEntityType(AWAutomationBlocks.WAREHOUSE_STORAGE_TILE));
     public static final RegistryObject<BlockWarehouseStorage> WAREHOUSE_STORAGE_MEDIUM = block("warehouse_storage_medium", () -> new BlockWarehouseStorage("warehouse_storage_medium", BlockWarehouseStorage.Size.MEDIUM).setBlockEntityType(AWAutomationBlocks.WAREHOUSE_STORAGE_TILE));
     public static final RegistryObject<BlockWarehouseStorage> WAREHOUSE_STORAGE_LARGE = block("warehouse_storage_large", () -> new BlockWarehouseStorage("warehouse_storage_large", BlockWarehouseStorage.Size.LARGE).setBlockEntityType(AWAutomationBlocks.WAREHOUSE_STORAGE_TILE));
@@ -52,27 +56,22 @@ public final class AWAutomationBlocks {
     public static final RegistryObject<BlockAutoCrafting> AUTO_CRAFTING = block("auto_crafting", () -> new BlockAutoCrafting("auto_crafting").setBlockEntityType(AWAutomationBlocks.AUTO_CRAFTING_TILE));
     public static final RegistryObject<BlockMailbox> MAILBOX = block("mailbox", () -> new BlockMailbox("mailbox").setBlockEntityType(AWAutomationBlocks.MAILBOX_TILE));
 
-    public static final RegistryObject<BlockFlywheelController> FLYWHEEL_CONTROLLER = block("flywheel_controller", () -> new BlockFlywheelController("flywheel_controller").setBlockEntityType(AWAutomationBlocks.FLYWHEEL_CONTROLLER_TILE));
     public static final RegistryObject<BlockFlywheelController> FLYWHEEL_CONTROLLER_LIGHT = block("flywheel_controller_light", () -> new BlockFlywheelController("flywheel_controller_light", TorqueTier.LIGHT).setBlockEntityType(AWAutomationBlocks.FLYWHEEL_CONTROLLER_TILE));
     public static final RegistryObject<BlockFlywheelController> FLYWHEEL_CONTROLLER_MEDIUM = block("flywheel_controller_medium", () -> new BlockFlywheelController("flywheel_controller_medium", TorqueTier.MEDIUM).setBlockEntityType(AWAutomationBlocks.FLYWHEEL_CONTROLLER_TILE));
     public static final RegistryObject<BlockFlywheelController> FLYWHEEL_CONTROLLER_HEAVY = block("flywheel_controller_heavy", () -> new BlockFlywheelController("flywheel_controller_heavy", TorqueTier.HEAVY).setBlockEntityType(AWAutomationBlocks.FLYWHEEL_CONTROLLER_TILE));
 
-    public static final RegistryObject<BlockFlywheelStorage> FLYWHEEL_STORAGE = block("flywheel_storage", () -> new BlockFlywheelStorage("flywheel_storage").setBlockEntityType(AWAutomationBlocks.FLYWHEEL_STORAGE_TILE));
     public static final RegistryObject<BlockFlywheelStorage> FLYWHEEL_STORAGE_LIGHT = block("flywheel_storage_light", () -> new BlockFlywheelStorage("flywheel_storage_light", TorqueTier.LIGHT).setBlockEntityType(AWAutomationBlocks.FLYWHEEL_STORAGE_TILE));
     public static final RegistryObject<BlockFlywheelStorage> FLYWHEEL_STORAGE_MEDIUM = block("flywheel_storage_medium", () -> new BlockFlywheelStorage("flywheel_storage_medium", TorqueTier.MEDIUM).setBlockEntityType(AWAutomationBlocks.FLYWHEEL_STORAGE_TILE));
     public static final RegistryObject<BlockFlywheelStorage> FLYWHEEL_STORAGE_HEAVY = block("flywheel_storage_heavy", () -> new BlockFlywheelStorage("flywheel_storage_heavy", TorqueTier.HEAVY).setBlockEntityType(AWAutomationBlocks.FLYWHEEL_STORAGE_TILE));
 
-    public static final RegistryObject<BlockTorqueJunction> TORQUE_JUNCTION = block("torque_junction", () -> new BlockTorqueJunction("torque_junction").setBlockEntityType(AWAutomationBlocks.TORQUE_JUNCTION_TILE));
     public static final RegistryObject<BlockTorqueJunction> TORQUE_JUNCTION_LIGHT = block("torque_junction_light", () -> new BlockTorqueJunction("torque_junction_light", TorqueTier.LIGHT).setBlockEntityType(AWAutomationBlocks.TORQUE_JUNCTION_TILE));
     public static final RegistryObject<BlockTorqueJunction> TORQUE_JUNCTION_MEDIUM = block("torque_junction_medium", () -> new BlockTorqueJunction("torque_junction_medium", TorqueTier.MEDIUM).setBlockEntityType(AWAutomationBlocks.TORQUE_JUNCTION_TILE));
     public static final RegistryObject<BlockTorqueJunction> TORQUE_JUNCTION_HEAVY = block("torque_junction_heavy", () -> new BlockTorqueJunction("torque_junction_heavy", TorqueTier.HEAVY).setBlockEntityType(AWAutomationBlocks.TORQUE_JUNCTION_TILE));
 
-    public static final RegistryObject<BlockTorqueTransportShaft> TORQUE_SHAFT = block("torque_shaft", () -> new BlockTorqueTransportShaft("torque_shaft").setBlockEntityType(AWAutomationBlocks.TORQUE_SHAFT_TILE));
     public static final RegistryObject<BlockTorqueTransportShaft> TORQUE_SHAFT_LIGHT = block("torque_shaft_light", () -> new BlockTorqueTransportShaft("torque_shaft_light", TorqueTier.LIGHT).setBlockEntityType(AWAutomationBlocks.TORQUE_SHAFT_TILE));
     public static final RegistryObject<BlockTorqueTransportShaft> TORQUE_SHAFT_MEDIUM = block("torque_shaft_medium", () -> new BlockTorqueTransportShaft("torque_shaft_medium", TorqueTier.MEDIUM).setBlockEntityType(AWAutomationBlocks.TORQUE_SHAFT_TILE));
     public static final RegistryObject<BlockTorqueTransportShaft> TORQUE_SHAFT_HEAVY = block("torque_shaft_heavy", () -> new BlockTorqueTransportShaft("torque_shaft_heavy", TorqueTier.HEAVY).setBlockEntityType(AWAutomationBlocks.TORQUE_SHAFT_TILE));
 
-    public static final RegistryObject<BlockTorqueDistributor> TORQUE_DISTRIBUTOR = block("torque_distributor", () -> new BlockTorqueDistributor("torque_distributor").setBlockEntityType(AWAutomationBlocks.TORQUE_DISTRIBUTOR_TILE));
     public static final RegistryObject<BlockTorqueDistributor> TORQUE_DISTRIBUTOR_LIGHT = block("torque_distributor_light", () -> new BlockTorqueDistributor("torque_distributor_light", TorqueTier.LIGHT).setBlockEntityType(AWAutomationBlocks.TORQUE_DISTRIBUTOR_TILE));
     public static final RegistryObject<BlockTorqueDistributor> TORQUE_DISTRIBUTOR_MEDIUM = block("torque_distributor_medium", () -> new BlockTorqueDistributor("torque_distributor_medium", TorqueTier.MEDIUM).setBlockEntityType(AWAutomationBlocks.TORQUE_DISTRIBUTOR_TILE));
     public static final RegistryObject<BlockTorqueDistributor> TORQUE_DISTRIBUTOR_HEAVY = block("torque_distributor_heavy", () -> new BlockTorqueDistributor("torque_distributor_heavy", TorqueTier.HEAVY).setBlockEntityType(AWAutomationBlocks.TORQUE_DISTRIBUTOR_TILE));
@@ -94,7 +93,6 @@ public final class AWAutomationBlocks {
         item("animal_farm", () -> new ItemBlockWorksiteStatic(AWAutomationBlocks.ANIMAL_FARM.get()));
         item("fish_farm", () -> new ItemBlockWorksiteStatic(AWAutomationBlocks.FISH_FARM.get()));
         item("warehouse_control", () -> new ItemBlockWorksiteStatic(AWAutomationBlocks.WAREHOUSE_CONTROL.get()));
-        item("warehouse_storage", () -> new ItemBlockLegacyVariant(AWAutomationBlocks.WAREHOUSE_STORAGE.get(), meta -> getWarehouseStorageItem(BlockWarehouseStorage.Size.byMetadata(meta))));
         item("warehouse_storage_small", () -> new BlockItem(AWAutomationBlocks.WAREHOUSE_STORAGE_SMALL.get(), new Item.Properties()));
         item("warehouse_storage_medium", () -> new BlockItem(AWAutomationBlocks.WAREHOUSE_STORAGE_MEDIUM.get(), new Item.Properties()));
         item("warehouse_storage_large", () -> new BlockItem(AWAutomationBlocks.WAREHOUSE_STORAGE_LARGE.get(), new Item.Properties()));
@@ -104,23 +102,18 @@ public final class AWAutomationBlocks {
         item("warehouse_stock_linker", () -> new ItemBlockWarehouseStockLinker(AWAutomationBlocks.WAREHOUSE_STOCK_LINKER.get()));
         item("auto_crafting", () -> new ItemBlockRotatableMetaTile(AWAutomationBlocks.AUTO_CRAFTING.get()));
         item("mailbox", () -> new ItemBlockOwnedRotatable(AWAutomationBlocks.MAILBOX.get()));
-        item("flywheel_controller", () -> new ItemBlockLegacyTorqueTile(AWAutomationBlocks.FLYWHEEL_CONTROLLER.get(), meta -> getFlywheelControllerItem(TorqueTier.byMetadata(meta))));
         item("flywheel_controller_light", () -> new ItemBlockTorqueTile(AWAutomationBlocks.FLYWHEEL_CONTROLLER_LIGHT.get(), false));
         item("flywheel_controller_medium", () -> new ItemBlockTorqueTile(AWAutomationBlocks.FLYWHEEL_CONTROLLER_MEDIUM.get(), false));
         item("flywheel_controller_heavy", () -> new ItemBlockTorqueTile(AWAutomationBlocks.FLYWHEEL_CONTROLLER_HEAVY.get(), false));
-        item("flywheel_storage", () -> new ItemBlockLegacyVariant(AWAutomationBlocks.FLYWHEEL_STORAGE.get(), meta -> getFlywheelStorageItem(TorqueTier.byMetadata(meta))));
         item("flywheel_storage_light", () -> new BlockItem(AWAutomationBlocks.FLYWHEEL_STORAGE_LIGHT.get(), new Item.Properties()));
         item("flywheel_storage_medium", () -> new BlockItem(AWAutomationBlocks.FLYWHEEL_STORAGE_MEDIUM.get(), new Item.Properties()));
         item("flywheel_storage_heavy", () -> new BlockItem(AWAutomationBlocks.FLYWHEEL_STORAGE_HEAVY.get(), new Item.Properties()));
-        item("torque_junction", () -> new ItemBlockLegacyTorqueTile(AWAutomationBlocks.TORQUE_JUNCTION.get(), meta -> getTorqueJunctionItem(TorqueTier.byMetadata(meta))));
         item("torque_junction_light", () -> new ItemBlockTorqueTile(AWAutomationBlocks.TORQUE_JUNCTION_LIGHT.get(), false));
         item("torque_junction_medium", () -> new ItemBlockTorqueTile(AWAutomationBlocks.TORQUE_JUNCTION_MEDIUM.get(), false));
         item("torque_junction_heavy", () -> new ItemBlockTorqueTile(AWAutomationBlocks.TORQUE_JUNCTION_HEAVY.get(), false));
-        item("torque_shaft", () -> new ItemBlockLegacyTorqueTile(AWAutomationBlocks.TORQUE_SHAFT.get(), meta -> getTorqueShaftItem(TorqueTier.byMetadata(meta))));
         item("torque_shaft_light", () -> new ItemBlockTorqueTile(AWAutomationBlocks.TORQUE_SHAFT_LIGHT.get(), false));
         item("torque_shaft_medium", () -> new ItemBlockTorqueTile(AWAutomationBlocks.TORQUE_SHAFT_MEDIUM.get(), false));
         item("torque_shaft_heavy", () -> new ItemBlockTorqueTile(AWAutomationBlocks.TORQUE_SHAFT_HEAVY.get(), false));
-        item("torque_distributor", () -> new ItemBlockLegacyTorqueTile(AWAutomationBlocks.TORQUE_DISTRIBUTOR.get(), meta -> getTorqueDistributorItem(TorqueTier.byMetadata(meta))));
         item("torque_distributor_light", () -> new ItemBlockTorqueTile(AWAutomationBlocks.TORQUE_DISTRIBUTOR_LIGHT.get(), false));
         item("torque_distributor_medium", () -> new ItemBlockTorqueTile(AWAutomationBlocks.TORQUE_DISTRIBUTOR_MEDIUM.get(), false));
         item("torque_distributor_heavy", () -> new ItemBlockTorqueTile(AWAutomationBlocks.TORQUE_DISTRIBUTOR_HEAVY.get(), false));
@@ -152,11 +145,13 @@ public final class AWAutomationBlocks {
                 BlockWarehouseStorage block = (BlockWarehouseStorage) state.getBlock();
                 BlockWarehouseStorage.Size size = block.getFixedSize() == null ? state.getValue(BlockWarehouseStorage.sizeProperty()) : block.getFixedSize();
                 return switch (size) {
-                    case MEDIUM -> new TileWarehouseStorageMedium(AWAutomationBlocks.WAREHOUSE_STORAGE_TILE.get(), pos, state);
-                    case LARGE -> new TileWarehouseStorageLarge(AWAutomationBlocks.WAREHOUSE_STORAGE_TILE.get(), pos, state);
+                    case MEDIUM ->
+                            new TileWarehouseStorageMedium(AWAutomationBlocks.WAREHOUSE_STORAGE_TILE.get(), pos, state);
+                    case LARGE ->
+                            new TileWarehouseStorageLarge(AWAutomationBlocks.WAREHOUSE_STORAGE_TILE.get(), pos, state);
                     default -> new TileWarehouseStorage(AWAutomationBlocks.WAREHOUSE_STORAGE_TILE.get(), pos, state);
                 };
-            }, AWAutomationBlocks.WAREHOUSE_STORAGE.get(), AWAutomationBlocks.WAREHOUSE_STORAGE_SMALL.get(), AWAutomationBlocks.WAREHOUSE_STORAGE_MEDIUM.get(), AWAutomationBlocks.WAREHOUSE_STORAGE_LARGE.get()).build(null));
+            }, AWAutomationBlocks.WAREHOUSE_STORAGE_SMALL.get(), AWAutomationBlocks.WAREHOUSE_STORAGE_MEDIUM.get(), AWAutomationBlocks.WAREHOUSE_STORAGE_LARGE.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileWarehouseInterface>> WAREHOUSE_INTERFACE_TILE = tile("warehouse_interface_tile", () ->
             BlockEntityType.Builder.of((pos, state) -> new TileWarehouseInterface(AWAutomationBlocks.WAREHOUSE_INTERFACE_TILE.get(), pos, state), AWAutomationBlocks.WAREHOUSE_INTERFACE.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileWarehouseCraftingStation>> WAREHOUSE_CRAFTING_TILE = tile("warehouse_crafting_tile", () ->
@@ -172,31 +167,34 @@ public final class AWAutomationBlocks {
 
     public static final RegistryObject<BlockEntityType<TileFlywheelController>> FLYWHEEL_CONTROLLER_TILE = tile("flywheel_controller_tile", () ->
             BlockEntityType.Builder.of((pos, state) -> switch (((BlockFlywheelController) state.getBlock()).getFixedTier()) {
-                case MEDIUM -> new TileFlywheelControllerMedium(AWAutomationBlocks.FLYWHEEL_CONTROLLER_TILE.get(), pos, state);
-                case HEAVY -> new TileFlywheelControllerHeavy(AWAutomationBlocks.FLYWHEEL_CONTROLLER_TILE.get(), pos, state);
-                default -> new TileFlywheelControllerLight(AWAutomationBlocks.FLYWHEEL_CONTROLLER_TILE.get(), pos, state);
-            }, AWAutomationBlocks.FLYWHEEL_CONTROLLER.get(), AWAutomationBlocks.FLYWHEEL_CONTROLLER_LIGHT.get(), AWAutomationBlocks.FLYWHEEL_CONTROLLER_MEDIUM.get(), AWAutomationBlocks.FLYWHEEL_CONTROLLER_HEAVY.get()).build(null));
+                case MEDIUM ->
+                        new TileFlywheelControllerMedium(AWAutomationBlocks.FLYWHEEL_CONTROLLER_TILE.get(), pos, state);
+                case HEAVY ->
+                        new TileFlywheelControllerHeavy(AWAutomationBlocks.FLYWHEEL_CONTROLLER_TILE.get(), pos, state);
+                default ->
+                        new TileFlywheelControllerLight(AWAutomationBlocks.FLYWHEEL_CONTROLLER_TILE.get(), pos, state);
+            }, AWAutomationBlocks.FLYWHEEL_CONTROLLER_LIGHT.get(), AWAutomationBlocks.FLYWHEEL_CONTROLLER_MEDIUM.get(), AWAutomationBlocks.FLYWHEEL_CONTROLLER_HEAVY.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileFlywheelStorage>> FLYWHEEL_STORAGE_TILE = tile("flywheel_storage_tile", () ->
             BlockEntityType.Builder.of((pos, state) -> new TileFlywheelStorage(AWAutomationBlocks.FLYWHEEL_STORAGE_TILE.get(), pos, state),
-                    AWAutomationBlocks.FLYWHEEL_STORAGE.get(), AWAutomationBlocks.FLYWHEEL_STORAGE_LIGHT.get(), AWAutomationBlocks.FLYWHEEL_STORAGE_MEDIUM.get(), AWAutomationBlocks.FLYWHEEL_STORAGE_HEAVY.get()).build(null));
+                    AWAutomationBlocks.FLYWHEEL_STORAGE_LIGHT.get(), AWAutomationBlocks.FLYWHEEL_STORAGE_MEDIUM.get(), AWAutomationBlocks.FLYWHEEL_STORAGE_HEAVY.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileTorqueSidedCell>> TORQUE_JUNCTION_TILE = tile("torque_junction_tile", () ->
             BlockEntityType.Builder.of((pos, state) -> switch (((BlockTorqueJunction) state.getBlock()).getTier(state)) {
                 case MEDIUM -> new TileConduitMedium(AWAutomationBlocks.TORQUE_JUNCTION_TILE.get(), pos, state);
                 case HEAVY -> new TileConduitHeavy(AWAutomationBlocks.TORQUE_JUNCTION_TILE.get(), pos, state);
                 default -> new TileConduitLight(AWAutomationBlocks.TORQUE_JUNCTION_TILE.get(), pos, state);
-            }, AWAutomationBlocks.TORQUE_JUNCTION.get(), AWAutomationBlocks.TORQUE_JUNCTION_LIGHT.get(), AWAutomationBlocks.TORQUE_JUNCTION_MEDIUM.get(), AWAutomationBlocks.TORQUE_JUNCTION_HEAVY.get()).build(null));
+            }, AWAutomationBlocks.TORQUE_JUNCTION_LIGHT.get(), AWAutomationBlocks.TORQUE_JUNCTION_MEDIUM.get(), AWAutomationBlocks.TORQUE_JUNCTION_HEAVY.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileTorqueShaft>> TORQUE_SHAFT_TILE = tile("torque_shaft_tile", () ->
             BlockEntityType.Builder.of((pos, state) -> switch (((BlockTorqueTransportShaft) state.getBlock()).getTier(state)) {
                 case MEDIUM -> new TileTorqueShaftMedium(AWAutomationBlocks.TORQUE_SHAFT_TILE.get(), pos, state);
                 case HEAVY -> new TileTorqueShaftHeavy(AWAutomationBlocks.TORQUE_SHAFT_TILE.get(), pos, state);
                 default -> new TileTorqueShaftLight(AWAutomationBlocks.TORQUE_SHAFT_TILE.get(), pos, state);
-            }, AWAutomationBlocks.TORQUE_SHAFT.get(), AWAutomationBlocks.TORQUE_SHAFT_LIGHT.get(), AWAutomationBlocks.TORQUE_SHAFT_MEDIUM.get(), AWAutomationBlocks.TORQUE_SHAFT_HEAVY.get()).build(null));
+            }, AWAutomationBlocks.TORQUE_SHAFT_LIGHT.get(), AWAutomationBlocks.TORQUE_SHAFT_MEDIUM.get(), AWAutomationBlocks.TORQUE_SHAFT_HEAVY.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileDistributor>> TORQUE_DISTRIBUTOR_TILE = tile("torque_distributor_tile", () ->
             BlockEntityType.Builder.of((pos, state) -> switch (((BlockTorqueDistributor) state.getBlock()).getTier(state)) {
                 case MEDIUM -> new TileDistributorMedium(AWAutomationBlocks.TORQUE_DISTRIBUTOR_TILE.get(), pos, state);
                 case HEAVY -> new TileDistributorHeavy(AWAutomationBlocks.TORQUE_DISTRIBUTOR_TILE.get(), pos, state);
                 default -> new TileDistributorLight(AWAutomationBlocks.TORQUE_DISTRIBUTOR_TILE.get(), pos, state);
-            }, AWAutomationBlocks.TORQUE_DISTRIBUTOR.get(), AWAutomationBlocks.TORQUE_DISTRIBUTOR_LIGHT.get(), AWAutomationBlocks.TORQUE_DISTRIBUTOR_MEDIUM.get(), AWAutomationBlocks.TORQUE_DISTRIBUTOR_HEAVY.get()).build(null));
+            }, AWAutomationBlocks.TORQUE_DISTRIBUTOR_LIGHT.get(), AWAutomationBlocks.TORQUE_DISTRIBUTOR_MEDIUM.get(), AWAutomationBlocks.TORQUE_DISTRIBUTOR_HEAVY.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileStirlingGenerator>> STIRLING_GENERATOR_TILE = tile("stirling_generator_tile", () ->
             BlockEntityType.Builder.of((pos, state) -> new TileStirlingGenerator(AWAutomationBlocks.STIRLING_GENERATOR_TILE.get(), pos, state), AWAutomationBlocks.STIRLING_GENERATOR.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileWaterwheelGenerator>> WATERWHEEL_GENERATOR_TILE = tile("waterwheel_generator_tile", () ->
@@ -212,7 +210,8 @@ public final class AWAutomationBlocks {
     public static final RegistryObject<BlockEntityType<TileChunkLoaderDeluxe>> CHUNK_LOADER_DELUXE_TILE = tile("chunk_loader_deluxe_tile", () ->
             BlockEntityType.Builder.of((pos, state) -> new TileChunkLoaderDeluxe(AWAutomationBlocks.CHUNK_LOADER_DELUXE_TILE.get(), pos, state), AWAutomationBlocks.CHUNK_LOADER_DELUXE.get()).build(null));
 
-    private AWAutomationBlocks() {}
+    private AWAutomationBlocks() {
+    }
 
     public static void register(IEventBus modBus) {
         BLOCKS.register(modBus);
@@ -227,20 +226,55 @@ public final class AWAutomationBlocks {
             case LARGE -> AWAutomationBlocks.WAREHOUSE_STORAGE_LARGE.get().asItem();
         };
     }
-    public static Item getFlywheelControllerItem(TorqueTier tier) { return switch (tier) { case LIGHT -> AWAutomationBlocks.FLYWHEEL_CONTROLLER_LIGHT.get().asItem(); case MEDIUM -> AWAutomationBlocks.FLYWHEEL_CONTROLLER_MEDIUM.get().asItem(); case HEAVY -> AWAutomationBlocks.FLYWHEEL_CONTROLLER_HEAVY.get().asItem(); }; }
-    public static Item getFlywheelStorageItem(TorqueTier tier) { return switch (tier) { case LIGHT -> AWAutomationBlocks.FLYWHEEL_STORAGE_LIGHT.get().asItem(); case MEDIUM -> AWAutomationBlocks.FLYWHEEL_STORAGE_MEDIUM.get().asItem(); case HEAVY -> AWAutomationBlocks.FLYWHEEL_STORAGE_HEAVY.get().asItem(); }; }
-    public static Item getTorqueJunctionItem(TorqueTier tier) { return switch (tier) { case LIGHT -> AWAutomationBlocks.TORQUE_JUNCTION_LIGHT.get().asItem(); case MEDIUM -> AWAutomationBlocks.TORQUE_JUNCTION_MEDIUM.get().asItem(); case HEAVY -> AWAutomationBlocks.TORQUE_JUNCTION_HEAVY.get().asItem(); }; }
-    public static Item getTorqueShaftItem(TorqueTier tier) { return switch (tier) { case LIGHT -> AWAutomationBlocks.TORQUE_SHAFT_LIGHT.get().asItem(); case MEDIUM -> AWAutomationBlocks.TORQUE_SHAFT_MEDIUM.get().asItem(); case HEAVY -> AWAutomationBlocks.TORQUE_SHAFT_HEAVY.get().asItem(); }; }
-    public static Item getTorqueDistributorItem(TorqueTier tier) { return switch (tier) { case LIGHT -> AWAutomationBlocks.TORQUE_DISTRIBUTOR_LIGHT.get().asItem(); case MEDIUM -> AWAutomationBlocks.TORQUE_DISTRIBUTOR_MEDIUM.get().asItem(); case HEAVY -> AWAutomationBlocks.TORQUE_DISTRIBUTOR_HEAVY.get().asItem(); }; }
 
-    public static boolean isLegacyVariantItem(Item item) {
-        return item == AWAutomationBlocks.WAREHOUSE_STORAGE.get().asItem() || item == AWAutomationBlocks.FLYWHEEL_CONTROLLER.get().asItem()
-                || item == AWAutomationBlocks.FLYWHEEL_STORAGE.get().asItem() || item == AWAutomationBlocks.TORQUE_JUNCTION.get().asItem()
-                || item == AWAutomationBlocks.TORQUE_SHAFT.get().asItem() || item == AWAutomationBlocks.TORQUE_DISTRIBUTOR.get().asItem();
+    public static Item getFlywheelControllerItem(TorqueTier tier) {
+        return switch (tier) {
+            case LIGHT -> AWAutomationBlocks.FLYWHEEL_CONTROLLER_LIGHT.get().asItem();
+            case MEDIUM -> AWAutomationBlocks.FLYWHEEL_CONTROLLER_MEDIUM.get().asItem();
+            case HEAVY -> AWAutomationBlocks.FLYWHEEL_CONTROLLER_HEAVY.get().asItem();
+        };
     }
 
-    private static <T extends Block> RegistryObject<T> block(String name, Supplier<T> factory) { return BLOCKS.register(name, factory); }
-    private static RegistryObject<Item> item(String name, Supplier<? extends Item> factory) { return ITEMS.register(name, factory); }
+    public static Item getFlywheelStorageItem(TorqueTier tier) {
+        return switch (tier) {
+            case LIGHT -> AWAutomationBlocks.FLYWHEEL_STORAGE_LIGHT.get().asItem();
+            case MEDIUM -> AWAutomationBlocks.FLYWHEEL_STORAGE_MEDIUM.get().asItem();
+            case HEAVY -> AWAutomationBlocks.FLYWHEEL_STORAGE_HEAVY.get().asItem();
+        };
+    }
+
+    public static Item getTorqueJunctionItem(TorqueTier tier) {
+        return switch (tier) {
+            case LIGHT -> AWAutomationBlocks.TORQUE_JUNCTION_LIGHT.get().asItem();
+            case MEDIUM -> AWAutomationBlocks.TORQUE_JUNCTION_MEDIUM.get().asItem();
+            case HEAVY -> AWAutomationBlocks.TORQUE_JUNCTION_HEAVY.get().asItem();
+        };
+    }
+
+    public static Item getTorqueShaftItem(TorqueTier tier) {
+        return switch (tier) {
+            case LIGHT -> AWAutomationBlocks.TORQUE_SHAFT_LIGHT.get().asItem();
+            case MEDIUM -> AWAutomationBlocks.TORQUE_SHAFT_MEDIUM.get().asItem();
+            case HEAVY -> AWAutomationBlocks.TORQUE_SHAFT_HEAVY.get().asItem();
+        };
+    }
+
+    public static Item getTorqueDistributorItem(TorqueTier tier) {
+        return switch (tier) {
+            case LIGHT -> AWAutomationBlocks.TORQUE_DISTRIBUTOR_LIGHT.get().asItem();
+            case MEDIUM -> AWAutomationBlocks.TORQUE_DISTRIBUTOR_MEDIUM.get().asItem();
+            case HEAVY -> AWAutomationBlocks.TORQUE_DISTRIBUTOR_HEAVY.get().asItem();
+        };
+    }
+
+    private static <T extends Block> RegistryObject<T> block(String name, Supplier<T> factory) {
+        return BLOCKS.register(name, factory);
+    }
+
+    private static RegistryObject<Item> item(String name, Supplier<? extends Item> factory) {
+        return ITEMS.register(name, factory);
+    }
+
     private static <T extends net.minecraft.world.level.block.entity.BlockEntity> RegistryObject<BlockEntityType<T>> tile(String name, Supplier<BlockEntityType<T>> factory) {
         return BLOCK_ENTITIES.register(name, factory);
     }

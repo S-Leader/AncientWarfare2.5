@@ -16,19 +16,15 @@ public class StructurePluginAutomation implements StructureContentPlugin {
         manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.QUARRY.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
         manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.WAREHOUSE_CONTROL.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
 
-        manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.TORQUE_SHAFT.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
         manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.TORQUE_SHAFT_LIGHT.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
         manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.TORQUE_SHAFT_MEDIUM.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
         manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.TORQUE_SHAFT_HEAVY.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
-        manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.TORQUE_JUNCTION.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
         manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.TORQUE_JUNCTION_LIGHT.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
         manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.TORQUE_JUNCTION_MEDIUM.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
         manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.TORQUE_JUNCTION_HEAVY.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
-        manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.TORQUE_DISTRIBUTOR.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
         manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.TORQUE_DISTRIBUTOR_LIGHT.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
         manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.TORQUE_DISTRIBUTOR_MEDIUM.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
         manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.TORQUE_DISTRIBUTOR_HEAVY.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
-        manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.FLYWHEEL_CONTROLLER.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
         manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.FLYWHEEL_CONTROLLER_LIGHT.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
         manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.FLYWHEEL_CONTROLLER_MEDIUM.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
         manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.FLYWHEEL_CONTROLLER_HEAVY.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
@@ -37,7 +33,6 @@ public class StructurePluginAutomation implements StructureContentPlugin {
         manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.HAND_CRANKED_GENERATOR.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
         manager.registerBlockHandler(TemplateRuleRotatable.PLUGIN_NAME, AWAutomationBlocks.WINDMILL_GENERATOR.get(), TemplateRuleRotatable::new, TemplateRuleRotatable::new);
 
-        manager.registerBlockHandler(TemplateRuleTorqueMultiblock.PLUGIN_NAME, AWAutomationBlocks.FLYWHEEL_STORAGE.get(), TemplateRuleTorqueMultiblock::new, TemplateRuleTorqueMultiblock::new);
         manager.registerBlockHandler(TemplateRuleTorqueMultiblock.PLUGIN_NAME, AWAutomationBlocks.FLYWHEEL_STORAGE_LIGHT.get(), TemplateRuleTorqueMultiblock::new, TemplateRuleTorqueMultiblock::new);
         manager.registerBlockHandler(TemplateRuleTorqueMultiblock.PLUGIN_NAME, AWAutomationBlocks.FLYWHEEL_STORAGE_MEDIUM.get(), TemplateRuleTorqueMultiblock::new, TemplateRuleTorqueMultiblock::new);
         manager.registerBlockHandler(TemplateRuleTorqueMultiblock.PLUGIN_NAME, AWAutomationBlocks.FLYWHEEL_STORAGE_HEAVY.get(), TemplateRuleTorqueMultiblock::new, TemplateRuleTorqueMultiblock::new);

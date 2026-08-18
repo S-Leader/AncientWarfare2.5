@@ -31,11 +31,7 @@ public class NPCItemColors {
 
             return -1;
 
-        }), AWNPCItems.NPC_SPAWNER.get(),
-                AWNPCItems.NPC_SPAWNER_WORKER.get(), AWNPCItems.NPC_SPAWNER_COMBAT.get(),
-                AWNPCItems.NPC_SPAWNER_COURIER.get(), AWNPCItems.NPC_SPAWNER_TRADER.get(),
-                AWNPCItems.NPC_SPAWNER_PRIEST.get(), AWNPCItems.NPC_SPAWNER_BARD.get(),
-                AWNPCItems.NPC_SPAWNER_SIEGE_ENGINEER.get());
+        }), AWNPCItems.NPC_SPAWNER.get());
 
         itemColors.register(((stack, tintindex) -> ItemCoin.getMetal(stack).getColor()), AWNPCItems.COIN.get());
     }

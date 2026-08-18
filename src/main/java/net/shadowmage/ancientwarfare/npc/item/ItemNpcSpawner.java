@@ -41,20 +41,8 @@ public class ItemNpcSpawner extends ItemBaseNPC {
     private static final String FACTION_TAG = "faction";
     private static final String NPC_STORED_DATA_TAG = "npcStoredData";
 
-    /** Null only for the compatibility/dynamic spawner that carries npcType in NBT. */
-    @Nullable
-    private final String fixedNpcType;
-
-    /** Compatibility-only dynamic NBT container for old saves and faction/subtype spawners. */
-    @Deprecated
     public ItemNpcSpawner() {
-        this("npc_spawner", null);
-    }
-
-    /** Modern recipe spawner: one registry id represents exactly one base NPC type. */
-    public ItemNpcSpawner(String registryName, @Nullable String fixedNpcType) {
-        super(registryName, new Item.Properties().stacksTo(16));
-        this.fixedNpcType = fixedNpcType;
+        super("npc_spawner", new Item.Properties().stacksTo(16));
     }
 
     @Override
@@ -159,19 +147,10 @@ public class ItemNpcSpawner extends ItemBaseNPC {
     }
 
     public void getSubItems(CreativeModeTab tab, NonNullList<ItemStack> items) {
-        if (fixedNpcType != null) {
-            items.add(new ItemStack(this));
-            return;
-        }
-        getDynamicSpawnerSubItems(items);
+        getSpawnerSubItems(items);
     }
 
-    /**
-     * The legacy/dynamic item remains available for faction and subtype NPCs.
-     * Base player-owned NPC types that have a dedicated registry item are omitted
-     * here so the creative tab does not contain duplicate NBT/non-NBT copies.
-     */
-    private static void getDynamicSpawnerSubItems(NonNullList<ItemStack> list) {
+    private static void getSpawnerSubItems(NonNullList<ItemStack> list) {
         List<ItemStack> playerOwned = new ArrayList<>();
         List<ItemStack> factionOwned = new ArrayList<>();
 
@@ -183,7 +162,7 @@ public class ItemNpcSpawner extends ItemBaseNPC {
                             factionOwned.add(getStackForNpcType(dec.getNpcType(), "", factionName));
                         }
                     }
-                } else if (AWNPCItems.getNpcSpawnerItem(dec.getNpcType()) == AWNPCItems.NPC_SPAWNER.get()) {
+                } else {
                     playerOwned.add(getStackForNpcType(dec.getNpcType(), "", ""));
                 }
             }
@@ -205,28 +184,17 @@ public class ItemNpcSpawner extends ItemBaseNPC {
     }
 
     private static ItemStack getStackForNpcType(String type, String npcSubtype, String faction) {
-        Item item = faction.isEmpty() && npcSubtype.isEmpty()
-                ? AWNPCItems.getNpcSpawnerItem(type)
-                : AWNPCItems.NPC_SPAWNER.get();
-        ItemStack stack = new ItemStack(item);
-
-        // Dedicated base spawners derive their type from registry identity. Only
-        // the dynamic compatibility item needs identity NBT.
-        if (item == AWNPCItems.NPC_SPAWNER.get()) {
-            stack.getOrCreateTag().put(NPC_TYPE_TAG, StringTag.valueOf(type));
-            stack.getOrCreateTag().put(NPC_SUBTYPE_TAG, StringTag.valueOf(npcSubtype));
-            if (!faction.isEmpty()) {
-                stack.getOrCreateTag().put(FACTION_TAG, StringTag.valueOf(faction));
-            }
+        ItemStack stack = new ItemStack(AWNPCItems.NPC_SPAWNER.get());
+        stack.getOrCreateTag().put(NPC_TYPE_TAG, StringTag.valueOf(type));
+        stack.getOrCreateTag().put(NPC_SUBTYPE_TAG, StringTag.valueOf(npcSubtype));
+        if (!faction.isEmpty()) {
+            stack.getOrCreateTag().put(FACTION_TAG, StringTag.valueOf(faction));
         }
         return stack;
     }
 
     @Nullable
     public static String getNpcType(ItemStack stack) {
-        if (stack.getItem() instanceof ItemNpcSpawner spawner && spawner.fixedNpcType != null) {
-            return spawner.fixedNpcType;
-        }
         if (stack.hasTag() && stack.getTag().contains(NPC_TYPE_TAG)) {
             return stack.getTag().getString(NPC_TYPE_TAG);
         }
@@ -250,15 +218,6 @@ public class ItemNpcSpawner extends ItemBaseNPC {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
-        if (fixedNpcType != null) {
-            AWNPCEntities.NpcDeclaration<?> declaration = AWNPCEntities.getNpcDeclaration(fixedNpcType);
-            if (declaration != null) {
-                ModelResourceLocation model = getModelLocation(declaration.getItemModelVariant(""));
-                LegacyModelLoader.registerItemVariants(this, model);
-                LegacyModelLoader.setCustomMeshDefinition(this, stack -> model);
-            }
-            return;
-        }
 
         final Map<String, ModelResourceLocation> modelLocations = Maps.newHashMap();
 

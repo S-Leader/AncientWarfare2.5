@@ -44,13 +44,18 @@ public class ItemHammer extends ItemBaseCore implements IItemKeyInterface {
 
     public ItemHammer(String regName, Tier material) {
         //durability() already forces max stack 1; stacksTo() throws once durability is set.
-        super(regName, new Item.Properties().durability(material.getUses()));
+        super(regName, propertiesFor(material));
         this.material = material;
         double attackDamage = 4.0D + material.getAttackDamageBonus();
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", attackDamage, AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -3.1D, AttributeModifier.Operation.ADDITION));
         this.defaultModifiers = builder.build();
+    }
+
+    private static Item.Properties propertiesFor(Tier material) {
+        Item.Properties properties = new Item.Properties().durability(material.getUses());
+        return material == net.minecraft.world.item.Tiers.NETHERITE ? properties.fireResistant() : properties;
     }
 
     public Tier getMaterial() {

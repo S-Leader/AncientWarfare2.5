@@ -9,10 +9,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraftforge.api.distmarker.Dist;
@@ -24,7 +23,6 @@ import net.shadowmage.ancientwarfare.automation.tile.torque.multiblock.TileFlywh
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
 import net.shadowmage.ancientwarfare.core.render.BlockStateKeyGenerator;
 import net.shadowmage.ancientwarfare.core.render.model.*;
-import net.shadowmage.ancientwarfare.core.util.LegacyItemStack;
 import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 
@@ -40,7 +38,7 @@ public class BlockFlywheelStorage extends BlockBaseAutomation implements LegacyB
     }
 
     public BlockFlywheelStorage(String regName, TorqueTier fixedTier) {
-        super(LegacyMaterial.ROCK, regName);
+        super(LegacyMaterial.ROCK.properties().noOcclusion(), regName);
         this.fixedTier = fixedTier;
         if (fixedTier != null) {
             registerDefaultState(defaultBlockState().setValue(TIER, fixedTier));
@@ -135,13 +133,7 @@ public class BlockFlywheelStorage extends BlockBaseAutomation implements LegacyB
     }
 
     public void getSubBlocks(CreativeModeTab creativeTab, NonNullList<ItemStack> list) {
-        if (fixedTier == null) {
-            list.add(LegacyItemStack.of(this.asItem(), 1, 0));
-            list.add(LegacyItemStack.of(this.asItem(), 1, 1));
-            list.add(LegacyItemStack.of(this.asItem(), 1, 2));
-        } else {
-            list.add(new ItemStack(this));
-        }
+        list.add(new ItemStack(this));
     }
 
     @Override
@@ -152,6 +144,8 @@ public class BlockFlywheelStorage extends BlockBaseAutomation implements LegacyB
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerClient() {
+        LegacyModelRegistryHelper.registerDirectItemBakery(this.asItem(), FlywheelStorageRenderer.INSTANCE,
+                () -> FlywheelStorageRenderer.INSTANCE.getSprite(fixedTier == null ? TorqueTier.LIGHT : fixedTier));
         ModelLoaderHelper.registerItem(this, fixedTier == null
                 ? FlywheelStorageRenderer.LIGHT_MODEL_LOCATION
                 : modelLocation(fixedTier));

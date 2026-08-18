@@ -1161,5 +1161,7 @@
   "item.ancientwarfareautomation.worksite_upgrade_tool_quality_3": "高级工具品质升级",
   "item.ancientwarfareautomation.worksite_upgrade_basic_chunk_loader": "基础区块加载器升级",
   "item.ancientwarfareautomation.worksite_upgrade_quarry_chunk_loader": "采石场区块加载升级",
-  "item.ancientwarfareautomation.worksite_upgrade": "Legacy Worksite Upgrade"
+  "item.ancientwarfareautomation.worksite_upgrade": "Legacy Worksite Upgrade",
+    "item.ancientwarfare.netherite_hammer": "下界合金锤",
+    "item.ancientwarfarenpc.netherite_command_baton": "下界合金指挥棒"
 }

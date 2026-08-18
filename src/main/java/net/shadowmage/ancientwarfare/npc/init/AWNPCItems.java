@@ -32,6 +32,7 @@ public final class AWNPCItems {
     public static final RegistryObject<ItemCommandBaton> IRON_COMMAND_BATON = item("iron_command_baton", () -> new ItemCommandBaton("iron_command_baton", Tiers.IRON));
     public static final RegistryObject<ItemCommandBaton> GOLD_COMMAND_BATON = item("gold_command_baton", () -> new ItemCommandBaton("gold_command_baton", Tiers.GOLD));
     public static final RegistryObject<ItemCommandBaton> DIAMOND_COMMAND_BATON = item("diamond_command_baton", () -> new ItemCommandBaton("diamond_command_baton", Tiers.DIAMOND));
+    public static final RegistryObject<ItemCommandBaton> NETHERITE_COMMAND_BATON = item("netherite_command_baton", () -> new ItemCommandBaton("netherite_command_baton", Tiers.NETHERITE));
 
     public static final RegistryObject<ItemBardInstrument> BARD_INSTRUMENT_LUTE = item("bard_instrument_lute", () -> new ItemBardInstrument("bard_instrument_lute", ItemBardInstrument.Instrument.LUTE));
     public static final RegistryObject<ItemBardInstrument> BARD_INSTRUMENT_FLUTE = item("bard_instrument_flute", () -> new ItemBardInstrument("bard_instrument_flute", ItemBardInstrument.Instrument.FLUTE));
@@ -59,14 +60,7 @@ public final class AWNPCItems {
     public static final RegistryObject<ItemRoutingOrder> ROUTING_ORDER = item("routing_order", ItemRoutingOrder::new);
     public static final RegistryObject<ItemTradeOrder> TRADE_ORDER = item("trade_order", ItemTradeOrder::new);
 
-    @Deprecated public static final RegistryObject<ItemNpcSpawner> NPC_SPAWNER = item("npc_spawner", ItemNpcSpawner::new);
-    public static final RegistryObject<ItemNpcSpawner> NPC_SPAWNER_WORKER = spawner("npc_spawner_worker", "worker");
-    public static final RegistryObject<ItemNpcSpawner> NPC_SPAWNER_COMBAT = spawner("npc_spawner_combat", "combat");
-    public static final RegistryObject<ItemNpcSpawner> NPC_SPAWNER_COURIER = spawner("npc_spawner_courier", "courier");
-    public static final RegistryObject<ItemNpcSpawner> NPC_SPAWNER_TRADER = spawner("npc_spawner_trader", "trader");
-    public static final RegistryObject<ItemNpcSpawner> NPC_SPAWNER_PRIEST = spawner("npc_spawner_priest", "priest");
-    public static final RegistryObject<ItemNpcSpawner> NPC_SPAWNER_BARD = spawner("npc_spawner_bard", "bard");
-    public static final RegistryObject<ItemNpcSpawner> NPC_SPAWNER_SIEGE_ENGINEER = spawner("npc_spawner_siege_engineer", "siege_engineer");
+    public static final RegistryObject<ItemNpcSpawner> NPC_SPAWNER = item("npc_spawner", ItemNpcSpawner::new);
 
     public static final RegistryObject<ItemCoin> COIN = item("coin", ItemCoin::new);
 
@@ -92,20 +86,6 @@ public final class AWNPCItems {
 
     public static void register(IEventBus modBus) { ITEMS.register(modBus); }
 
-    public static ItemNpcSpawner getNpcSpawnerItem(String npcType) {
-        RegistryObject<ItemNpcSpawner> object = switch (npcType) {
-            case "worker" -> NPC_SPAWNER_WORKER;
-            case "combat" -> NPC_SPAWNER_COMBAT;
-            case "courier" -> NPC_SPAWNER_COURIER;
-            case "trader" -> NPC_SPAWNER_TRADER;
-            case "priest" -> NPC_SPAWNER_PRIEST;
-            case "bard" -> NPC_SPAWNER_BARD;
-            case "siege_engineer" -> NPC_SPAWNER_SIEGE_ENGINEER;
-            default -> NPC_SPAWNER;
-        };
-        return object.get();
-    }
-
     private static void extendedReachWeapons(String name, double attackOffset, double attackSpeed, float reach) {
         weapon(Tiers.WOOD, "wooden_" + name, attackOffset, attackSpeed, reach);
         weapon(Tiers.STONE, "stone_" + name, attackOffset, attackSpeed, reach);
@@ -122,9 +102,6 @@ public final class AWNPCItems {
         return item(name, () -> new ItemShield(name, tier, durability));
     }
 
-    private static RegistryObject<ItemNpcSpawner> spawner(String name, String npcType) {
-        return item(name, () -> new ItemNpcSpawner(name, npcType));
-    }
 
     private static <T extends Item> RegistryObject<T> item(String name, Supplier<T> value) { return ITEMS.register(name, value); }
 

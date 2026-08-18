@@ -25,6 +25,8 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -86,6 +88,10 @@ public abstract class NpcBase extends PathfinderMob implements IEntityAdditional
     private static final EntityDataAccessor<Boolean> IS_SLEEPING = SynchedEntityData.defineId(NpcBase.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> SWINGING_ARMS = SynchedEntityData.defineId(NpcBase.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> ATTACK_ANIMATION_TICKS = SynchedEntityData.defineId(NpcBase.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Byte> RANGED_WEAPON_POSE = SynchedEntityData.defineId(NpcBase.class, EntityDataSerializers.BYTE);
+    public static final byte RANGED_POSE_NONE = 0;
+    public static final byte RANGED_POSE_CROSSBOW_CHARGE = 1;
+    public static final byte RANGED_POSE_CROSSBOW_HOLD = 2;
     public static final int ATTACK_ANIMATION_DURATION = 8;
     private static final String SLOT_NUM_TAG = "slotNum";
     private static final String BED_DIRECTION_TAG = "bedDirection";
@@ -174,6 +180,7 @@ public abstract class NpcBase extends PathfinderMob implements IEntityAdditional
         entityData.define(IS_SLEEPING, false);
         entityData.define(SWINGING_ARMS, false);
         entityData.define(ATTACK_ANIMATION_TICKS, 0);
+        entityData.define(RANGED_WEAPON_POSE, RANGED_POSE_NONE);
         entityData.define(SHIELD_DISABLED_TICK, 0);
     }
 
@@ -649,7 +656,7 @@ public abstract class NpcBase extends PathfinderMob implements IEntityAdditional
             }
             ItemStack mainhandStack = getMainHandItem();
             ItemStack offhandStack = getOffhandItem();
-            if (offhandStack.canPerformAction(ToolActions.SHIELD_BLOCK) && !isBow(mainhandStack.getItem())) {
+            if (offhandStack.canPerformAction(ToolActions.SHIELD_BLOCK) && !isRangedWeapon(mainhandStack.getItem())) {
                 shieldBlockAI = initShieldAI();
                 goalSelector.addGoal(3, shieldBlockAI);
             }
@@ -1390,6 +1397,28 @@ public abstract class NpcBase extends PathfinderMob implements IEntityAdditional
 
     public boolean isBow(Item item) {
         return item instanceof BowItem;
+    }
+
+    public boolean isCrossbow(Item item) {
+        return item instanceof CrossbowItem;
+    }
+
+    public boolean isTrident(Item item) {
+        return item instanceof TridentItem;
+    }
+
+    public boolean isRangedWeapon(Item item) {
+        return isBow(item) || isCrossbow(item) || isTrident(item);
+    }
+
+    public byte getRangedWeaponPose() {
+        return entityData.get(RANGED_WEAPON_POSE);
+    }
+
+    public void setRangedWeaponPose(byte pose) {
+        if (!level().isClientSide) {
+            entityData.set(RANGED_WEAPON_POSE, pose);
+        }
     }
 
     private NpcAIBlockWithShield initShieldAI() {

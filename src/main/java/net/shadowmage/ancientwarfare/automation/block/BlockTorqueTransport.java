@@ -14,7 +14,6 @@ import net.shadowmage.ancientwarfare.automation.render.property.AutomationProper
 import net.shadowmage.ancientwarfare.automation.tile.torque.TileTorqueSidedCell;
 import net.shadowmage.ancientwarfare.core.block.BlockRotationHandler.RotationType;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
-import net.shadowmage.ancientwarfare.core.util.LegacyItemStack;
 import net.shadowmage.ancientwarfare.core.util.WorldTools;
 
 import java.util.Optional;
@@ -73,13 +72,7 @@ public abstract class BlockTorqueTransport extends BlockTorqueBase {
     }
 
     public void getSubBlocks(CreativeModeTab tab, NonNullList<ItemStack> list) {
-        if (fixedTier == null) {
-            list.add(LegacyItemStack.of(this, 1, 0));
-            list.add(LegacyItemStack.of(this, 1, 1));
-            list.add(LegacyItemStack.of(this, 1, 2));
-        } else {
-            list.add(new ItemStack(this));
-        }
+        list.add(new ItemStack(this));
     }
 
     @Override

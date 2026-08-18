@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -13,7 +14,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import net.shadowmage.ancientwarfare.core.config.ConfigManager;
 import net.shadowmage.ancientwarfare.core.network.NetworkHandler;
@@ -26,6 +29,7 @@ import net.shadowmage.ancientwarfare.npc.config.AWNPCStatics;
 import net.shadowmage.ancientwarfare.npc.gui.*;
 import net.shadowmage.ancientwarfare.npc.init.AWNPCEntities;
 import net.shadowmage.ancientwarfare.npc.item.IExtendedReachWeapon;
+import net.shadowmage.ancientwarfare.npc.item.ItemShield;
 import net.shadowmage.ancientwarfare.npc.render.RenderCommandOverlay;
 import net.shadowmage.ancientwarfare.npc.render.RenderNpcBase;
 import net.shadowmage.ancientwarfare.npc.render.RenderNpcFaction;
@@ -48,7 +52,17 @@ public class NpcClientProxy extends NpcCommonProxy {
 
     public NpcClientProxy() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerModels);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerRenderers);
+    }
+
+
+    private void clientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> ForgeRegistries.ITEMS.getValues().stream()
+                .filter(ItemShield.class::isInstance)
+                .forEach(item -> ItemProperties.register(item, new ResourceLocation("minecraft", "blocking"),
+                        (stack, level, entity, seed) -> entity != null
+                                && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F)));
     }
 
     private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {

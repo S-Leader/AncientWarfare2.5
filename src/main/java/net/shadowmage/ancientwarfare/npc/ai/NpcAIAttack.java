@@ -46,6 +46,7 @@ public abstract class NpcAIAttack<T extends NpcBase> extends NpcAI<T> {
         // making every melee hit appear to swing twice.
         npc.setSwingingArms(false);
         attackDelay = 0;
+        onAttackGoalStarted();
     }
 
     @Override
@@ -54,6 +55,13 @@ public abstract class NpcAIAttack<T extends NpcBase> extends NpcAI<T> {
         moveRetryDelay = 0;
         npc.removeAITask(TASK_MOVE + TASK_ATTACK);
         npc.setSwingingArms(false);
+        onAttackGoalStopped();
+    }
+
+    protected void onAttackGoalStarted() {
+    }
+
+    protected void onAttackGoalStopped() {
     }
 
     protected int getCoolDown() {

@@ -122,8 +122,8 @@ public class NpcAIBlockWithShield extends NpcAI<NpcBase> {
     }
 
     private boolean isAimingWithBow(LivingEntity entity) {
-        return (npc.isBow(entity.getMainHandItem().getItem()) && entity.isUsingItem() && entity.getUsedItemHand() == InteractionHand.MAIN_HAND) ||
-                (npc.isBow(entity.getOffhandItem().getItem()) && entity.isUsingItem() && entity.getUsedItemHand() == InteractionHand.OFF_HAND);
+        return (npc.isRangedWeapon(entity.getMainHandItem().getItem()) && entity.isUsingItem() && entity.getUsedItemHand() == InteractionHand.MAIN_HAND) ||
+                (npc.isRangedWeapon(entity.getOffhandItem().getItem()) && entity.isUsingItem() && entity.getUsedItemHand() == InteractionHand.OFF_HAND);
     }
 
     public void onPreDamage(DamageSource source, float damage) {

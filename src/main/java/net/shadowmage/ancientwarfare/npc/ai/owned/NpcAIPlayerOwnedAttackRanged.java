@@ -3,6 +3,7 @@ package net.shadowmage.ancientwarfare.npc.ai.owned;
 import com.google.common.primitives.Floats;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.shadowmage.ancientwarfare.npc.ai.NpcAIAttack;
+import net.shadowmage.ancientwarfare.npc.ai.NpcRangedWeaponAttackController;
 import net.shadowmage.ancientwarfare.npc.config.AWNPCStatics;
 import net.shadowmage.ancientwarfare.npc.entity.NpcBase;
 
@@ -10,6 +11,7 @@ public class NpcAIPlayerOwnedAttackRanged extends NpcAIAttack<NpcBase> {
 
     private final RangedAttackMob rangedAttacker;
     private static final double ATTACK_DISTANCE = AWNPCStatics.archerRange * AWNPCStatics.archerRange;
+    private final NpcRangedWeaponAttackController specialWeaponController = new NpcRangedWeaponAttackController();
 
     public NpcAIPlayerOwnedAttackRanged(NpcBase npc) {
         super(npc);
@@ -30,12 +32,21 @@ public class NpcAIPlayerOwnedAttackRanged extends NpcAIAttack<NpcBase> {
     protected void doAttack(double dist) {
         npc.removeAITask(TASK_MOVE);
         npc.getNavigation().stop();
+        float pwr = (float) (ATTACK_DISTANCE / dist);
+        //noinspection UnstableApiUsage
+        pwr = Floats.constrainToRange(pwr, 0.1f, 1f);
+        if (specialWeaponController.tickSpecial(npc, rangedAttacker, getTarget(), pwr,
+                getAttackDelay(), 35, this::setAttackDelay)) {
+            return;
+        }
         if (getAttackDelay() <= 0) {
-            float pwr = (float) (ATTACK_DISTANCE / dist);
-            //noinspection UnstableApiUsage
-            pwr = Floats.constrainToRange(pwr, 0.1f, 1f);
             rangedAttacker.performRangedAttack(getTarget(), pwr);
             setAttackDelay(35);
         }
+    }
+
+    @Override
+    protected void onAttackGoalStopped() {
+        specialWeaponController.reset(npc);
     }
 }

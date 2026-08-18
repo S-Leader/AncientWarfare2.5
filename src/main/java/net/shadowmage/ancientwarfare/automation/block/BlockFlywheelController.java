@@ -10,8 +10,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraftforge.api.distmarker.Dist;
@@ -19,15 +17,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.shadowmage.ancientwarfare.automation.init.AWAutomationBlocks;
 import net.shadowmage.ancientwarfare.automation.render.FlywheelControllerRenderer;
 import net.shadowmage.ancientwarfare.automation.render.property.AutomationProperties;
-import net.shadowmage.ancientwarfare.automation.tile.torque.TileFlywheelControllerHeavy;
-import net.shadowmage.ancientwarfare.automation.tile.torque.TileFlywheelControllerLight;
-import net.shadowmage.ancientwarfare.automation.tile.torque.TileFlywheelControllerMedium;
 import net.shadowmage.ancientwarfare.core.block.BlockRotationHandler.RotationType;
 import net.shadowmage.ancientwarfare.core.compat.LegacyMaterial;
 import net.shadowmage.ancientwarfare.core.render.BlockStateKeyGenerator;
 import net.shadowmage.ancientwarfare.core.render.model.*;
 import net.shadowmage.ancientwarfare.core.render.property.CoreProperties;
-import net.shadowmage.ancientwarfare.core.util.LegacyItemStack;
 import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 
 public class BlockFlywheelController extends BlockTorqueBase implements LegacyBakeryProvider {
@@ -87,13 +81,7 @@ public class BlockFlywheelController extends BlockTorqueBase implements LegacyBa
 
 
     public void getSubBlocks(CreativeModeTab item, NonNullList<ItemStack> items) {
-        if (fixedTier == null) {
-            items.add(LegacyItemStack.of(this, 1, 0));
-            items.add(LegacyItemStack.of(this, 1, 1));
-            items.add(LegacyItemStack.of(this, 1, 2));
-        } else {
-            items.add(new ItemStack(this));
-        }
+        items.add(new ItemStack(this));
     }
 
     @Override

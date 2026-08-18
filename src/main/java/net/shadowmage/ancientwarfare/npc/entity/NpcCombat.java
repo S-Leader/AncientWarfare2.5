@@ -102,7 +102,7 @@ public class NpcCombat extends NpcPlayerOwned implements RangedAttackMob {
             tasks.removeTask(arrowAI);
             tasks.removeTask(meleeAI);
             ItemStack stack = getMainHandItem();
-            if (isBow(stack.getItem())) {
+            if (isRangedWeapon(stack.getItem())) {
                 tasks.addTask(4, arrowAI);
             } else {
                 tasks.addTask(4, meleeAI);
@@ -113,7 +113,7 @@ public class NpcCombat extends NpcPlayerOwned implements RangedAttackMob {
 
     @Override
     public boolean canAttackClass(Class claz) {
-        return (isBow(getMainHandItem().getItem())) || super.canAttackClass(claz);
+        return isRangedWeapon(getMainHandItem().getItem()) || super.canAttackClass(claz);
     }
 
     @Override
@@ -146,7 +146,7 @@ public class NpcCombat extends NpcPlayerOwned implements RangedAttackMob {
             } else if (item instanceof ItemHammer) {
                 return "engineer";
             }
-            if (isBow(item)) {
+            if (isRangedWeapon(item)) {
                 return "archer";
             } else if (item instanceof ItemCommandBaton) {
                 return "commander";

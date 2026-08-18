@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
@@ -22,11 +23,13 @@ import net.shadowmage.ancientwarfare.core.AncientWarfareCore;
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = AncientWarfareCore.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class LegacyModelRegistryHelper {
     private static final Map<ModelResourceLocation, BakedModel> MODELS = new ConcurrentHashMap<>();
     private static final Map<Item, Object> ITEM_RENDERERS = new ConcurrentHashMap<>();
+    private static final Map<Item, DirectItemBakery> DIRECT_ITEM_BAKERIES = new ConcurrentHashMap<>();
 
     private LegacyModelRegistryHelper() {
     }
@@ -37,6 +40,10 @@ public final class LegacyModelRegistryHelper {
 
     public static void registerItemRenderer(Item item, Object renderer) {
         ITEM_RENDERERS.put(item, renderer);
+    }
+
+    public static void registerDirectItemBakery(Item item, LegacyBakery bakery, Supplier<TextureAtlasSprite> particle) {
+        DIRECT_ITEM_BAKERIES.put(item, new DirectItemBakery(bakery, particle));
     }
 
     @SubscribeEvent
@@ -66,6 +73,7 @@ public final class LegacyModelRegistryHelper {
         LegacyModelLoader.STATE_MAPPERS.forEach((block, mapper) -> installBakeryModels(event, block, mapper));
         installMissingVariantFallbacks(event);
         installLegacyItemModels(event);
+        installDirectItemBakeries(event);
         reportMissingItemModels(event);
     }
 
@@ -103,6 +111,39 @@ public final class LegacyModelRegistryHelper {
             }
         }
         AncientWarfareCore.LOG.info("Installed {} visible fallbacks for unbaked legacy item variants", installed);
+    }
+
+    private static void installDirectItemBakeries(ModelEvent.ModifyBakingResult event) {
+        DIRECT_ITEM_BAKERIES.forEach((item, definition) -> {
+            ResourceLocation itemId = ForgeRegistries.ITEMS.getKey(item);
+            if (itemId == null) {
+                return;
+            }
+            ModelResourceLocation baseLocation = new ModelResourceLocation(itemId, "inventory");
+            BakedModel original = event.getModels().get(baseLocation);
+            if (original == null) {
+                original = Minecraft.getInstance().getModelManager().getMissingModel();
+            }
+            LegacyBakedModel legacy = new LegacyBakedModel(definition.bakery(), definition.particle());
+            BakedModel fallback = original;
+            event.getModels().put(baseLocation, new BakedModelWrapper<BakedModel>(fallback) {
+                private final ItemOverrides directOverrides = new ItemOverrides() {
+                    @Override
+                    public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel level,
+                                              @Nullable LivingEntity entity, int seed) {
+                        return legacy.forItem(stack);
+                    }
+                };
+
+                @Override
+                public ItemOverrides getOverrides() {
+                    return directOverrides;
+                }
+            });
+        });
+    }
+
+    private record DirectItemBakery(LegacyBakery bakery, Supplier<TextureAtlasSprite> particle) {
     }
 
     private static void reportMissingItemModels(ModelEvent.ModifyBakingResult event) {

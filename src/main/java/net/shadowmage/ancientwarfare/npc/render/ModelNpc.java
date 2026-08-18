@@ -6,7 +6,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.UseAnim;
 import net.shadowmage.ancientwarfare.npc.entity.NpcBase;
 
@@ -49,14 +51,32 @@ public class ModelNpc<T extends LivingEntity> extends PlayerModel<T> {
         ItemStack mainHandItemStack = entitylivingbaseIn.getItemInHand(InteractionHand.MAIN_HAND);
         ItemStack offHandItemStack = entitylivingbaseIn.getItemInHand(InteractionHand.OFF_HAND);
 
-        if (entitylivingbaseIn.getUseItemRemainingTicks() > 0) {
-            if (entitylivingbaseIn.getUsedItemHand() == InteractionHand.MAIN_HAND && !mainHandItemStack.isEmpty() && mainHandItemStack.getUseAnimation() == UseAnim.BOW) {
-                mainArmPose = ArmPose.BOW_AND_ARROW;
+        if (entitylivingbaseIn instanceof NpcBase npc) {
+            if (mainHandItemStack.getItem() instanceof CrossbowItem) {
+                if (npc.getRangedWeaponPose() == NpcBase.RANGED_POSE_CROSSBOW_CHARGE) {
+                    mainArmPose = ArmPose.CROSSBOW_CHARGE;
+                } else if (npc.getRangedWeaponPose() == NpcBase.RANGED_POSE_CROSSBOW_HOLD) {
+                    mainArmPose = ArmPose.CROSSBOW_HOLD;
+                }
             }
+            if (entitylivingbaseIn.isUsingItem()
+                    && entitylivingbaseIn.getUsedItemHand() == InteractionHand.MAIN_HAND) {
+                if (!mainHandItemStack.isEmpty() && mainHandItemStack.getUseAnimation() == UseAnim.BOW) {
+                    mainArmPose = ArmPose.BOW_AND_ARROW;
+                } else if (mainHandItemStack.getItem() instanceof TridentItem
+                        || mainHandItemStack.getUseAnimation() == UseAnim.SPEAR) {
+                    mainArmPose = ArmPose.THROW_SPEAR;
+                } else if (mainHandItemStack.getUseAnimation() == UseAnim.BLOCK) {
+                    mainArmPose = ArmPose.BLOCK;
+                }
+            }
+        }
 
-            if (entitylivingbaseIn.getUsedItemHand() == InteractionHand.OFF_HAND && !offHandItemStack.isEmpty() && offHandItemStack.getUseAnimation() == UseAnim.BLOCK) {
-                offArmPose = ArmPose.BLOCK;
-            }
+        if (entitylivingbaseIn.isUsingItem()
+                && entitylivingbaseIn.getUsedItemHand() == InteractionHand.OFF_HAND
+                && !offHandItemStack.isEmpty()
+                && offHandItemStack.getUseAnimation() == UseAnim.BLOCK) {
+            offArmPose = ArmPose.BLOCK;
         }
 
         if (entitylivingbaseIn.getMainArm() == HumanoidArm.RIGHT) {

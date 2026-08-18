@@ -4,6 +4,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.shadowmage.ancientwarfare.npc.ai.NpcAIAttack;
+import net.shadowmage.ancientwarfare.npc.ai.NpcRangedWeaponAttackController;
 import net.shadowmage.ancientwarfare.npc.config.AWNPCStatics;
 import net.shadowmage.ancientwarfare.npc.entity.NpcBase;
 
@@ -12,6 +13,7 @@ public class NpcAIFactionRangedAttack extends NpcAIAttack<NpcBase> {
 
     private int attackDistanceSq;
     private final int rangedAttackDelay;
+    private final NpcRangedWeaponAttackController specialWeaponController = new NpcRangedWeaponAttackController();
 
     public <T extends NpcBase & RangedAttackMob> NpcAIFactionRangedAttack(T npc, double moveSpeed, int attackDistanceSq, int attackDelay) {
         super(npc);
@@ -40,14 +42,23 @@ public class NpcAIFactionRangedAttack extends NpcAIAttack<NpcBase> {
 
     @Override
     protected void doAttack(double dist) {
+        float pwr = (float) (getAttackDistanceSq() / dist);
+        pwr = Math.min(Math.max(pwr, 0.1F), 1F);
+        if (specialWeaponController.tickSpecial(npc, rangedAttacker, getTarget(), pwr,
+                getAttackDelay(), rangedAttackDelay, this::setAttackDelay)) {
+            return;
+        }
         if (!npc.isUsingItem()) {
             npc.startUsingItem(InteractionHand.MAIN_HAND);
         } else if (getAttackDelay() <= 0) {
             npc.stopUsingItem();
-            float pwr = (float) (getAttackDistanceSq() / dist);
-            pwr = Math.min(Math.max(pwr, 0.1F), 1F);
             rangedAttacker.performRangedAttack(getTarget(), pwr);
             setAttackDelay(rangedAttackDelay);
         }
+    }
+
+    @Override
+    protected void onAttackGoalStopped() {
+        specialWeaponController.reset(npc);
     }
 }

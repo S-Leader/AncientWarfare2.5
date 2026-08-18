@@ -83,12 +83,6 @@ public class ItemGateSpawner extends ItemBaseStructure implements IItemKeyInterf
             items.add(new ItemStack(this));
             return;
         }
-        // Keep old metadata variants addressable for save/template compatibility.
-        for (int i = 0; i < 16; i++) {
-            if (Gate.getGateByID(i) != null) {
-                items.add(net.shadowmage.ancientwarfare.core.util.LegacyItemStack.of(this, 1, i));
-            }
-        }
     }
 
     @Override

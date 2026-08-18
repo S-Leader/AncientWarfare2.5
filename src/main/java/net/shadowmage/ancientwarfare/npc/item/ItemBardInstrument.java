@@ -14,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.shadowmage.ancientwarfare.core.util.LegacyItemStack;
 import net.shadowmage.ancientwarfare.core.util.ModelLoaderHelper;
 
 /**
@@ -62,14 +61,6 @@ public class ItemBardInstrument extends ItemBaseNPC {
 
     private final Instrument fixedInstrument;
 
-    /** Compatibility-only metadata container for old saves/templates. */
-    @Deprecated
-    public ItemBardInstrument(String regName) {
-        super(regName);
-        fixedInstrument = null;
-        setHasSubtypes(true);
-    }
-
     public ItemBardInstrument(String regName, Instrument instrument) {
         super(regName);
         fixedInstrument = instrument;
@@ -83,11 +74,6 @@ public class ItemBardInstrument extends ItemBaseNPC {
         if (fixedInstrument != null) {
             items.add(new ItemStack(this));
             return;
-        }
-        // Legacy item is hidden from the normal creative tab, but exposing its
-        // variants here keeps old custom model mappings/data migration valid.
-        for (Instrument instrument : Instrument.values()) {
-            items.add(LegacyItemStack.of(this, 1, instrument.legacyMeta()));
         }
     }
 

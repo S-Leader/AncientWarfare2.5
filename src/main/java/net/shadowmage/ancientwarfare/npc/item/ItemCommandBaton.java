@@ -49,12 +49,17 @@ public class ItemCommandBaton extends ItemBaseNPC implements IItemKeyInterface, 
     private final int range = 120;
 
     public ItemCommandBaton(String name, Tier material) {
-        super(name, new Item.Properties().stacksTo(1).durability(material.getUses()));
+        super(name, propertiesFor(material));
         this.material = material;
         double attackDamage = 4 + material.getAttackDamageBonus();
         attributes = ImmutableMultimap.of(
                 Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_UUID, "Weapon modifier", attackDamage, AttributeModifier.Operation.ADDITION),
                 Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_UUID, "Weapon modifier", -2.3D, AttributeModifier.Operation.ADDITION));
+    }
+
+    private static Item.Properties propertiesFor(Tier material) {
+        Item.Properties properties = new Item.Properties().stacksTo(1).durability(material.getUses());
+        return material == net.minecraft.world.item.Tiers.NETHERITE ? properties.fireResistant() : properties;
     }
 
     @Override

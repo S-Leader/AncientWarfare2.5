@@ -29,7 +29,7 @@ public final class AWNPCTab {
     public static final RegistryObject<CreativeModeTab> TAB = TABS.register("npc", () ->
             CreativeModeTab.builder()
                     .title(Component.translatable("tabs.npc"))
-                    .icon(() -> new ItemStack(AWNPCItems.NPC_SPAWNER_WORKER.get()))
+                    .icon(() -> new ItemStack(AWNPCItems.NPC_SPAWNER.get()))
                     .displayItems((parameters, output) -> {
                         List<ItemStack> stacks = new ArrayList<>();
                         ForgeRegistries.ITEMS.getValues().stream()
@@ -42,8 +42,7 @@ public final class AWNPCTab {
                                 .forEach(stacks::add);
                         stacks.sort(new SortItemsFirstComparator(
                                 AWNPCBlocks.TOWN_HALL.get(), ItemOrders.class, ItemCommandBaton.class,
-                                AWNPCItems.BARD_INSTRUMENT_LUTE.get(), AWNPCItems.NPC_SPAWNER_WORKER.get(),
-                                AWNPCItems.NPC_SPAWNER.get()));
+                                AWNPCItems.BARD_INSTRUMENT_LUTE.get(), AWNPCItems.NPC_SPAWNER.get()));
                         stacks.forEach(output::accept);
                     })
                     .build());
