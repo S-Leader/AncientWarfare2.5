@@ -34,11 +34,8 @@ public class GuiResearchBook extends GuiContainerBase {
         super(container, 400, 240);
     }
 
-
     @Override
     public void initElements() {
-        getContainer().removeSlots();
-
         area = new CompositeScrolled(this, 0, 40, xSize / 2, ySize - 40);
         addGuiElement(area);
         modeBox = new Checkbox(8, 8, 16, 16, "guistrings.research.research_mode") {

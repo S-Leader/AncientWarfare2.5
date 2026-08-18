@@ -216,13 +216,108 @@ public class ContainerBase extends AbstractContainerMenu {
     }
 
     /**
-     * Slot coordinates are final in 1.20.1. Legacy screens should hide slots
-     * visually and reject clicks instead of moving them by 10,000 pixels.
+     * Original AW screens temporarily moved every slot 10,000 pixels off-screen.
+     * Slot coordinates are final in 1.20.1, so the client-side menu temporarily
+     * swaps each visible slot for a delegating slot at the same menu index whose
+     * Y coordinate is off-screen.  The delegate keeps normal item synchronization
+     * working while the slot is hidden.
      */
+    private Slot[] removedSlots;
+
     public void removeSlots() {
+        // Slots only need to be hidden on the client. Keeping the server menu
+        // untouched also preserves its normal click/synchronization semantics.
+        if (!player.level().isClientSide() || removedSlots != null) {
+            return;
+        }
+
+        removedSlots = inventorySlots.toArray(new Slot[0]);
+        for (int i = 0; i < removedSlots.length; i++) {
+            inventorySlots.set(i, new HiddenSlot(removedSlots[i]));
+        }
     }
 
     public void addSlots() {
+        if (!player.level().isClientSide() || removedSlots == null) {
+            return;
+        }
+
+        int restoreCount = Math.min(removedSlots.length, inventorySlots.size());
+        for (int i = 0; i < restoreCount; i++) {
+            inventorySlots.set(i, removedSlots[i]);
+        }
+        removedSlots = null;
+    }
+
+    /**
+     * A visual-only proxy for an existing slot.  It deliberately keeps the same
+     * menu index and delegates all inventory access to the real slot, but lives
+     * 10,000 pixels above the GUI and reports itself inactive.
+     */
+    private static final class HiddenSlot extends Slot {
+        private static final int HIDDEN_Y_OFFSET = 10000;
+        private final Slot delegate;
+
+        private HiddenSlot(Slot delegate) {
+            super(delegate.container, delegate.getContainerSlot(), delegate.x, delegate.y - HIDDEN_Y_OFFSET);
+            this.delegate = delegate;
+            this.index = delegate.index;
+        }
+
+        @Override
+        public boolean isActive() {
+            return false;
+        }
+
+        @Override
+        public ItemStack getItem() {
+            return delegate.getItem();
+        }
+
+        @Override
+        public boolean hasItem() {
+            return delegate.hasItem();
+        }
+
+        @Override
+        public void set(ItemStack stack) {
+            delegate.set(stack);
+        }
+
+        @Override
+        public void setChanged() {
+            delegate.setChanged();
+        }
+
+        @Override
+        public ItemStack remove(int amount) {
+            return delegate.remove(amount);
+        }
+
+        @Override
+        public boolean mayPlace(ItemStack stack) {
+            return delegate.mayPlace(stack);
+        }
+
+        @Override
+        public boolean mayPickup(Player player) {
+            return delegate.mayPickup(player);
+        }
+
+        @Override
+        public int getMaxStackSize() {
+            return delegate.getMaxStackSize();
+        }
+
+        @Override
+        public int getMaxStackSize(ItemStack stack) {
+            return delegate.getMaxStackSize(stack);
+        }
+
+        @Override
+        public void onTake(Player player, ItemStack stack) {
+            delegate.onTake(player, stack);
+        }
     }
 
     @Override
